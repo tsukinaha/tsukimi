@@ -394,3 +394,17 @@ progressbar.accent > trough > progress {
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
 }
+
+@keyframes blink {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0.3;
+    }
+}
+
+.blink {
+    animation: blink 500ms infinite alternate;
+}

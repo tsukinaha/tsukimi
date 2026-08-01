@@ -95,7 +95,6 @@
                         <child>
                           <object class="GtkLabel" id="title">
                             <property name="justify">center</property>
-                            <property name="max-width-chars">1</property>
                             <property name="lines">1</property>
                             <property name="ellipsize">middle</property>
                             <property name="opacity">0.9</property>
@@ -108,7 +107,6 @@
                         <child>
                           <object class="GtkLabel" id="subtitle">
                             <property name="justify">center</property>
-                            <property name="max-width-chars">1</property>
                             <property name="lines">1</property>
                             <property name="ellipsize">middle</property>
                             <property name="visible">false</property>

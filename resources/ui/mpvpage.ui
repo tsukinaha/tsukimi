@@ -4,39 +4,46 @@
     <property name="title">Tsukimi</property>
     <child>
       <object class="GtkEventControllerMotion">
-        <signal name="motion" handler="on_motion" swapped="yes" />
-        <signal name="leave" handler="on_leave" swapped="yes" />
-        <signal name="enter" handler="on_enter" swapped="yes" />
+        <signal name="motion" handler="on_motion" swapped="yes"/>
+        <signal name="leave" handler="on_leave" swapped="yes"/>
+        <signal name="enter" handler="on_enter" swapped="yes"/>
       </object>
     </child>
     <child>
       <object class="AdwToolbarView">
         <property name="content">
           <object class="GtkOverlay">
-          <child>
-            <object class="MPVPlaySink" id="video">
-              <property name="hexpand">true</property>
-              <property name="vexpand">true</property>
-            </object>
-          </child>
-          <child>
-            <object class="GtkGestureClick">
-              <property name="button">1</property>
-              <signal name="released" handler="left_click_cb" swapped="yes"/>
-            </object>
-          </child>
-          <child>
-            <object class="GtkGestureClick">
-              <property name="button">3</property>
-              <signal name="released" handler="right_click_cb" swapped="yes"/>
-            </object>
-          </child>
-          <child>
-            <object class="GtkEventControllerScroll">
-              <property name="flags">vertical</property>
-              <signal name="scroll" handler="video_scroll_cb" swapped="yes"/>
-            </object>
-          </child>
+            <child>
+              <object class="MPVPlaySink" id="video">
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+              </object>
+            </child>
+            <child type="overlay">
+              <object class="Danmakw" id="danmakw">
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="visible">false</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkGestureClick">
+                <property name="button">1</property>
+                <signal name="released" handler="left_click_cb" swapped="yes"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkGestureClick">
+                <property name="button">3</property>
+                <signal name="released" handler="right_click_cb" swapped="yes"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEventControllerScroll">
+                <property name="flags">vertical</property>
+                <signal name="scroll" handler="video_scroll_cb" swapped="yes"/>
+              </object>
+            </child>
             <child type="overlay">
               <object class="VolumeBar" id="volume_bar">
                 <property name="halign">start</property>
@@ -60,7 +67,7 @@
                     <property name="width-request">64</property>
                     <property name="margin-top">20</property>
                     <style>
-                      <class name="accent" />
+                      <class name="accent"/>
                     </style>
                   </object>
                 </child>
@@ -69,8 +76,8 @@
                     <property name="halign">center</property>
                     <property name="margin_bottom">20</property>
                     <style>
-                      <class name="accent" />
-                      <class name="speed-label" />
+                      <class name="accent"/>
+                      <class name="speed-label"/>
                     </style>
                   </object>
                 </child>
@@ -89,7 +96,7 @@
                     <property name="show-start-title-buttons">false</property>
                     <property name="show-end-title-buttons">false</property>
                     <property name="title-widget">
-                      <object class="GtkBox" />
+                      <object class="GtkBox"/>
                     </property>
                     <child type="start">
                       <object class="GtkBox">
@@ -101,10 +108,10 @@
                             <property name="tooltip_text" translatable="yes">Stop and quit</property>
                             <property name="icon-name">arrow4-left-symbolic</property>
                             <property name="valign">center</property>
-                            <signal name="clicked" handler="on_stop_clicked" swapped="yes" />
+                            <signal name="clicked" handler="on_stop_clicked" swapped="yes"/>
                             <style>
-                              <class name="flat" />
-                              <class name="circular" />
+                              <class name="flat"/>
+                              <class name="circular"/>
                             </style>
                           </object>
                         </child>
@@ -124,8 +131,8 @@
                                 <property name="halign">start</property>
                                 <property name="ellipsize">middle</property>
                                 <style>
-                                  <class name="dimmed" />
-                                  <class name="caption" />
+                                  <class name="dimmed"/>
+                                  <class name="caption"/>
                                 </style>
                               </object>
                             </child>
@@ -138,18 +145,18 @@
                         <property name="orientation">horizontal</property>
                         <property name="spacing">6</property>
                         <child>
-                            <object class="GtkButton" id="network_speed_label_2">
+                          <object class="GtkButton" id="network_speed_label_2">
                             <property name="valign">center</property>
                             <property name="child">
-                                <object class="AdwButtonContent">
+                              <object class="AdwButtonContent">
                                 <property name="icon-name">speedometer5-symbolic</property>
-                                <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" />
-                                </object>
+                                <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create"/>
+                              </object>
                             </property>
                             <style>
-                                <class name="accent" />
+                              <class name="accent"/>
                             </style>
-                            </object>
+                          </object>
                         </child>
                         <child>
                           <object class="GtkToggleButton">
@@ -158,8 +165,8 @@
                             <property name="tooltip_text" translatable="yes">Shortcuts</property>
                             <property name="action-name">win.show-help-overlay</property>
                             <style>
-                              <class name="flat" />
-                              <class name="circular" />
+                              <class name="flat"/>
+                              <class name="circular"/>
                             </style>
                           </object>
                         </child>
@@ -170,10 +177,10 @@
                             <property name="focusable">True</property>
                             <property name="receives_default">True</property>
                             <property name="tooltip_text" translatable="yes">Playlist</property>
-                            <signal name="clicked" handler="on_playlist_clicked" swapped="yes" />
+                            <signal name="clicked" handler="on_playlist_clicked" swapped="yes"/>
                             <style>
-                              <class name="flat" />
-                              <class name="circular" />
+                              <class name="flat"/>
+                              <class name="circular"/>
                             </style>
                           </object>
                         </child>
@@ -184,10 +191,10 @@
                             <property name="focusable">True</property>
                             <property name="receives_default">True</property>
                             <property name="tooltip_text" translatable="yes">Media info (MPV)</property>
-                            <signal name="clicked" handler="on_info_clicked" swapped="yes" />
+                            <signal name="clicked" handler="on_info_clicked" swapped="yes"/>
                             <style>
-                              <class name="flat" />
-                              <class name="circular" />
+                              <class name="flat"/>
+                              <class name="circular"/>
                             </style>
                           </object>
                         </child>
@@ -195,15 +202,15 @@
                           <object class="GtkWindowControls">
                             <property name="side">end</property>
                             <style>
-                              <class name="flat" />
+                              <class name="flat"/>
                             </style>
                           </object>
                         </child>
                       </object>
                     </child>
                     <style>
-                      <class name="flat" />
-                      <class name="mpv-top-bar" />
+                      <class name="flat"/>
+                      <class name="mpv-top-bar"/>
                     </style>
                   </object>
                 </child>
@@ -238,8 +245,8 @@
                                 <property name="action-name">mpv.previous-video</property>
                                 <property name="valign">center</property>
                                 <style>
-                                  <class name="flat" />
-                                  <class name="circular" />
+                                  <class name="flat"/>
+                                  <class name="circular"/>
                                 </style>
                               </object>
                             </child>
@@ -257,8 +264,8 @@
                                   </object>
                                 </child>
                                 <style>
-                                  <class name="circular" />
-                                  <class name="flat" />
+                                  <class name="circular"/>
+                                  <class name="flat"/>
                                 </style>
                               </object>
                             </child>
@@ -270,7 +277,7 @@
                                 <property name="receives_default">True</property>
                                 <property name="valign">center</property>
                                 <property name="tooltip_text" translatable="yes">Pause</property>
-                                <signal name="clicked" handler="on_play_pause_clicked" swapped="yes" />
+                                <signal name="clicked" handler="on_play_pause_clicked" swapped="yes"/>
                                 <child>
                                   <object class="GtkImage" id="play_pause_image">
                                     <property name="icon_name">media-playback-pause-symbolic</property>
@@ -280,9 +287,9 @@
                                   </object>
                                 </child>
                                 <style>
-                                  <class name="flat" />
-                                  <class name="mpv-play-button" />
-                                  <class name="circular" />
+                                  <class name="flat"/>
+                                  <class name="mpv-play-button"/>
+                                  <class name="circular"/>
                                 </style>
                               </object>
                             </child>
@@ -300,8 +307,8 @@
                                   </object>
                                 </child>
                                 <style>
-                                  <class name="circular" />
-                                  <class name="flat" />
+                                  <class name="circular"/>
+                                  <class name="flat"/>
                                 </style>
                               </object>
                             </child>
@@ -311,8 +318,8 @@
                                 <property name="action-name">mpv.next-video</property>
                                 <property name="valign">center</property>
                                 <style>
-                                  <class name="flat" />
-                                  <class name="circular" />
+                                  <class name="flat"/>
+                                  <class name="circular"/>
                                 </style>
                               </object>
                             </child>
@@ -325,9 +332,9 @@
                             <property name="valign">center</property>
                             <child>
                               <object class="GtkButton" id="playback_speed_indicator">
-                              <property name="valign">center</property>
-                              <property name="margin-end">6</property>
-                              <property name="visible">false</property>
+                                <property name="valign">center</property>
+                                <property name="margin-end">6</property>
+                                <property name="visible">false</property>
                                 <signal name="clicked" handler="playback_speed_indicator_cb" swapped="yes"/>
                                 <property name="child">
                                   <object class="AdwButtonContent" id="playback_speed_button_content">
@@ -335,8 +342,8 @@
                                   </object>
                                 </property>
                                 <style>
-                                  <class name="accent" />
-                                  <class name="monospace" />
+                                  <class name="accent"/>
+                                  <class name="monospace"/>
                                 </style>
                               </object>
                             </child>
@@ -352,8 +359,8 @@
                                     <property name="tooltip-text" translatable="yes">Audio</property>
                                     <property name="valign">center</property>
                                     <style>
-                                      <class name="flat" />
-                                      <class name="circular" />
+                                      <class name="flat"/>
+                                      <class name="circular"/>
                                     </style>
                                   </object>
                                 </child>
@@ -364,22 +371,34 @@
                                     <property name="tooltip-text" translatable="yes">Subtitle</property>
                                     <property name="valign">center</property>
                                     <style>
-                                      <class name="flat" />
-                                      <class name="circular" />
+                                      <class name="flat"/>
+                                      <class name="circular"/>
                                     </style>
                                   </object>
                                 </child>
                                 <child>
-                                    <object class="GtkMenuButton" id="volume_button">
-                                        <property name="popover">volume_adj_popover</property>
-                                        <property name="icon-name">audio-volume-high-symbolic</property>
-                                        <property name="tooltip-text" translatable="yes">Adjust Volume</property>
-                                        <property name="valign">center</property>
-                                        <style>
-                                            <class name="flat" />
-                                            <class name="circular" />
-                                        </style>
-                                    </object>
+                                  <object class="GtkMenuButton" id="volume_button">
+                                    <property name="popover">volume_adj_popover</property>
+                                    <property name="icon-name">audio-volume-high-symbolic</property>
+                                    <property name="tooltip-text" translatable="yes">Adjust Volume</property>
+                                    <property name="valign">center</property>
+                                    <style>
+                                      <class name="flat"/>
+                                      <class name="circular"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkMenuButton">
+                                    <property name="popover">danmaku_popover</property>
+                                    <property name="icon-name">card-bulleted-symbolic</property>
+                                    <property name="tooltip-text" translatable="yes">Danmaku</property>
+                                    <property name="valign">center</property>
+                                    <style>
+                                      <class name="flat"/>
+                                      <class name="circular"/>
+                                    </style>
+                                  </object>
                                 </child>
                                 <child>
                                   <object class="GtkButton">
@@ -388,8 +407,8 @@
                                     <property name="tooltip-text" translatable="yes">Advanced settings</property>
                                     <property name="valign">center</property>
                                     <style>
-                                      <class name="flat" />
-                                      <class name="circular" />
+                                      <class name="flat"/>
+                                      <class name="circular"/>
                                     </style>
                                   </object>
                                 </child>
@@ -401,11 +420,11 @@
                                     <property name="tooltip-text" translatable="yes">Fullscreen</property>
                                     <property name="valign">center</property>
                                     <accessibility>
-                                        <property name="label" translatable="yes">Fullscreen</property>
+                                      <property name="label" translatable="yes">Fullscreen</property>
                                     </accessibility>
                                     <style>
-                                        <class name="flat" />
-                                        <class name="circular" />
+                                      <class name="flat"/>
+                                      <class name="circular"/>
                                     </style>
                                   </object>
                                 </child>
@@ -420,8 +439,8 @@
                                       <property name="label" translatable="yes">Exit Fullscreen</property>
                                     </accessibility>
                                     <style>
-                                      <class name="flat" />
-                                      <class name="circular" />
+                                      <class name="flat"/>
+                                      <class name="circular"/>
                                     </style>
                                   </object>
                                 </child>
@@ -442,7 +461,7 @@
                             <property name="valign">center</property>
                             <property name="label">0:00</property>
                             <attributes>
-                              <attribute name="font-features" value="tnum=1" />
+                              <attribute name="font-features" value="tnum=1"/>
                             </attributes>
                           </object>
                         </child>
@@ -454,10 +473,10 @@
                             <property name="draw_value">False</property>
                             <property name="restrict-to-fill-level">False</property>
                             <property name="show-fill-level">True</property>
-                            <signal name="value-changed" handler="on_progress_value_changed" swapped="yes" />
+                            <signal name="value-changed" handler="on_progress_value_changed" swapped="yes"/>
                             <style>
-                              <class name="accent" />
-                              <class name="mpv-seekbar" />
+                              <class name="accent"/>
+                              <class name="mpv-seekbar"/>
                             </style>
                           </object>
                         </child>
@@ -468,14 +487,14 @@
                             <property name="valign">center</property>
                             <property name="label">0:00</property>
                             <attributes>
-                              <attribute name="font-features" value="tnum=1" />
+                              <attribute name="font-features" value="tnum=1"/>
                             </attributes>
                           </object>
                         </child>
                       </object>
                     </child>
                     <style>
-                      <class name="mpv-bottom-bar" />
+                      <class name="mpv-bottom-bar"/>
                     </style>
                   </object>
                 </child>
@@ -492,9 +511,9 @@
                 <property name="margin-bottom">172</property>
                 <child>
                   <object class="GtkButton" id="skip_segment_button">
-                    <signal name="clicked" handler="on_skip_segment_clicked" swapped="yes" />
+                    <signal name="clicked" handler="on_skip_segment_clicked" swapped="yes"/>
                     <style>
-                      <class name="osd" />
+                      <class name="osd"/>
                     </style>
                   </object>
                 </child>
@@ -510,8 +529,8 @@
     <property name="width-request">320</property>
     <property name="position">top</property>
     <property name="has-arrow">true</property>
-    <signal name="map" handler="on_popover_opened" swapped="yes" />
-    <signal name="unmap" handler="on_popover_closed" swapped="yes" />
+    <signal name="map" handler="on_popover_opened" swapped="yes"/>
+    <signal name="unmap" handler="on_popover_closed" swapped="yes"/>
     <child>
       <object class="GtkScrolledWindow">
         <child>
@@ -519,7 +538,7 @@
             <property name="selection-mode">single</property>
             <property name="valign">start</property>
             <style>
-              <class name="boxed-list-separate" />
+              <class name="boxed-list-separate"/>
             </style>
           </object>
         </child>
@@ -531,8 +550,8 @@
     <property name="width-request">320</property>
     <property name="position">top</property>
     <property name="has-arrow">true</property>
-    <signal name="map" handler="on_popover_opened" swapped="yes" />
-    <signal name="unmap" handler="on_popover_closed" swapped="yes" />
+    <signal name="map" handler="on_popover_opened" swapped="yes"/>
+    <signal name="unmap" handler="on_popover_closed" swapped="yes"/>
     <child>
       <object class="GtkScrolledWindow">
         <child>
@@ -540,36 +559,50 @@
             <property name="selection-mode">single</property>
             <property name="valign">start</property>
             <style>
-              <class name="boxed-list-separate" />
+              <class name="boxed-list-separate"/>
             </style>
           </object>
         </child>
       </object>
     </child>
   </object>
-
   <object class="GtkPopover" id="volume_adj_popover">
     <property name="position">top</property>
     <property name="has-arrow">true</property>
-    <signal name="map" handler="on_popover_opened" swapped="yes" />
-    <signal name="unmap" handler="on_popover_closed" swapped="yes" />
+    <signal name="map" handler="on_popover_opened" swapped="yes"/>
+    <signal name="unmap" handler="on_popover_closed" swapped="yes"/>
     <child>
-    <object class="GtkScale" id="volume_scale">
-      <property name="adjustment">volume_adj</property>
-      <property name="height-request">180</property>
-      <property name="halign">center</property>
-      <property name="margin-end">6</property>
-      <property name="draw-value">false</property>
-      <property name="orientation">vertical</property>
-      <property name="inverted">true</property>
-      <signal name="value-changed" handler="on_volume_scale_value_changed" swapped="yes" />
-      <style>
-        <class name="accent" />
-      </style>
-    </object>
+      <object class="GtkScale" id="volume_scale">
+        <property name="adjustment">volume_adj</property>
+        <property name="height-request">180</property>
+        <property name="halign">center</property>
+        <property name="margin-end">6</property>
+        <property name="draw-value">false</property>
+        <property name="orientation">vertical</property>
+        <property name="inverted">true</property>
+        <signal name="value-changed" handler="on_volume_scale_value_changed" swapped="yes"/>
+        <style>
+          <class name="accent"/>
+        </style>
+      </object>
     </child>
   </object>
-
+  <object class="GtkPopover" id="danmaku_popover">
+    <property name="width-request">400</property>
+    <property name="position">top</property>
+    <property name="has-arrow">true</property>
+    <signal name="map" handler="on_popover_opened" swapped="yes"/>
+    <signal name="unmap" handler="on_popover_closed" swapped="yes"/>
+    <child>
+      <object class="AdwClamp">
+        <property name="maximum-size">400</property>
+        <property name="tightening-threshold">400</property>
+        <child>
+          <object class="DanmakuPopover" id="danmaku_popover_content"/>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkAdjustment" id="danmaku_top_padding_adj">
     <property name="lower">0</property>
     <property name="upper">50</property>
@@ -577,7 +610,6 @@
     <property name="step_increment">1</property>
     <property name="page_increment">4</property>
   </object>
-
   <object class="GtkAdjustment" id="danmaku_font_size_adj">
     <property name="lower">0</property>
     <property name="upper">100</property>
@@ -585,7 +617,6 @@
     <property name="step_increment">1</property>
     <property name="page_increment">4</property>
   </object>
-
   <object class="GtkAdjustment" id="scroll_danmaku_max_lines_adj">
     <property name="lower">0</property>
     <property name="upper">80</property>
@@ -593,7 +624,6 @@
     <property name="step_increment">1</property>
     <property name="page_increment">4</property>
   </object>
-
   <object class="GtkAdjustment" id="danmaku_row_spacing_adj">
     <property name="lower">0</property>
     <property name="upper">50</property>
@@ -601,7 +631,6 @@
     <property name="step_increment">1</property>
     <property name="page_increment">4</property>
   </object>
-
   <object class="GtkAdjustment" id="topcenter_danmaku_max_lines_adj">
     <property name="lower">0</property>
     <property name="upper">12</property>
@@ -609,7 +638,6 @@
     <property name="step_increment">1</property>
     <property name="page_increment">4</property>
   </object>
-
   <object class="GtkAdjustment" id="bottomcenter_danmaku_max_lines_adj">
     <property name="lower">0</property>
     <property name="upper">12</property>
@@ -617,7 +645,6 @@
     <property name="step_increment">1</property>
     <property name="page_increment">4</property>
   </object>
-
   <object class="GtkAdjustment" id="danmaku_speed_adj">
     <property name="lower">0.10</property>
     <property name="upper">5.00</property>
@@ -625,7 +652,6 @@
     <property name="step_increment">0.05</property>
     <property name="page_increment">0.2</property>
   </object>
-
   <object class="GtkAdjustment" id="danmaku_opacity_adj">
     <property name="lower">0.01</property>
     <property name="upper">1.00</property>
@@ -633,7 +659,6 @@
     <property name="step_increment">0.05</property>
     <property name="page_increment">0.2</property>
   </object>
-
   <object class="GtkAdjustment" id="playback_speed_adj">
     <property name="lower">0.10</property>
     <property name="upper">5.00</property>
@@ -651,19 +676,19 @@
   <object class="GtkSizeGroup">
     <property name="mode">vertical</property>
     <widgets>
-      <widget name="_play_button" />
-      <widget name="progress_time_label" />
-      <widget name="video_scale" />
-      <widget name="duration_label" />
+      <widget name="_play_button"/>
+      <widget name="progress_time_label"/>
+      <widget name="video_scale"/>
+      <widget name="duration_label"/>
     </widgets>
   </object>
   <object class="GtkSizeGroup">
     <property name="mode">vertical</property>
     <widgets>
-      <widget name="_back_button" />
-      <widget name="network_speed_label_2" />
-      <widget name="_media_info_button" />
-      <widget name="_playlist_button" />
+      <widget name="_back_button"/>
+      <widget name="network_speed_label_2"/>
+      <widget name="_media_info_button"/>
+      <widget name="_playlist_button"/>
     </widgets>
   </object>
 </interface>

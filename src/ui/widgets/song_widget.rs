@@ -90,7 +90,6 @@ pub(crate) mod imp {
         type ParentType = gtk::ListBoxRow;
 
         fn class_init(klass: &mut Self::Class) {
-            StarToggle::ensure_type();
             klass.bind_template();
             klass.install_action_async(
                 "song.editm",

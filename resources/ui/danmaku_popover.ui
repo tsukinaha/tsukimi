@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="DanmakuPopover" parent="AdwBin">
+    <property name="margin-top">6</property>
+    <property name="margin-bottom">6</property>
+    <property name="margin-start">6</property>
+    <property name="margin-end">6</property>
+    <property name="child">
+      <object class="AdwNavigationView">
+        <child>
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Danmaku</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <property name="content">
+                  <object class="GtkBox">
+                    <property name="orientation">1</property>
+                    <property name="spacing">24</property>
+                    <child>
+                      <object class="AdwPreferencesGroup" id="danmaku_status_group">
+                        <property name="title" translatable="yes">Danmaku</property>
+                        <child type="header-suffix">
+                          <object class="GtkSwitch" id="danmaku_switch">
+                            <property name="active">false</property>
+                            <property name="sensitive">false</property>
+                            <property name="valign">3</property>
+                            <signal name="state-set" handler="on_danmaku_switch_state_set" swapped="True"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="danmaku_status_row">
+                            <property name="subtitle" translatable="yes">Danmaku disabled</property>
+                            <property name="subtitle-lines">2</property>
+                            <property name="subtitle-selectable">True</property>
+                            <child type="prefix">
+                              <object class="GtkStack" id="danmaku_status_stack">
+                                <property name="valign">fill</property>
+                                <property name="transition-type">crossfade</property>
+                                <child>
+                                  <object class="GtkStackPage">
+                                    <property name="name">icon</property>
+                                    <property name="child">
+                                      <object class="GtkImage" id="danmaku_status_icon">
+                                        <property name="pixel-size">24</property>
+                                        <property name="icon-name">minus-circle-outline-symbolic</property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkStackPage">
+                                    <property name="name">loading</property>
+                                    <property name="child">
+                                      <object class="AdwSpinner"/>
+                                    </property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <style>
+                              <class name="property"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup">
+                        <child>
+                          <object class="AdwButtonRow">
+                            <property name="start-icon-name">edit-find-symbolic</property>
+                            <property name="title" translatable="yes">Search Manually</property>
+                            <signal name="activated" handler="on_manual_search" swapped="yes"/>
+                            <style>
+                              <class name="suggested-action"/>
+                            </style>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="boxed-list-separate"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup">
+                        <property name="valign">end</property>
+                        <property name="vexpand">true</property>
+                        <child>
+                          <object class="AdwButtonRow">
+                            <property name="title" translatable="yes">Danmaku Settings</property>
+                            <property name="end-icon-name">go-next-symbolic</property>
+                            <property name="action-name">navigation.push</property>
+                            <property name="action-target">'settings'</property>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="boxed-list-separate"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Danmaku Settings</property>
+            <property name="tag">settings</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">1</property>
+                    <property name="spacing">24</property>
+                    <child>
+                      <object class="AdwPreferencesGroup">
+                        <property name="valign">1</property>
+                        <property name="vexpand">true</property>
+                        <child>
+                          <object class="AdwSpinRow" id="danmaku_opacity_spin">
+                            <property name="title" translatable="yes">Opacity</property>
+                            <property name="digits">2</property>
+                            <property name="adjustment">
+                              <object class="GtkAdjustment" id="danmaku_opacity">
+                                <property name="lower">0.1</property>
+                                <property name="upper">1</property>
+                                <property name="value">0.7</property>
+                                <property name="step-increment">0.01</property>
+                                <property name="page-increment">0.05</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSpinRow" id="danmaku_speed_spin">
+                            <property name="title" translatable="yes">Speed</property>
+                            <property name="digits">2</property>
+                            <property name="adjustment">
+                              <object class="GtkAdjustment">
+                                <property name="lower">0.1</property>
+                                <property name="upper">5</property>
+                                <property name="value">1</property>
+                                <property name="step-increment">0.05</property>
+                                <property name="page-increment">0.2</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSpinRow" id="font_size_spin">
+                            <property name="title" translatable="yes">Font Size</property>
+                            <property name="digits">0</property>
+                            <property name="adjustment">
+                              <object class="GtkAdjustment">
+                                <property name="lower">8</property>
+                                <property name="upper">96</property>
+                                <property name="value">24</property>
+                                <property name="step-increment">1</property>
+                                <property name="page-increment">4</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="DanmakuScaleRow" id="font_weight_row">
+                            <property name="title" translatable="yes">Font Weight</property>
+                            <property name="value">8</property>
+                            <property name="model">
+                              <object class="GtkStringList">
+                                <items>
+                                  <item translatable="yes">Thin</item>
+                                  <item translatable="yes">Ultralight</item>
+                                  <item translatable="yes">Light</item>
+                                  <item translatable="yes">Semilight</item>
+                                  <item translatable="yes">Book</item>
+                                  <item translatable="yes">Normal</item>
+                                  <item translatable="yes">Medium</item>
+                                  <item translatable="yes">Semibold</item>
+                                  <item translatable="yes">Bold</item>
+                                  <item translatable="yes">Ultrabold</item>
+                                  <item translatable="yes">Heavy</item>
+                                  <item translatable="yes">Ultraheavy</item>
+                                </items>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="DanmakuScaleRow" id="intensity_row">
+                            <property name="title" translatable="yes">Danmaku Intensity</property>
+                            <property name="value">1</property>
+                            <property name="model">
+                              <object class="GtkStringList">
+                                <items>
+                                  <item translatable="yes">Quarter</item>
+                                  <item translatable="yes">Half</item>
+                                  <item translatable="yes">Full</item>
+                                  <item translatable="yes">Allow Overlay</item>
+                                </items>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSpinRow" id="spacing_spin">
+                            <property name="title" translatable="yes">Spacing</property>
+                            <property name="subtitle" translatable="yes">N x Font Size</property>
+                            <property name="digits">2</property>
+                            <property name="adjustment">
+                              <object class="GtkAdjustment">
+                                <property name="lower">1</property>
+                                <property name="upper">5</property>
+                                <property name="value">1.5</property>
+                                <property name="step-increment">0.05</property>
+                                <property name="page-increment">0.2</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSpinRow" id="outline_spin">
+                            <property name="title" translatable="yes">Stroke Size</property>
+                            <property name="subtitle" translatable="yes">px</property>
+                            <property name="digits">1</property>
+                            <property name="adjustment">
+                              <object class="GtkAdjustment">
+                                <property name="lower">0</property>
+                                <property name="upper">5</property>
+                                <property name="value">1</property>
+                                <property name="step-increment">0.5</property>
+                                <property name="page-increment">1</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSpinRow" id="shadow_spin">
+                            <property name="title" translatable="yes">Shadow Offset</property>
+                            <property name="subtitle" translatable="yes">px</property>
+                            <property name="digits">1</property>
+                            <property name="adjustment">
+                              <object class="GtkAdjustment">
+                                <property name="lower">0</property>
+                                <property name="upper">5</property>
+                                <property name="value">1</property>
+                                <property name="step-increment">0.5</property>
+                                <property name="page-increment">1</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup">
+                        <child>
+                          <object class="AdwButtonRow">
+                            <property name="title" translatable="yes">Back</property>
+                            <property name="start-icon-name">go-previous-symbolic</property>
+                            <property name="action-name">navigation.pop</property>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="boxed-list-separate"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </property>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

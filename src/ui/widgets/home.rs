@@ -64,7 +64,6 @@ mod imp {
             self,
             WeakRef,
         },
-        prelude::StaticTypeExt,
         subclass::prelude::*,
     };
 
@@ -98,7 +97,6 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            HortuScrolled::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }

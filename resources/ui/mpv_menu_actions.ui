@@ -17,8 +17,8 @@
               <property name="row">0</property>
             </layout>
             <style>
-              <class name="circular" />
-              <class name="flat" />
+              <class name="circular"/>
+              <class name="flat"/>
             </style>
           </object>
         </child>
@@ -32,8 +32,8 @@
               <property name="row">0</property>
             </layout>
             <style>
-              <class name="circular" />
-              <class name="flat" />
+              <class name="circular"/>
+              <class name="flat"/>
             </style>
           </object>
         </child>
@@ -47,8 +47,8 @@
               <property name="row">0</property>
             </layout>
             <style>
-              <class name="circular" />
-              <class name="flat" />
+              <class name="circular"/>
+              <class name="flat"/>
             </style>
           </object>
         </child>

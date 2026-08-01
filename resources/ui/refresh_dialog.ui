@@ -11,7 +11,7 @@
         <child>
           <object class="AdwToolbarView">
             <child type="top">
-              <object class="AdwHeaderBar" />
+              <object class="AdwHeaderBar"/>
             </child>
             <child>
               <object class="AdwClamp">
@@ -29,7 +29,7 @@
                         <property name="margin-start">12</property>
                         <property name="label" translatable="yes">Replace All Metadata</property>
                         <style>
-                          <class name="accent" />
+                          <class name="accent"/>
                         </style>
                       </object>
                     </child>
@@ -38,7 +38,7 @@
                         <property name="margin-start">12</property>
                         <property name="label" translatable="yes">Replace All Images</property>
                         <style>
-                          <class name="accent" />
+                          <class name="accent"/>
                         </style>
                       </object>
                     </child>
@@ -50,7 +50,7 @@
                             <property name="start-icon-name">checkmark-small-symbolic</property>
                             <signal name="activated" handler="on_refresh" swapped="yes"/>
                             <style>
-                              <class name="suggested-action" />
+                              <class name="suggested-action"/>
                             </style>
                           </object>
                         </child>

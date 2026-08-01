@@ -144,6 +144,40 @@
       <default>75</default>
       <summary>Default volume</summary>
     </key>
+    <key name="mpv-danmaku-opacity" type="d">
+      <default>0.7</default>
+      <summary>Danmaku opacity</summary>
+    </key>
+    <key name="mpv-danmaku-speed-factor" type="d">
+      <default>1.0</default>
+      <summary>Danmaku speed factor</summary>
+    </key>
+    <key name="mpv-danmaku-font-size" type="d">
+      <default>24.0</default>
+      <summary>Danmaku font size</summary>
+    </key>
+    <key name="mpv-danmaku-font-weight" type="d">
+      <default>8.0</default>
+      <summary>Danmaku font weight index</summary>
+      <description>8 is bold</description>
+    </key>
+    <key name="mpv-danmaku-intensity" type="d">
+      <default>1.0</default>
+      <summary>Danmaku intensity index</summary>
+      <description>0: Quarter, 1: Half, 2: Full, 3: Allow Overlay</description>
+    </key>
+    <key name="mpv-danmaku-spacing-factor" type="d">
+      <default>1.5</default>
+      <summary>Danmaku line spacing factor</summary>
+    </key>
+    <key name="mpv-danmaku-outline-size" type="d">
+      <default>1.0</default>
+      <summary>Danmaku outline size</summary>
+    </key>
+    <key name="mpv-danmaku-shadow-offset" type="d">
+      <default>1.0</default>
+      <summary>Danmaku shadow offset</summary>
+    </key>
     <key name="mpv-hwdec" type="i">
       <default>0</default>
       <summary>Hardware Decoding</summary>
@@ -257,6 +291,10 @@
     <key type="s" name="accounts">
       <summary>List of the accounts</summary>
       <default>'[]'</default>
+    </key>
+    <key type="s" name="danmaku-cache-map">
+      <summary>Cached manual danmaku matches</summary>
+      <default>'{}'</default>
     </key>
     <key type="d" name="danmaku-opacity">
       <summary>Danmaku opacity</summary>

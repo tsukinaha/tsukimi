@@ -128,9 +128,6 @@ pub(crate) mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            HortuScrolled::ensure_type();
-            HorbuScrolled::ensure_type();
-            ItemActionsBox::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }

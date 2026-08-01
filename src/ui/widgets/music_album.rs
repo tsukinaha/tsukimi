@@ -67,7 +67,6 @@ pub(crate) mod imp {
             widgets::{
                 hortu_scrolled::HortuScrolled,
                 item_actionbox::ItemActionsBox,
-                star_toggle::StarToggle,
             },
         },
         utils::spawn_g_timeout,
@@ -107,7 +106,6 @@ pub(crate) mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            StarToggle::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }

@@ -1,5 +1,3 @@
-use gtk::glib::prelude::StaticTypeExt;
-
 pub mod account_add;
 pub mod account_settings;
 pub mod action_row;
@@ -54,9 +52,3 @@ pub mod window;
 
 pub use episode_switcher::EpisodeSwitcher;
 pub use utils::GlobalToast;
-
-pub fn init() {
-    lazy_diff_view::LazyDiffView::ensure_type();
-    menu_info::MenuInfo::ensure_type();
-    hover_scale::HoverScale::ensure_type();
-}

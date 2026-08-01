@@ -67,10 +67,10 @@
             <property name="justify">center</property>
             <property name="ellipsize">middle</property>
             <attributes>
-              <attribute name="scale" value="0.9" />
+              <attribute name="scale" value="0.9"/>
             </attributes>
             <style>
-              <class name="dimmed" />
+              <class name="dimmed"/>
             </style>
           </object>
         </child>
@@ -86,7 +86,7 @@
                 <property name="tooltip_text" translatable="yes">Copy Image To Clipboard</property>
                 <signal name="clicked" handler="on_copy" swapped="true"/>
                 <style>
-                  <class name="flat" />
+                  <class name="flat"/>
                 </style>
               </object>
             </child>
@@ -98,7 +98,7 @@
                 <property name="tooltip_text" translatable="yes">View Image</property>
                 <signal name="clicked" handler="on_view" swapped="true"/>
                 <style>
-                  <class name="flat" />
+                  <class name="flat"/>
                 </style>
               </object>
             </child>
@@ -109,14 +109,14 @@
                 <property name="tooltip_text" translatable="yes">Edit</property>
                 <property name="menu-model">edit_menu</property>
                 <style>
-                  <class name="flat" />
+                  <class name="flat"/>
                 </style>
               </object>
             </child>
           </object>
         </child>
         <style>
-          <class name="card" />
+          <class name="card"/>
         </style>
       </object>
     </child>

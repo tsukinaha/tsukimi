@@ -60,7 +60,7 @@ impl LoadToken {
 }
 
 #[derive(Clone)]
-enum ImageSource {
+pub enum PictureSource {
     Item {
         id: String,
         image_type: String,
@@ -72,7 +72,7 @@ enum ImageSource {
     },
 }
 
-pub(crate) mod imp {
+pub mod imp {
     use std::cell::{
         Cell,
         RefCell,
@@ -152,28 +152,75 @@ glib::wrapper! {
 
 impl PictureLoader {
     pub fn new(id: &str, image_type: &str, tag: Option<String>) -> Self {
-        glib::Object::builder()
-            .property("id", id)
-            .property("imagetype", image_type)
-            .property("tag", tag)
-            .build()
+        Self::new_for_source(PictureSource::Item {
+            id: id.to_string(),
+            image_type: image_type.to_string(),
+            tag,
+        })
     }
 
     pub fn new_for_url(image_type: &str, url: &str) -> Self {
-        glib::Object::builder()
-            .property("id", "")
-            .property("imagetype", image_type)
-            .property("url", url)
-            .build()
+        Self::new_for_source(PictureSource::Url {
+            image_type: image_type.to_string(),
+            url: url.to_string(),
+        })
+    }
+
+    pub(crate) fn new_for_source(source: PictureSource) -> Self {
+        match source {
+            PictureSource::Item {
+                id,
+                image_type,
+                tag,
+            } => glib::Object::builder()
+                .property("id", id)
+                .property("imagetype", image_type)
+                .property("tag", tag)
+                .build(),
+            PictureSource::Url { image_type, url } => glib::Object::builder()
+                .property("id", "")
+                .property("imagetype", image_type)
+                .property("url", url)
+                .build(),
+        }
     }
 
     pub fn reload(&self, id: &str, image_type: &str, tag: Option<String>) {
+        self.reload_source(PictureSource::Item {
+            id: id.to_string(),
+            image_type: image_type.to_string(),
+            tag,
+        });
+    }
+
+    pub fn reload_for_url(&self, image_type: &str, url: &str) {
+        self.reload_source(PictureSource::Url {
+            image_type: image_type.to_string(),
+            url: url.to_string(),
+        });
+    }
+
+    pub fn reload_source(&self, source: PictureSource) {
         self.reset_view();
-        self.set_id(id);
-        self.set_imagetype(image_type);
-        self.set_tag(tag);
-        self.set_url(None::<String>);
-        self.load_source(self.image_source());
+        match &source {
+            PictureSource::Item {
+                id,
+                image_type,
+                tag,
+            } => {
+                self.set_id(id.as_str());
+                self.set_imagetype(image_type.as_str());
+                self.set_tag(tag.clone());
+                self.set_url(None::<String>);
+            }
+            PictureSource::Url { image_type, url } => {
+                self.set_id("");
+                self.set_imagetype(image_type.as_str());
+                self.set_tag(None::<String>);
+                self.set_url(Some(url.as_str()));
+            }
+        }
+        self.load_source(source);
     }
 
     pub fn reset(&self) {
@@ -202,9 +249,9 @@ impl PictureLoader {
         }
     }
 
-    fn load_source(&self, source: ImageSource) {
+    fn load_source(&self, source: PictureSource) {
         let load_token = self.new_request();
-        if let ImageSource::Url { image_type, .. } = &source {
+        if let PictureSource::Url { image_type, .. } = &source {
             self.configure_picture_size(image_type);
         }
         let weak_self = self.downgrade();
@@ -250,15 +297,16 @@ impl PictureLoader {
         };
         self.imp().picture.set_width_request(size.0);
         self.imp().picture.set_height_request(size.1);
-        self.imp().picture.set_content_fit(gtk::ContentFit::Contain);
     }
 
-    async fn load_paintable(load_token: LoadToken, source: ImageSource) -> Result<gdk::Paintable> {
+    async fn load_paintable(
+        load_token: LoadToken, source: PictureSource,
+    ) -> Result<gdk::Paintable> {
         match source {
-            ImageSource::Url { url, .. } => {
+            PictureSource::Url { url, .. } => {
                 Self::load_file(gio::File::for_uri(&url), &load_token).await
             }
-            ImageSource::Item {
+            PictureSource::Item {
                 id,
                 image_type,
                 tag,
@@ -313,14 +361,14 @@ impl PictureLoader {
         }
     }
 
-    fn image_source(&self) -> ImageSource {
+    fn image_source(&self) -> PictureSource {
         if let Some(url) = self.url() {
-            ImageSource::Url {
+            PictureSource::Url {
                 image_type: self.imagetype(),
                 url,
             }
         } else {
-            ImageSource::Item {
+            PictureSource::Item {
                 id: self.id(),
                 image_type: self.imagetype(),
                 tag: self.tag(),

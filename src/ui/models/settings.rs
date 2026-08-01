@@ -77,6 +77,68 @@ impl Settings {
     const KEY_WINDOW_HEIGHT: &'static str = "window-height"; // i32
     const KEY_IS_MAXIMIZED: &'static str = "is-maximized"; // bool
     const KEY_IS_FULLSCREEN: &'static str = "is-fullscreen"; // bool
+    const KEY_MPV_DANMAKU_ENABLED: &'static str = "is-danmaku-enabled";
+    const KEY_MPV_DANMAKU_OPACITY: &'static str = "mpv-danmaku-opacity";
+    const KEY_MPV_DANMAKU_SPEED_FACTOR: &'static str = "mpv-danmaku-speed-factor";
+    const KEY_MPV_DANMAKU_FONT_SIZE: &'static str = "mpv-danmaku-font-size";
+    const KEY_MPV_DANMAKU_FONT_WEIGHT: &'static str = "mpv-danmaku-font-weight";
+    const KEY_MPV_DANMAKU_INTENSITY: &'static str = "mpv-danmaku-intensity";
+    const KEY_MPV_DANMAKU_SPACING_FACTOR: &'static str = "mpv-danmaku-spacing-factor";
+    const KEY_MPV_DANMAKU_OUTLINE_SIZE: &'static str = "mpv-danmaku-outline-size";
+    const KEY_MPV_DANMAKU_SHADOW_OFFSET: &'static str = "mpv-danmaku-shadow-offset";
+    const KEY_DANMAKU_CACHE_MAP: &'static str = "danmaku-cache-map";
+
+    fn bind_setting(&self, key: &str, object: &impl IsA<glib::Object>, property: &str) {
+        self.0.get_ref().bind(key, object, property).build();
+    }
+
+    pub fn bind_mpv_danmaku_enabled(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_ENABLED, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_opacity(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_OPACITY, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_speed_factor(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_SPEED_FACTOR, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_font_size(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_FONT_SIZE, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_font_weight(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_FONT_WEIGHT, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_intensity(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_INTENSITY, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_spacing_factor(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_SPACING_FACTOR, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_outline_size(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_OUTLINE_SIZE, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_shadow_offset(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_SHADOW_OFFSET, object, property);
+    }
+
+    pub fn mpv_danmaku_enabled(&self) -> bool {
+        self.boolean(Self::KEY_MPV_DANMAKU_ENABLED)
+    }
+
+    pub fn danmaku_cache_map(&self) -> String {
+        self.string(Self::KEY_DANMAKU_CACHE_MAP).to_string()
+    }
+
+    pub fn set_danmaku_cache_map(&self, value: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_DANMAKU_CACHE_MAP, value)
+    }
 
     pub fn gpu_context(&self) -> i32 {
         self.int(Self::KEY_MPV_GPU_CONTEXT)

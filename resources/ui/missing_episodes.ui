@@ -60,8 +60,8 @@
                                     <property name="label" translatable="yes">Specials</property>
                                     <signal name="toggled" handler="on_specials_check_toggled" swapped="yes"/>
                                     <style>
-                                      <class name="heading" />
-                                      <class name="accent" />
+                                      <class name="heading"/>
+                                      <class name="accent"/>
                                     </style>
                                   </object>
                                 </child>
@@ -72,8 +72,8 @@
                                     <property name="label" translatable="yes">Upcoming</property>
                                     <signal name="toggled" handler="on_upcoming_check_toggled" swapped="yes"/>
                                     <style>
-                                      <class name="heading" />
-                                      <class name="accent" />
+                                      <class name="heading"/>
+                                      <class name="accent"/>
                                     </style>
                                   </object>
                                 </child>

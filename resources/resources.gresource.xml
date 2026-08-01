@@ -39,6 +39,9 @@
     <file preprocess="xml-stripblanks" alias="speedometer5-symbolic.svg">icons/scalable/actions/speedometer5-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="seek-forward-large-symbolic.svg">icons/scalable/actions/seek-forward-large-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="seek-backward-large-symbolic.svg">icons/scalable/actions/seek-backward-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="cross-small-circle-outline-symbolic.svg">icons/scalable/actions/cross-small-circle-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="check-round-outline-symbolic.svg">icons/scalable/actions/check-round-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="question-round-outline-symbolic.svg">icons/scalable/actions/question-round-outline-symbolic.svg</file>
   </gresource>
   <gresource prefix="/moe/tsuna/tsukimi/">
     <file compressed="true">style.css</file>
@@ -98,5 +101,8 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/filter_search_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/volume_bar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/episode_switcher.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/danmaku_popover.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/danmaku_scale_row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/danmaku_search_dialog.ui</file>
   </gresource>
 </gresources>

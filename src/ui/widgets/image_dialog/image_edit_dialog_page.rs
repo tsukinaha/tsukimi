@@ -61,7 +61,6 @@ mod imp {
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
-            ImageDropRow::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }

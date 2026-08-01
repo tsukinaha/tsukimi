@@ -40,10 +40,10 @@
               </object>
             </child>
             <child>
-                <object class="GtkBox" id="cover_container">
+              <object class="GtkBox" id="cover_container">
                 <property name="halign">end</property>
                 <property name="valign">center</property>
-                </object>
+              </object>
             </child>
           </object>
         </child>

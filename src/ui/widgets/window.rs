@@ -31,15 +31,8 @@ mod imp {
             },
             provider::tu_object::TuObject,
             widgets::{
-                content_viewer::MediaContentViewer,
-                home::HomePage,
-                image_dialog::ImageDialog,
-                item_actionbox::ItemActionsBox,
-                liked::LikedPage,
                 media_viewer::MediaViewer,
                 player_toolbar::PlayerToolbarBox,
-                search::SearchPage,
-                theme_switcher::ThemeSwitcher,
                 tu_overview_item::imp::ViewGroup,
                 utils::TuItemBuildExt,
             },
@@ -132,17 +125,6 @@ mod imp {
         type ParentType = adw::ApplicationWindow;
 
         fn class_init(klass: &mut Self::Class) {
-            PlayerToolbarBox::ensure_type();
-            ItemActionsBox::ensure_type();
-            MediaContentViewer::ensure_type();
-            MediaViewer::ensure_type();
-            ImageDialog::ensure_type();
-            HomePage::ensure_type();
-            SearchPage::ensure_type();
-            LikedPage::ensure_type();
-            MPVPage::ensure_type();
-            MPVControlSidebar::ensure_type();
-            ThemeSwitcher::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("win.relogin", None, move |window, _action, _parameter| {

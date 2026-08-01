@@ -26,7 +26,7 @@
             </child>
             <style>
               <class name="volume-bar"/>
-              <class name="osd" />
+              <class name="osd"/>
             </style>
           </object>
         </child>

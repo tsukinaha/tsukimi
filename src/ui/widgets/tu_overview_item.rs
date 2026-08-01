@@ -55,11 +55,7 @@ pub mod imp {
 
     use crate::ui::{
         provider::tu_item::TuItem,
-        widgets::{
-            hover_scale::HoverScale,
-            picture_loader::PictureLoader,
-            tu_item::TuItemAction,
-        },
+        widgets::tu_item::TuItemAction,
     };
 
     // Object holding the state
@@ -99,8 +95,6 @@ pub mod imp {
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
-            HoverScale::ensure_type();
-            PictureLoader::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }

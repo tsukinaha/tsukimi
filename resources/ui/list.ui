@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwNavigationPage" class="ListPage">
-    <property name="title" >Tsukimi</property>
+    <property name="title">Tsukimi</property>
     <child>
       <object class="AdwToolbarView">
         <child type="top">
@@ -19,8 +19,8 @@
               </object>
             </child>
             <style>
-              <class name="undershoot-start" />
-              <class name="undershoot-end" />
+              <class name="undershoot-start"/>
+              <class name="undershoot-end"/>
             </style>
           </object>
         </child>

@@ -115,7 +115,7 @@
                                   </object>
                                 </child>
                                 <style>
-                                  <class name="flat" />
+                                  <class name="flat"/>
                                 </style>
                               </object>
                             </child>
@@ -141,8 +141,8 @@
                                                 <property name="valign">start</property>
                                                 <property name="selection-mode">none</property>
                                                 <style>
-                                                  <class name="logo" />
-                                                  <class name="boxed-list" />
+                                                  <class name="logo"/>
+                                                  <class name="boxed-list"/>
                                                 </style>
                                               </object>
                                             </child>
@@ -168,8 +168,8 @@
                                             <property name="valign">center</property>
                                             <signal name="clicked" handler="on_add_server" swapped="yes"/>
                                             <style>
-                                              <class name="suggested-action" />
-                                              <class name="pill" />
+                                              <class name="suggested-action"/>
+                                              <class name="pill"/>
                                             </style>
                                           </object>
                                         </property>
@@ -179,7 +179,6 @@
                                 </child>
                               </object>
                             </child>
-
                           </object>
                         </property>
                       </object>
@@ -222,7 +221,7 @@
                                             <child>
                                               <object class="GtkGestureClick">
                                                 <property name="button">2</property>
-                                                <signal name="released" handler="avatar_pressed_cb" swapped="true" />
+                                                <signal name="released" handler="avatar_pressed_cb" swapped="true"/>
                                               </object>
                                             </child>
                                           </object>
@@ -233,7 +232,7 @@
                                             <property name="icon-name">applications-system-symbolic</property>
                                             <property name="action-name">setting.account</property>
                                             <style>
-                                              <class name="flat" />
+                                              <class name="flat"/>
                                             </style>
                                           </object>
                                         </child>
@@ -278,7 +277,7 @@
                             </property>
                             <property name="content">
                               <object class="AdwNavigationPage" id="navipage">
-                                <property name="title" translatable="yes"></property>
+                                <property name="title" translatable="yes"/>
                                 <property name="child">
                                   <object class="AdwToolbarView">
                                     <property name="bottom-bar-style">raised</property>
@@ -314,7 +313,7 @@
                                       </object>
                                     </child>
                                     <child type="bottom">
-                                      <object class="PlayerToolbarBox" id="player_toolbar_box" />
+                                      <object class="PlayerToolbarBox" id="player_toolbar_box"/>
                                     </child>
                                     <property name="content">
                                       <object class="GtkOverlay">
@@ -323,7 +322,7 @@
                                             <property name="hexpand">True</property>
                                             <property name="valign">start</property>
                                             <style>
-                                              <class name="osd" />
+                                              <class name="osd"/>
                                             </style>
                                           </object>
                                         </child>
@@ -389,7 +388,7 @@
                             <property name="sidebar">
                               <object class="AdwNavigationPage">
                                 <style>
-                                  <class name="osd" />
+                                  <class name="osd"/>
                                 </style>
                                 <property name="title" translatable="yes">Playlist</property>
                                 <property name="child">
@@ -403,7 +402,7 @@
                                           </object>
                                         </property>
                                         <style>
-                                          <class name="flat" />
+                                          <class name="flat"/>
                                         </style>
                                       </object>
                                     </child>
@@ -425,14 +424,14 @@
                                                     <property name="single-click-activate">True</property>
                                                     <signal name="activate" handler="on_playlist_item_activated" swapped="yes"/>
                                                     <style>
-                                                      <class name="vertical-listview" />
-                                                      <class name="osd" />
+                                                      <class name="vertical-listview"/>
+                                                      <class name="osd"/>
                                                     </style>
                                                   </object>
                                                 </child>
                                                 <style>
-                                                  <class name="undershoot-start" />
-                                                  <class name="undershoot-end" />
+                                                  <class name="undershoot-start"/>
+                                                  <class name="undershoot-end"/>
                                                 </style>
                                               </object>
                                             </property>
@@ -451,7 +450,7 @@
                                       </object>
                                     </property>
                                     <style>
-                                      <class name="osd" />
+                                      <class name="osd"/>
                                     </style>
                                   </object>
                                 </property>
@@ -486,7 +485,7 @@
               </object>
             </child>
             <style>
-              <class name="home-carousel" />
+              <class name="home-carousel"/>
             </style>
           </object>
         </child>

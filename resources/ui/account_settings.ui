@@ -100,7 +100,7 @@
                       <object class="GtkColorDialog"/>
                     </property>
                     <style>
-                      <class name="flat" />
+                      <class name="flat"/>
                     </style>
                   </object>
                 </child>
@@ -111,57 +111,57 @@
                 <property name="title" translatable="yes">Hide Sidebar</property>
               </object>
             </child>
-	            <child>
-	              <object class="AdwSwitchRow" id="selectlastcontrol">
-	                <property name="title" translatable="yes">Auto Select Last Server</property>
-	              </object>
-	            </child>
-	            <child>
-	              <object class="AdwActionRow">
-	                <property name="title" translatable="yes">Text Display</property>
-	                <child type="suffix">
-	                  <object class="AdwToggleGroup" id="text_display_group">
-	                    <property name="valign">center</property>
-	                    <child>
-	                      <object class="AdwToggle">
-	                        <property name="label" translatable="yes">Compact</property>
-	                        <property name="name">compact</property>
-	                      </object>
-	                    </child>
-	                    <child>
-	                      <object class="AdwToggle">
-	                        <property name="label" translatable="yes">Full</property>
-	                        <property name="name">full</property>
-	                      </object>
-	                    </child>
-	                  </object>
-	                </child>
-	              </object>
-	            </child>
-	            <child>
-	              <object class="AdwActionRow">
-	                <property name="title" translatable="yes">Card Style</property>
-	                <child type="suffix">
-	                  <object class="AdwToggleGroup" id="card_style_group">
-	                    <property name="valign">center</property>
-	                    <child>
-	                      <object class="AdwToggle">
-	                        <property name="label" translatable="yes">Integrated</property>
-	                        <property name="name">integrated</property>
-	                      </object>
-	                    </child>
-	                    <child>
-	                      <object class="AdwToggle">
-	                        <property name="label" translatable="yes">Separated</property>
-	                        <property name="name">separated</property>
-	                      </object>
-	                    </child>
-	                  </object>
-	                </child>
-	              </object>
-	            </child>
-	          </object>
-	        </child>
+            <child>
+              <object class="AdwSwitchRow" id="selectlastcontrol">
+                <property name="title" translatable="yes">Auto Select Last Server</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Text Display</property>
+                <child type="suffix">
+                  <object class="AdwToggleGroup" id="text_display_group">
+                    <property name="valign">center</property>
+                    <child>
+                      <object class="AdwToggle">
+                        <property name="label" translatable="yes">Compact</property>
+                        <property name="name">compact</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwToggle">
+                        <property name="label" translatable="yes">Full</property>
+                        <property name="name">full</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Card Style</property>
+                <child type="suffix">
+                  <object class="AdwToggleGroup" id="card_style_group">
+                    <property name="valign">center</property>
+                    <child>
+                      <object class="AdwToggle">
+                        <property name="label" translatable="yes">Integrated</property>
+                        <property name="name">integrated</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwToggle">
+                        <property name="label" translatable="yes">Separated</property>
+                        <property name="name">separated</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
         <child>
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Home Page</property>
@@ -224,7 +224,7 @@
                     <property name="valign">center</property>
                     <property name="action-name">setting.backgroundclear</property>
                     <style>
-                      <class name="flat" />
+                      <class name="flat"/>
                     </style>
                   </object>
                 </child>
@@ -439,7 +439,7 @@
                       </object>
                     </property>
                     <style>
-                      <class name="flat" />
+                      <class name="flat"/>
                     </style>
                   </object>
                 </child>
@@ -459,7 +459,7 @@
           <object class="AdwHeaderBar">
             <property name="show-end-title-buttons">false</property>
             <style>
-              <class name="flat" />
+              <class name="flat"/>
             </style>
           </object>
         </child>
@@ -481,7 +481,7 @@
                         <property name="icon-name">list-add-symbolic</property>
                         <signal name="clicked" handler="preferred_add_button_cb" swapped="yes"/>
                         <style>
-                          <class name="flat" />
+                          <class name="flat"/>
                         </style>
                       </object>
                     </property>
@@ -505,7 +505,7 @@
                                   <object class="GtkListBox" id="descriptors_listbox">
                                     <property name="selection-mode">none</property>
                                     <style>
-                                      <class name="boxed-list" />
+                                      <class name="boxed-list"/>
                                     </style>
                                   </object>
                                 </child>
@@ -516,7 +516,7 @@
                                     <property name="justify">left</property>
                                     <property name="halign">start</property>
                                     <style>
-                                      <class name="dimmed" />
+                                      <class name="dimmed"/>
                                     </style>
                                   </object>
                                 </child>
@@ -524,7 +524,6 @@
                             </property>
                           </object>
                         </child>
-
                         <child>
                           <object class="GtkStackPage">
                             <property name="name">empty</property>
@@ -574,7 +573,7 @@
                 <property name="receives-default">True</property>
                 <property name="action-name">version.add-prefer</property>
                 <style>
-                  <class name="suggested-action" />
+                  <class name="suggested-action"/>
                 </style>
               </object>
             </child>
@@ -597,7 +596,7 @@
                     <child>
                       <object class="AdwComboRow" id="descriptor_type_comborow">
                         <property name="title" translatable="yes">Descriptor Type</property>
-                        <signal name="notify::selected-item" handler="on_descriptor_type_changed_comborow" swapped="yes" />
+                        <signal name="notify::selected-item" handler="on_descriptor_type_changed_comborow" swapped="yes"/>
                         <property name="model">
                           <object class="GtkStringList">
                             <items>
@@ -624,7 +623,7 @@
                         <property name="justify">left</property>
                         <property name="halign">start</property>
                         <style>
-                          <class name="dimmed" />
+                          <class name="dimmed"/>
                         </style>
                       </object>
                     </child>
@@ -635,7 +634,7 @@
                         <property name="justify">left</property>
                         <property name="halign">start</property>
                         <style>
-                          <class name="dimmed" />
+                          <class name="dimmed"/>
                         </style>
                       </object>
                     </child>
@@ -647,7 +646,7 @@
                         <property name="halign">start</property>
                         <property name="visible">False</property>
                         <style>
-                          <class name="dimmed" />
+                          <class name="dimmed"/>
                         </style>
                       </object>
                     </child>
@@ -684,7 +683,7 @@
                 <property name="receives-default">True</property>
                 <property name="action-name">version.edit-prefer</property>
                 <style>
-                  <class name="suggested-action" />
+                  <class name="suggested-action"/>
                 </style>
               </object>
             </child>
@@ -707,7 +706,7 @@
                     <child>
                       <object class="AdwComboRow" id="descriptor_type_comborow_edit">
                         <property name="title" translatable="yes">Descriptor Type</property>
-                        <signal name="notify::selected-item" handler="on_descriptor_type_changed_comborow_edit" swapped="yes" />
+                        <signal name="notify::selected-item" handler="on_descriptor_type_changed_comborow_edit" swapped="yes"/>
                         <property name="model">
                           <object class="GtkStringList">
                             <items>
@@ -734,7 +733,7 @@
                         <property name="justify">left</property>
                         <property name="halign">start</property>
                         <style>
-                          <class name="dimmed" />
+                          <class name="dimmed"/>
                         </style>
                       </object>
                     </child>
@@ -745,7 +744,7 @@
                         <property name="justify">left</property>
                         <property name="halign">start</property>
                         <style>
-                          <class name="dimmed" />
+                          <class name="dimmed"/>
                         </style>
                       </object>
                     </child>
@@ -757,7 +756,7 @@
                         <property name="halign">start</property>
                         <property name="visible">False</property>
                         <style>
-                          <class name="dimmed" />
+                          <class name="dimmed"/>
                         </style>
                       </object>
                     </child>

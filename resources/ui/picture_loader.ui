@@ -2,7 +2,7 @@
 <interface>
   <template parent="AdwBin" class="PictureLoader">
     <style>
-      <class name="picture-loader" />
+      <class name="picture-loader"/>
     </style>
     <child>
       <object class="GtkOverlay" id="overlay">
@@ -38,12 +38,12 @@
                 <property name="icon-name">image-missing-symbolic</property>
                 <property name="icon-size">GTK_ICON_SIZE_LARGE</property>
                 <style>
-                  <class name="accent" />
+                  <class name="accent"/>
                 </style>
               </object>
             </child>
             <style>
-              <class name="card" />
+              <class name="card"/>
             </style>
           </object>
         </child>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template parent="AdwNavigationPage" class="ServerPanel">
-    <property name="title" >Tsukimi</property>
+    <property name="title">Tsukimi</property>
     <child>
       <object class="AdwToolbarView">
         <child>
@@ -31,12 +31,12 @@
                             <property name="spacing">20</property>
                             <child>
                               <object class="GtkLabel" id="server_title">
-                                <property name="label" translatable="yes"></property>
+                                <property name="label" translatable="yes"/>
                                 <property name="halign">start</property>
                                 <property name="valign">start</property>
                                 <property name="ellipsize">middle</property>
                                 <style>
-                                  <class name="title-2" />
+                                  <class name="title-2"/>
                                 </style>
                               </object>
                             </child>
@@ -47,7 +47,7 @@
                                 <property name="tooltip-text" translatable="yes">Restart Server</property>
                                 <signal name="clicked" handler="on_restart" swapped="yes"/>
                                 <style>
-                                  <class name="accent" />
+                                  <class name="accent"/>
                                 </style>
                               </object>
                             </child>
@@ -58,7 +58,7 @@
                                 <property name="tooltip-text" translatable="yes">Shutdown Server</property>
                                 <signal name="clicked" handler="on_shutdown" swapped="yes"/>
                                 <style>
-                                  <class name="accent" />
+                                  <class name="accent"/>
                                 </style>
                               </object>
                             </child>
@@ -66,10 +66,10 @@
                         </child>
                         <child>
                           <object class="GtkLabel" id="server_version">
-                            <property name="label" translatable="yes"></property>
+                            <property name="label" translatable="yes"/>
                             <property name="halign">start</property>
                             <style>
-                              <class name="dimmed" />
+                              <class name="dimmed"/>
                             </style>
                           </object>
                         </child>

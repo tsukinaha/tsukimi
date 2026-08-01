@@ -29,6 +29,5 @@ jobs:
 
       - name: Lint
         run: |
-          echo "testing" > secret/key
           cargo +nightly fmt --check
           cargo clippy --no-deps --release --all-targets

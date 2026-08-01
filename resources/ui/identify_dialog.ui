@@ -62,7 +62,7 @@
                                                 <property name="subtitle" translatable="yes">Loading...</property>
                                                 <property name="subtitle-selectable">True</property>
                                                 <style>
-                                                  <class name="property" />
+                                                  <class name="property"/>
                                                 </style>
                                               </object>
                                             </child>
@@ -91,11 +91,11 @@
                                           <object class="AdwPreferencesGroup">
                                             <child>
                                               <object class="AdwButtonRow">
-                                                <signal name="activated" handler="on_search_button_clicked" swapped="yes" />
+                                                <signal name="activated" handler="on_search_button_clicked" swapped="yes"/>
                                                 <property name="title" translatable="yes">Search</property>
                                                 <property name="start-icon-name">system-search-symbolic</property>
                                                 <style>
-                                                  <class name="suggested-action" />
+                                                  <class name="suggested-action"/>
                                                 </style>
                                               </object>
                                             </child>

@@ -37,7 +37,7 @@
                         <property name="child">
                           <object class="AdwToolbarView">
                             <child type="top">
-                              <object class="AdwHeaderBar" />
+                              <object class="AdwHeaderBar"/>
                             </child>
                             <child>
                               <object class="GtkScrolledWindow">
@@ -59,8 +59,8 @@
                                             <property name="title" translatable="yes">Not Available</property>
                                             <property name="subtitle" translatable="yes">This page is READ-ONLY, because you have no permission to modify it.</property>
                                             <style>
-                                              <class name="property" />
-                                              <class name="error" />
+                                              <class name="property"/>
+                                              <class name="error"/>
                                             </style>
                                           </object>
                                         </child>
@@ -69,7 +69,7 @@
                                             <property name="label" translatable="yes">Images</property>
                                             <property name="halign">start</property>
                                             <style>
-                                              <class name="title-4" />
+                                              <class name="title-4"/>
                                             </style>
                                           </object>
                                         </child>
@@ -157,7 +157,7 @@
                                                 <property name="label" translatable="yes">BackDrops</property>
                                                 <property name="halign">start</property>
                                                 <style>
-                                                  <class name="title-4" />
+                                                  <class name="title-4"/>
                                                 </style>
                                               </object>
                                             </child>
@@ -167,7 +167,7 @@
                                                 <property name="margin-end">6</property>
                                                 <property name="margin-bottom">6</property>
                                                 <property name="icon-name">system-search-symbolic</property>
-                                                <signal name="clicked" handler="on_backdrop_search_clicked" swapped="yes" />
+                                                <signal name="clicked" handler="on_backdrop_search_clicked" swapped="yes"/>
                                                 <style>
                                                   <class name="circular"/>
                                                   <class name="smaller"/>
@@ -180,7 +180,7 @@
                                                 <property name="margin-end">6</property>
                                                 <property name="margin-bottom">6</property>
                                                 <property name="icon-name">list-add-symbolic</property>
-                                                <signal name="clicked" handler="on_backdrop_add_clicked" swapped="yes" />
+                                                <signal name="clicked" handler="on_backdrop_add_clicked" swapped="yes"/>
                                                 <style>
                                                   <class name="circular"/>
                                                   <class name="smaller"/>

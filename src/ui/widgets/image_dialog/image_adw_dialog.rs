@@ -82,7 +82,6 @@ mod imp {
         type ParentType = adw::Dialog;
 
         fn class_init(klass: &mut Self::Class) {
-            ImageInfoCard::ensure_type();
             klass.bind_template();
             klass.bind_template_instance_callbacks();
         }
