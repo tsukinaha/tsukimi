@@ -141,11 +141,7 @@ mod imp {
                 },
             );
             klass.install_action("win.toggle-fullscreen", None, |obj, _, _| {
-                if obj.is_fullscreen() {
-                    obj.unfullscreen();
-                } else {
-                    obj.fullscreen();
-                }
+                obj.toggle_fullscreen();
             });
             klass.install_action("win.search", None, |obj, _, _| {
                 obj.searchpage();
@@ -802,21 +798,29 @@ impl Window {
         self.imp().stack.visible_child_name() == Some("mpv".into())
     }
 
+    pub fn toggle_fullscreen(&self) {
+        if self.is_fullscreen() {
+            self.unfullscreen();
+        } else {
+            self.fullscreen();
+        }
+    }
+
     #[template_callback]
-    fn key_pressed_cb(&self, key: u32, _code: u32, state: gtk::gdk::ModifierType) -> bool {
+    fn key_pressed_cb(
+        &self, key: gtk::gdk::Key, _code: u32, state: gtk::gdk::ModifierType,
+    ) -> bool {
         if self.is_on_mpv_stack() {
-            self.imp().mpvnav.key_pressed_cb(key, state);
-            if self.imp().mpv_view.shows_sidebar() {
-                return false;
-            }
-            return true;
+            return self.imp().mpvnav.key_pressed_cb(key, state);
         }
 
         false
     }
 
     #[template_callback]
-    fn key_released_cb(&self, key: u32, _code: u32, state: gtk::gdk::ModifierType) {
+    fn key_released_cb(
+        &self, key: gtk::gdk::Key, _code: u32, state: gtk::gdk::ModifierType,
+    ) {
         if self.is_on_mpv_stack() {
             self.imp().mpvnav.key_released_cb(key, state);
         }
