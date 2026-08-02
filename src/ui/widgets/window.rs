@@ -18,7 +18,6 @@ mod imp {
     use gtk::{
         CompositeTemplate,
         glib,
-        prelude::*,
         subclass::prelude::*,
     };
 

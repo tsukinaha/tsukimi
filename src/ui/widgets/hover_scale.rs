@@ -42,6 +42,7 @@ mod imp {
 
         pub cursor_nx: Cell<f32>,
         pub cursor_ny: Cell<f32>,
+        pub pointer_inside: Cell<bool>,
     }
 
     #[glib::object_subclass]
@@ -79,19 +80,7 @@ mod imp {
                 #[weak]
                 obj,
                 move |_, x, y| {
-                    let imp = obj.imp();
-                    let w = obj.width() as f64;
-                    let h = obj.height() as f64;
-                    if w > 0.0 && h > 0.0 {
-                        imp.cursor_nx.set((x / w - 0.5) as f32);
-                        imp.cursor_ny.set((y / h - 0.5) as f32);
-                    }
-                    let Some(animation) = imp.animation() else {
-                        return;
-                    };
-                    animation.set_value_from(animation.value());
-                    animation.set_value_to(1.0);
-                    animation.play();
+                    obj.imp().update_pointer(x, y);
                 }
             ));
 
@@ -100,14 +89,7 @@ mod imp {
                 #[weak]
                 obj,
                 move |_, x, y| {
-                    let imp = obj.imp();
-                    let w = obj.width() as f64;
-                    let h = obj.height() as f64;
-                    if w > 0.0 && h > 0.0 {
-                        imp.cursor_nx.set((x / w - 0.5) as f32);
-                        imp.cursor_ny.set((y / h - 0.5) as f32);
-                        obj.queue_draw();
-                    }
+                    obj.imp().update_pointer(x, y);
                 }
             ));
 
@@ -115,12 +97,7 @@ mod imp {
                 #[weak]
                 obj,
                 move |_| {
-                    let Some(animation) = obj.imp().animation() else {
-                        return;
-                    };
-                    animation.set_value_from(animation.value());
-                    animation.set_value_to(0.0);
-                    animation.play();
+                    obj.imp().set_pointer_inside(false);
                 }
             ));
 
@@ -235,6 +212,34 @@ mod imp {
     }
 
     impl HoverScale {
+        fn update_pointer(&self, x: f64, y: f64) {
+            let obj = self.obj();
+            let w = obj.width() as f64;
+            let h = obj.height() as f64;
+            if w <= 0.0 || h <= 0.0 || !obj.contains(x, y) {
+                self.set_pointer_inside(false);
+                return;
+            }
+
+            self.cursor_nx.set((x / w - 0.5) as f32);
+            self.cursor_ny.set((y / h - 0.5) as f32);
+            self.set_pointer_inside(true);
+            obj.queue_draw();
+        }
+
+        fn set_pointer_inside(&self, inside: bool) {
+            if self.pointer_inside.replace(inside) == inside {
+                return;
+            }
+
+            let Some(animation) = self.animation() else {
+                return;
+            };
+            animation.set_value_from(animation.value());
+            animation.set_value_to(if inside { 1.0 } else { 0.0 });
+            animation.play();
+        }
+
         fn call_underlay(&self, snapshot: &gtk::Snapshot) {
             if let Some(f) = self.underlay.borrow().as_ref() {
                 f(snapshot);
