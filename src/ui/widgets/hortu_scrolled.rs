@@ -156,7 +156,10 @@ mod imp {
                     gesture.connect_released(glib::clone!(
                         #[weak]
                         tu_item,
-                        move |gesture, _, _, _| {
+                        move |gesture, _, x, y| {
+                            if !tu_item.contains(x, y) {
+                                return;
+                            }
                             gesture.set_state(gtk::EventSequenceState::Claimed);
                             tu_item.item().activate(&tu_item);
                         }

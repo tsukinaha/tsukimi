@@ -18,7 +18,6 @@ mod imp {
     use gtk::{
         CompositeTemplate,
         glib,
-        prelude::*,
         subclass::prelude::*,
     };
 
@@ -818,9 +817,7 @@ impl Window {
     }
 
     #[template_callback]
-    fn key_released_cb(
-        &self, key: gtk::gdk::Key, _code: u32, state: gtk::gdk::ModifierType,
-    ) {
+    fn key_released_cb(&self, key: gtk::gdk::Key, _code: u32, state: gtk::gdk::ModifierType) {
         if self.is_on_mpv_stack() {
             self.imp().mpvnav.key_released_cb(key, state);
         }

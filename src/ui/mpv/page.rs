@@ -1799,9 +1799,7 @@ impl MPVPage {
         }
     }
 
-    pub fn key_pressed_cb(
-        &self, key: gtk::gdk::Key, state: gtk::gdk::ModifierType,
-    ) -> bool {
+    pub fn key_pressed_cb(&self, key: gtk::gdk::Key, state: gtk::gdk::ModifierType) -> bool {
         if key.to_lower() == gtk::gdk::Key::f || key == gtk::gdk::Key::Escape {
             return true;
         }
