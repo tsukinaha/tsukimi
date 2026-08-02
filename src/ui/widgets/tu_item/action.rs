@@ -146,6 +146,14 @@ where
     fn gesture_click(&self) -> gtk::GestureClick {
         let gesture = gtk::GestureClick::new();
         gesture.set_button(3);
+        gesture.connect_pressed(|gesture, _, _, _| {
+            if !gesture
+                .current_event()
+                .is_some_and(|event| event.triggers_context_menu())
+            {
+                gesture.set_state(gtk::EventSequenceState::Denied);
+            }
+        });
         gesture.connect_released(glib::clone!(
             #[weak(rename_to = obj)]
             self,
