@@ -159,6 +159,7 @@ mod imp {
             mpv::{
                 DanmakuPopover,
                 VolumeBar,
+                danmaku_sync::DanmakuSync,
                 menu_actions::MenuActions,
                 sink::MPVPlaySink,
                 video_scale::VideoScale,
@@ -227,6 +228,7 @@ mod imp {
         pub back_timeout: RefCell<Option<glib::source::SourceId>>,
         pub back: RefCell<Option<Back>>,
         pub seeking: Cell<bool>,
+        pub(super) danmaku_sync: DanmakuSync,
         pub last_playback_position: Cell<f64>,
         pub x: Cell<f64>,
         pub y: Cell<f64>,
@@ -463,6 +465,13 @@ impl MPVPage {
                 .is_some_and(|item| item.id() == item_id)
     }
 
+    fn danmaku_search_title(item: &TuItem) -> String {
+        item.season_name()
+            .filter(|name| !name.trim().is_empty())
+            .or_else(|| item.series_name().filter(|name| !name.trim().is_empty()))
+            .unwrap_or_else(|| item.name())
+    }
+
     fn auto_search_danmaku(&self, item: &TuItem) {
         if let Some(cached) = DanmakuCacheMap::load().cached_danmaku(item) {
             spawn_g_timeout(glib::clone!(
@@ -485,12 +494,8 @@ impl MPVPage {
 
         let generation = self.next_danmaku_generation();
         let item_id = item.id();
-        let is_episode = item.series_name().is_some();
-        let anime = item.series_name().unwrap_or_else(|| item.name());
-        let item_name = item.series_name().map_or_else(
-            || item.name(),
-            |series_name| format!("{} - {series_name}", item.name()),
-        );
+        let is_episode = item.season_name().is_some() || item.series_name().is_some();
+        let anime = Self::danmaku_search_title(item);
         let episode = is_episode
             .then(|| item.index_number())
             .filter(|episode| *episode > 0)
@@ -535,8 +540,8 @@ impl MPVPage {
                     return;
                 }
 
-                let episode_id = match search_result {
-                    Ok(Some(episode_id)) => episode_id,
+                let (episode_id, item_name) = match search_result {
+                    Ok(Some(episode_match)) => episode_match,
                     Ok(None) => {
                         obj.clear_danmaku_result(DanmakuPopoverStatus::NoMatching);
                         return;
@@ -579,6 +584,15 @@ impl MPVPage {
         imp.danmakw.preroll_seek(time_millis);
         if self.paused() || imp.loading_box.is_visible() {
             imp.danmakw.pause_clock();
+        }
+    }
+
+    fn resume_danmaku_after_seek(&self, time_millis: f64) {
+        let imp = self.imp();
+        self.sync_danmaku_position(time_millis);
+
+        if !self.paused() {
+            imp.danmakw.start_rendering();
         }
     }
 
@@ -658,6 +672,7 @@ impl MPVPage {
         imp.danmaku_popover_content.set_enabled(enabled);
         imp.danmakw.set_visible(enabled && imp.file_loaded.get());
         if !enabled || !imp.file_loaded.get() {
+            imp.danmaku_sync.reset();
             imp.danmakw.stop_rendering();
         } else {
             self.sync_danmaku_position(imp.last_playback_position.get() * 1000.0);
@@ -704,6 +719,7 @@ impl MPVPage {
     fn mark_stream_failed(&self) {
         let imp = self.imp();
         imp.file_loaded.set(false);
+        imp.danmaku_sync.reset();
         imp.danmakw.stop_rendering();
         imp.danmakw.set_visible(false);
         imp.allow_fallback.set(false);
@@ -776,6 +792,7 @@ impl MPVPage {
             .is_none_or(|current| current.id() != item.id());
         let imp = self.imp();
         imp.file_loaded.set(false);
+        imp.danmaku_sync.reset();
         imp.danmakw.stop_rendering();
         imp.danmakw.set_visible(false);
         let (title1, title2) = if let Some(series_name) = item.series_name() {
@@ -1370,12 +1387,20 @@ impl MPVPage {
     }
 
     fn scale_cb(&self, value: i64) {
-        self.imp().video.update_position(value as f64);
-        self.imp().last_playback_position.set(value as f64);
-        if !self.imp().video_scale.is_dragging() {
-            self.imp().video_scale.set_value(value as f64);
+        let imp = self.imp();
+        imp.video.update_position(value as f64);
+        imp.last_playback_position.set(value as f64);
+        if !imp.video_scale.is_dragging() {
+            imp.video_scale.set_value(value as f64);
         }
         self.update_skip_segment_button(value as f64);
+
+        if let Some(time_millis) = imp
+            .danmaku_sync
+            .observe_position(value as f64 * 1000.0, imp.seeking.get())
+        {
+            self.resume_danmaku_after_seek(time_millis);
+        }
     }
 
     #[template_callback]
@@ -1438,7 +1463,7 @@ impl MPVPage {
 
     fn update_seeking(&self, seeking: bool, time_millis: f64) {
         let imp = self.imp();
-        imp.seeking.set(seeking);
+        let was_seeking = imp.seeking.replace(seeking);
         imp.loading_box.set_visible(seeking);
         imp.spinner.set_visible(seeking);
 
@@ -1447,14 +1472,15 @@ impl MPVPage {
         }
 
         if seeking {
+            if !was_seeking {
+                imp.danmaku_sync.begin_seek();
+            }
             imp.danmakw.set_paused(true);
             return;
         }
 
-        self.sync_danmaku_position(time_millis);
-
-        if !self.paused() {
-            imp.danmakw.start_rendering();
+        if let Some(position) = imp.danmaku_sync.finish_seek(time_millis) {
+            self.resume_danmaku_after_seek(position);
         }
     }
 

@@ -76,13 +76,31 @@ impl DanmakuClient {
 
     pub async fn search_episode(
         &self, params: SearchSearchEpisodesParams,
-    ) -> anyhow::Result<Option<i64>> {
+    ) -> anyhow::Result<Option<(i64, String)>> {
         let anime = self.search_animes(params).await?;
 
-        Ok(anime
-            .into_iter()
-            .flat_map(|anime| anime.episodes.unwrap_or_default())
-            .find_map(|episode| episode.episode_id))
+        Ok(Self::first_episode_match(anime))
+    }
+
+    fn first_episode_match(animes: Vec<SearchEpisodesAnime>) -> Option<(i64, String)> {
+        animes.into_iter().find_map(|anime| {
+            let anime_title = anime.anime_title.unwrap_or_default();
+            anime
+                .episodes
+                .unwrap_or_default()
+                .into_iter()
+                .find_map(|episode| {
+                    let episode_id = episode.episode_id?;
+                    let episode_title = episode.episode_title.unwrap_or_default();
+                    let item_name = match (episode_title.is_empty(), anime_title.is_empty()) {
+                        (false, false) => format!("{episode_title} - {anime_title}"),
+                        (false, true) => episode_title,
+                        (true, false) => anime_title.clone(),
+                        (true, true) => String::new(),
+                    };
+                    Some((episode_id, item_name))
+                })
+        })
     }
 
     pub async fn get_comments(&self, episode_id: i64) -> anyhow::Result<Option<Vec<Danmaku>>> {
