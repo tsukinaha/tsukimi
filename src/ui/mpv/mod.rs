@@ -5,6 +5,7 @@ pub mod danmaku_client;
 pub mod danmaku_popover;
 pub mod danmaku_scale_row;
 pub mod danmaku_search_dialog;
+mod danmaku_sync;
 pub mod menu_actions;
 
 pub mod mpris;

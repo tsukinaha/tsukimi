@@ -143,6 +143,8 @@ pub mod imp {
         #[property(get, set, nullable)]
         series_name: RefCell<Option<String>>,
         #[property(get, set, nullable)]
+        season_name: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
         series_id: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         season_id: RefCell<Option<String>>,
@@ -271,6 +273,7 @@ impl From<SimpleListItem> for TuItem {
         tu_item.set_parent_thumb_item_id(item.parent_thumb_item_id);
         tu_item.set_parent_backdrop_item_id(item.parent_backdrop_item_id);
         tu_item.set_series_name(item.series_name);
+        tu_item.set_season_name(item.season_name);
 
         if let Some(album_artist) = &item.album_artists {
             tu_item.set_albumartist_name(

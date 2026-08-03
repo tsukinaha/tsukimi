@@ -311,6 +311,8 @@ pub struct SimpleListItem {
     pub parent_index_number: Option<u32>,
     #[serde(rename = "SeriesName")]
     pub series_name: Option<String>,
+    #[serde(rename = "SeasonName")]
+    pub season_name: Option<String>,
     #[serde(rename = "ParentBackdropItemId")]
     pub parent_backdrop_item_id: Option<String>,
     #[serde(rename = "ParentThumbItemId")]
