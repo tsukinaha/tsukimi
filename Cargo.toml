@@ -43,7 +43,7 @@ strsim = "0.11.1"
 clap = { version = "4", features = ["derive"] }
 fnv = "1.0.7"
 rand = "0.10.1"
-base64 = "0.22.1"
+base64 = "0.23.0"
 xxhash-rust = { version = "0.8.15", features = ["xxh3"] }
 futures-util = "0.3.31"
 itertools = "0.15.0"
