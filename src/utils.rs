@@ -237,9 +237,9 @@ where
 }
 
 pub async fn get_image_with_cache(
-    id: String, img_type: String, tag: Option<String>,
+    id: String, img_type: String, image_index: Option<u8>,
 ) -> Result<String> {
     runtime()
-        .spawn(async move { JELLYFIN_CLIENT.get_image(&id, &img_type, tag).await })
+        .spawn(async move { JELLYFIN_CLIENT.get_image(&id, &img_type, image_index).await })
         .await?
 }

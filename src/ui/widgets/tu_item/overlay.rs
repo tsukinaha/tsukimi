@@ -17,7 +17,7 @@ use crate::ui::{
 use super::TuItemBasic;
 
 pub trait TuItemOverlayPrelude {
-    fn get_image_type_and_tag(&self, item: &TuItem) -> (&str, Option<String>, String) {
+    fn get_image_type_and_index(&self, item: &TuItem) -> (&str, Option<u8>, String) {
         if self.poster_type_ext() != PosterType::Poster
             && let Some(imag_tags) = item.image_tags()
         {
@@ -28,12 +28,12 @@ pub trait TuItemOverlayPrelude {
                     } else if imag_tags.thumb().is_some() {
                         return ("Thumb", None, item.id());
                     } else if imag_tags.backdrop().is_some() {
-                        return ("Backdrop", Some(0.to_string()), item.id());
+                        return ("Backdrop", Some(0), item.id());
                     }
                 }
                 PosterType::Backdrop => {
                     if imag_tags.backdrop().is_some() {
-                        return ("Backdrop", Some(0.to_string()), item.id());
+                        return ("Backdrop", Some(0), item.id());
                     } else if imag_tags.thumb().is_some() {
                         return ("Thumb", None, item.id());
                     }
@@ -47,9 +47,9 @@ pub trait TuItemOverlayPrelude {
                 if let Some(parent_thumb_item_id) = item.parent_thumb_item_id() {
                     ("Thumb", None, parent_thumb_item_id)
                 } else if let Some(parent_backdrop_item_id) = item.parent_backdrop_item_id() {
-                    ("Backdrop", Some(0.to_string()), parent_backdrop_item_id)
+                    ("Backdrop", Some(0), parent_backdrop_item_id)
                 } else {
-                    ("Backdrop", Some(0.to_string()), item.id())
+                    ("Backdrop", Some(0), item.id())
                 }
             }
             // Latest, use parent primary image if possible, this is for latest episodes
@@ -83,14 +83,14 @@ pub trait TuItemOverlayPrelude {
     fn fallback_sources(&self, item: &TuItem, image_type: &str, id: &str) -> Vec<PictureSource> {
         let mut fallbacks = Vec::new();
         if let Some(image_tags) = item.image_tags() {
-            let mut candidates: Vec<(&str, Option<String>)> = Vec::new();
+            let mut candidates: Vec<(&str, Option<u8>)> = Vec::new();
             match image_type {
                 "Primary" => {
                     if image_tags.thumb().is_some() {
                         candidates.push(("Thumb", None));
                     }
                     if image_tags.backdrop().is_some() {
-                        candidates.push(("Backdrop", Some("0".to_string())));
+                        candidates.push(("Backdrop", Some(0)));
                     }
                     if image_tags.banner().is_some() {
                         candidates.push(("Banner", None));
@@ -101,7 +101,7 @@ pub trait TuItemOverlayPrelude {
                         candidates.push(("Primary", None));
                     }
                     if image_tags.backdrop().is_some() {
-                        candidates.push(("Backdrop", Some("0".to_string())));
+                        candidates.push(("Backdrop", Some(0)));
                     }
                 }
                 "Backdrop" => {
@@ -117,14 +117,14 @@ pub trait TuItemOverlayPrelude {
                         candidates.push(("Thumb", None));
                     }
                     if image_tags.backdrop().is_some() {
-                        candidates.push(("Backdrop", Some("0".to_string())));
+                        candidates.push(("Backdrop", Some(0)));
                     }
                 }
                 _ => {}
             }
-            for (fallback_type, fallback_tag) in candidates {
+            for (fallback_type, fallback_image_index) in candidates {
                 if fallback_type != image_type {
-                    fallbacks.push(PictureSource::item(id, fallback_type, fallback_tag));
+                    fallbacks.push(PictureSource::item(id, fallback_type, fallback_image_index));
                 }
             }
         }
@@ -152,13 +152,13 @@ where
                     Vec::new(),
                 )
             } else {
-                let (image_type, tag, id) = self.get_image_type_and_tag(&item);
+                let (image_type, image_index, id) = self.get_image_type_and_index(&item);
                 let fallbacks = self.fallback_sources(&item, image_type, &id);
                 (
                     PictureSource::Item {
                         id,
                         image_type: image_type.to_string(),
-                        tag,
+                        image_index,
                     },
                     fallbacks,
                 )

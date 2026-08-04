@@ -200,7 +200,7 @@ impl ImageInfoCard {
 
         match spawn_tokio(async move {
             JELLYFIN_CLIENT
-                .delete_image(&id, &img_type, Some(image_index.to_string()))
+                .delete_image(&id, &img_type, Some(image_index))
                 .await
         })
         .await
