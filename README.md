@@ -93,5 +93,5 @@ Thanks to open-source projects like GNOME Music, Fractal, and Clapper—we refer
 <sup>
 Fonts used in screenshots: <a href="https://github.com/lxgw/LxgwWenKai-Screen">LXGW WenKai Screen</a>
 <br />
-Anime in screenshots: <a href="https://yurucamp-v.com/">ゆるキャン△</a>
+Anime in screenshots: <a href="https://goodbyelara.com/">さよならララ</a>
 </sup>

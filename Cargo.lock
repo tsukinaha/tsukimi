@@ -3011,9 +3011,9 @@ checksum = "956787520e75e9bd233246045d19f42fb73242759cc57fba9611d940ae96d4b0"
 
 [[package]]
 name = "mutsumi"
-version = "0.5.0"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "63e79d49e3da6aaee2bf1eaa5ee95cd5372d4f909bacdbcbfce02022e8e1554c"
+checksum = "9c2a8cc4f47370fc00eb3cf757b7667c8529cc019f8997e6fbcd5298efadda8c"
 dependencies = [
  "ash",
  "atomic-wait",
