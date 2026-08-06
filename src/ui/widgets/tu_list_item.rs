@@ -51,6 +51,7 @@ pub mod imp {
         SETTINGS,
         provider::tu_item::TuItem,
         widgets::{
+            fixed_bin::FixedBin,
             hover_scale::HoverScale,
             picture_loader::PictureLoader,
             tu_item::TuItemAction,
@@ -96,6 +97,10 @@ pub mod imp {
         pub title: TemplateChild<gtk::Label>,
         #[template_child]
         pub subtitle: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub item_frame: TemplateChild<FixedBin>,
+        #[template_child]
+        pub cover_frame: TemplateChild<FixedBin>,
         #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
         #[template_child]
@@ -432,7 +437,19 @@ impl TuListItem {
 
         let (w, h) = self.size_hint();
 
-        imp.overlay.set_size_request(w, h);
+        //  - - - - - - - - - - - - - - -
+        // |      |      |       |
+        // |      |      |       |
+        // | cover frame |       |
+        // |      |      |       |
+        // |      |      |       |
+        //  - - - - - - -    item frame
+        // |             |       |
+        // |-item frame--|       |
+        // |             |       |
+        //  - - - - - - - - - - - - - - -
+        imp.item_frame.set_fixed_size(w, 0);
+        imp.cover_frame.set_fixed_size(w, h);
 
         if let Some(p) = item.fmt_percentage() {
             self.set_progress(p);

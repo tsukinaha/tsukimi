@@ -1,5 +1,6 @@
 use gst::ClockTime;
 use gtk::{
+    gio,
     glib,
     prelude::*,
     subclass::prelude::*,
@@ -47,7 +48,7 @@ mod imp {
         pub toolbar: TemplateChild<gtk::ActionBar>,
         pub player: MusicPlayer,
         #[template_child]
-        pub cover_image: TemplateChild<gtk::Image>,
+        pub cover_image: TemplateChild<gtk::Picture>,
         #[template_child]
         pub title_label: TemplateChild<gtk::Label>,
         #[template_child]
@@ -194,13 +195,13 @@ impl PlayerToolbarBox {
                     let path = get_image_with_cache(core_song.id(), "Primary".to_string(), None)
                         .await
                         .unwrap_or_default();
-                    imp.cover_image.set_from_file(Some(&path));
+                    imp.cover_image.set_file(Some(&gio::File::for_path(&path)));
                 } else {
                     let path =
                         get_image_with_cache(core_song.album_id(), "Primary".to_string(), None)
                             .await
                             .unwrap_or_default();
-                    imp.cover_image.set_from_file(Some(&path));
+                    imp.cover_image.set_file(Some(&gio::File::for_path(&path)));
                 }
             }
         ));

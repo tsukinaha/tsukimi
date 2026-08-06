@@ -4,8 +4,14 @@
     <property name="halign">center</property>
     <property name="valign">start</property>
     <child>
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
+      <object class="FixedBin" id="item_frame">
+        <property name="halign">center</property>
+        <property name="valign">start</property>
+        <property name="hexpand">False</property>
+        <property name="vexpand">False</property>
+        <property name="child">
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
         <property name="spacing">12</property>
         <property name="valign">fill</property>
         <property name="overflow">visible</property>
@@ -19,12 +25,14 @@
                 <property name="valign">fill</property>
                 <property name="overflow">visible</property>
                 <child>
-                  <object class="GtkOverlay" id="overlay">
-                    <property name="valign">fill</property>
-                    <property name="width-request">100</property>
-                    <property name="height-request">100</property>
-                    <property name="halign">fill</property>
-                    <property name="overflow">hidden</property>
+                  <object class="FixedBin" id="cover_frame">
+                    <property name="halign">start</property>
+                    <property name="valign">start</property>
+                    <property name="hexpand">False</property>
+                    <property name="vexpand">False</property>
+                    <property name="child">
+                      <object class="GtkOverlay" id="overlay">
+                        <property name="overflow">hidden</property>
                     <style>
                       <class name="cover-progress-frame" />
                     </style>
@@ -80,6 +88,8 @@
                         </style>
                       </object>
                     </child>
+                      </object>
+                    </property>
                   </object>
                 </child>
                 <child>
@@ -130,6 +140,8 @@
             <property name="visible">false</property>
           </object>
         </child>
+          </object>
+        </property>
       </object>
     </child>
   </template>

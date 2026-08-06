@@ -23,6 +23,7 @@ pub use widgets::{
 pub use mpv::page::PlaybackDirectMode;
 
 pub fn init() {
+    widgets::fixed_bin::FixedBin::ensure_type();
     widgets::lazy_diff_view::LazyDiffView::ensure_type();
     widgets::menu_info::MenuInfo::ensure_type();
     widgets::hover_scale::HoverScale::ensure_type();

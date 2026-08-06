@@ -764,6 +764,7 @@ impl TuItem {
             EPISODE if self.series_name().is_some() => self.fmt_episode_detail(),
             SEASON => self.fmt_season_premiere_date(),
             SERIES => self.fmt_period(),
+            MUSIC_ALBUM => self.albumartist_name(),
             ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER | GUEST_STAR => {
                 self.role().unwrap_or_default()
             }
