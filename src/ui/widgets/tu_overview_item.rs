@@ -59,9 +59,12 @@ pub mod imp {
 
     use crate::ui::{
         provider::tu_item::TuItem,
-        widgets::tu_item::{
-            CardOptions,
-            TuItemAction,
+        widgets::{
+            fixed_bin::FixedBin,
+            tu_item::{
+                CardOptions,
+                TuItemAction,
+            },
         },
     };
 
@@ -86,6 +89,8 @@ pub mod imp {
         pub label2: TemplateChild<gtk::Label>,
         #[template_child]
         pub progress_bar: TemplateChild<gtk::ProgressBar>,
+        #[template_child]
+        pub cover_frame: TemplateChild<FixedBin>,
         #[template_child]
         pub overlay: TemplateChild<gtk::Overlay>,
         #[template_child]
@@ -219,8 +224,8 @@ impl TuOverviewItem {
                     item.index_number(),
                     item.name()
                 ));
-                imp.overlay
-                    .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                imp.cover_frame
+                    .set_fixed_size(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 if let Some(premiere_date) = item.premiere_date() {
                     imp.time_label.set_visible(true);
                     imp.time_label
@@ -253,12 +258,12 @@ impl TuOverviewItem {
                         item.index_number(),
                         item.name()
                     ));
-                    imp.overlay
-                        .set_size_request(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
+                    imp.cover_frame
+                        .set_fixed_size(TU_ITEM_VIDEO_SIZE.0, TU_ITEM_VIDEO_SIZE.1);
                 } else {
                     imp.listlabel.set_text(&item.name());
-                    imp.overlay
-                        .set_size_request(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
+                    imp.cover_frame
+                        .set_fixed_size(TU_ITEM_POST_SIZE.0, TU_ITEM_POST_SIZE.1);
                 }
                 let year = if item.production_year() != 0 {
                     item.production_year().to_string()

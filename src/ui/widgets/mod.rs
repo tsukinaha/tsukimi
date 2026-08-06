@@ -8,6 +8,7 @@ pub mod episode_switcher;
 pub mod eu_item;
 pub mod filter_panel;
 pub mod fix;
+pub mod fixed_bin;
 pub mod home;
 mod hor_controls;
 pub mod horbu_scrolled;
