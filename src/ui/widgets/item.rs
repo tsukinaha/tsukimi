@@ -5,7 +5,6 @@ use super::{
     },
     fix::ScrolledWindowFixExt,
     hor_controls::HorControlsExt,
-    hortu_scrolled::UnifySize,
     item_utils::*,
     song_widget::format_duration,
     utils::{
@@ -132,7 +131,7 @@ pub(crate) mod imp {
         #[template_child]
         pub itemlist: TemplateChild<gtk::ListView>,
         #[template_child]
-        pub logobox: TemplateChild<gtk::Box>,
+        pub logo_bin: TemplateChild<adw::Bin>,
         #[template_child]
         pub seasonlist: TemplateChild<gtk::DropDown>,
 
@@ -265,7 +264,8 @@ pub(crate) mod imp {
             self.selection.set_model(Some(&store));
             self.itemlist.set_model(Some(&self.selection));
             self.itemlist.set_factory(Some(
-                gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
+                gtk::SignalListItemFactory::new()
+                    .tu_overview_item(ViewGroup::EpisodesView, Default::default()),
             ));
             self.obj().connect_scroll_controls();
 
@@ -405,15 +405,6 @@ impl ItemPage {
 
     async fn setup_item(&self, id: &str) {
         let id = id.to_string();
-        let id_clone = id.to_owned();
-
-        spawn(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            async move {
-                obj.set_logo(&id_clone).await;
-            }
-        ));
 
         self.setup_background(&id).await;
         self.set_overview(&id).await;
@@ -896,9 +887,26 @@ impl ItemPage {
         self.set_intro::<false>(&item.item()).await;
     }
 
-    pub async fn set_logo(&self, id: &str) {
-        let logo = super::logo::set_logo(id.to_string(), "Logo", None).await;
-        self.imp().logobox.append(&logo);
+    pub async fn set_logo(&self, item: &SimpleListItem) {
+        let logo_bin = self.imp().logo_bin.get();
+
+        let logo_id = item
+            .image_tags
+            .as_ref()
+            .and_then(|tags| tags.logo.as_deref())
+            .map(|_| item.id.as_str())
+            .or_else(|| {
+                item.parent_logo_image_tag.as_ref()?;
+                item.parent_logo_item_id.as_deref()
+            });
+
+        let Some(logo_id) = logo_id else {
+            logo_bin.set_child(None::<&gtk::Widget>);
+            return;
+        };
+
+        let logo = super::logo::set_logo(logo_id.to_string(), "Logo", None).await;
+        logo_bin.set_child(Some(&logo));
     }
 
     pub async fn set_overview(&self, id: &str) {
@@ -917,6 +925,7 @@ impl ItemPage {
                     #[weak(rename_to = obj)]
                     self,
                     async move {
+                        obj.set_logo(&item).await;
                         {
                             let mut str = String::new();
                             if let Some(communityrating) = item.community_rating {
@@ -1186,8 +1195,6 @@ impl ItemPage {
             },
         )
         .await;
-
-        hortu.set_unify_size(UnifySize::Majority);
 
         while let Some(event) = events.recv().await {
             match event {

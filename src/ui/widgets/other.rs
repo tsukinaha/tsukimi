@@ -162,7 +162,8 @@ pub(crate) mod imp {
             self.actionbox.set_id(Some(obj.item().id()));
             self.selection.set_model(Some(&store));
             self.episode_list.set_factory(Some(
-                SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
+                SignalListItemFactory::new()
+                    .tu_overview_item(ViewGroup::EpisodesView, Default::default()),
             ));
             self.episode_list.set_model(Some(&self.selection));
         }

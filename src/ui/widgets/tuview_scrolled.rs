@@ -22,23 +22,18 @@ use gtk::{
 };
 
 use super::{
-    hortu_scrolled::{
-        UnifySize,
-        resolve_prefer_size,
-    },
     single_grid::imp::ViewType,
-    tu_list_item::imp::PosterType,
+    tu_item::{
+        CardOptions,
+        CardShape,
+    },
     tu_overview_item::imp::ViewGroup,
     utils::TuItemBuildExt,
 };
 use crate::{
     client::structs::SimpleListItem,
     ui::provider::{
-        tu_item::{
-            PreferPoster,
-            PreferSize,
-            TuItem,
-        },
+        tu_item::TuItem,
         tu_object::TuObject,
     },
 };
@@ -50,10 +45,7 @@ pub(crate) mod imp {
         atomic::AtomicBool,
     };
 
-    use std::cell::{
-        Cell,
-        RefCell,
-    };
+    use std::cell::Cell;
 
     use glib::subclass::InitializingObject;
     use gtk::glib::Properties;
@@ -94,13 +86,17 @@ pub(crate) mod imp {
         pub selection: NoSelectionWrap,
         pub lock: Arc<AtomicBool>,
 
-        #[property(get, set, builder(UnifySize::default()))]
-        pub unify_size: RefCell<UnifySize>,
-        #[property(get, set, builder(PreferPoster::default()))]
-        pub prefer_poster: RefCell<PreferPoster>,
+        #[property(get, set, builder(CardShape::default()))]
+        pub card_shape: Cell<CardShape>,
+        #[property(get, set, default = false)]
+        pub prefer_thumb: Cell<bool>,
+        #[property(get, set, default = false)]
+        pub prefer_banner: Cell<bool>,
+        #[property(get, set, default = false)]
+        pub prefer_parent_poster: Cell<bool>,
         #[property(get, set, default = false)]
         pub is_resume: Cell<bool>,
-        pub prefer_size_cache: RefCell<PreferSize>,
+        pub resolved_card_shape: Cell<CardShape>,
     }
 
     #[glib::object_subclass]
@@ -154,15 +150,11 @@ impl TuViewScrolled {
             return;
         };
 
-        let prefer_size = if C {
-            let size = resolve_prefer_size(self.unify_size(), &items);
-            self.imp().prefer_size_cache.replace(size);
-            size
-        } else {
-            *self.imp().prefer_size_cache.borrow()
-        };
+        if C {
+            imp.resolved_card_shape.set(CardShape::Auto.resolve(&items));
+            self.set_grid_factory();
+        }
 
-        let prefer_poster = self.prefer_poster();
         let is_resume = self.is_resume();
 
         let items = items
@@ -170,8 +162,6 @@ impl TuViewScrolled {
             .map(|item| {
                 let tu_item = TuItem::from_simple(item);
                 tu_item.set_is_resume(is_resume);
-                tu_item.set_prefer_poster(prefer_poster);
-                tu_item.set_prefer_size(prefer_size);
                 TuObject::new(tu_item)
             })
             .collect::<Vec<_>>();
@@ -190,16 +180,54 @@ impl TuViewScrolled {
             ViewType::GridView => {
                 imp.scrolled_window.set_child(Some(&imp.grid.get()));
                 imp.grid
-                    .set_factory(Some(factory.tu_item(PosterType::default())));
+                    .set_factory(Some(factory.tu_item(self.card_options())));
                 imp.grid.set_model(Some(&imp.selection.0));
             }
             ViewType::ListView => {
                 imp.scrolled_window.set_child(Some(&imp.list.get()));
-                imp.list
-                    .set_factory(Some(factory.tu_overview_item(ViewGroup::ListView)));
+                imp.list.set_factory(Some(
+                    factory.tu_overview_item(ViewGroup::ListView, self.card_options()),
+                ));
                 imp.list.set_model(Some(&imp.selection.0));
             }
         }
+    }
+
+    fn set_grid_factory(&self) {
+        let factory = SignalListItemFactory::new();
+        self.imp()
+            .grid
+            .set_factory(Some(factory.tu_item(self.card_options())));
+    }
+
+    fn effective_card_shape(&self) -> CardShape {
+        match self.card_shape() {
+            CardShape::Auto => self.imp().resolved_card_shape.get(),
+            card_shape => card_shape,
+        }
+    }
+
+    fn card_options(&self) -> CardOptions {
+        CardOptions {
+            shape: self.effective_card_shape(),
+            prefer_thumb: self.prefer_thumb(),
+            prefer_banner: self.prefer_banner(),
+            prefer_parent_poster: self.prefer_parent_poster(),
+        }
+    }
+
+    pub fn apply_card_shape(&self, card_shape: CardShape) {
+        self.set_card_shape(card_shape);
+        self.set_grid_factory();
+    }
+
+    pub fn apply_image_options(
+        &self, card_shape: CardShape, prefer_thumb: bool, prefer_banner: bool,
+    ) {
+        self.set_card_shape(card_shape);
+        self.set_prefer_thumb(prefer_thumb);
+        self.set_prefer_banner(prefer_banner);
+        self.set_grid_factory();
     }
 
     #[template_callback]

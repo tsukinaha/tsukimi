@@ -13,6 +13,7 @@ use imp::ViewGroup;
 
 use super::{
     tu_item::{
+        CardShape,
         TuItemBasic,
         TuItemMenuPrelude,
         TuItemOverlay,
@@ -20,14 +21,16 @@ use super::{
         TuItemProgressbarAnimation,
         TuItemProgressbarAnimationPrelude,
     },
-    tu_list_item::imp::PosterType,
     utils::{
         TU_ITEM_POST_SIZE,
         TU_ITEM_VIDEO_SIZE,
         run_time_ticks_to_label,
     },
 };
-use crate::ui::provider::tu_item::TuItem;
+use crate::ui::provider::tu_item::{
+    TuItem,
+    item_type::EPISODE,
+};
 
 pub mod imp {
     use std::cell::{
@@ -71,6 +74,12 @@ pub mod imp {
         pub inline_overview: TemplateChild<gtk::Label>,
         #[property(get, set = Self::set_view_group, builder(ViewGroup::default()))]
         pub view_group: Cell<ViewGroup>,
+        #[property(get, set, default = false)]
+        pub prefer_thumb: Cell<bool>,
+        #[property(get, set, default = false)]
+        pub prefer_banner: Cell<bool>,
+        #[property(get, set, default = false)]
+        pub prefer_parent_poster: Cell<bool>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub listlabel: TemplateChild<gtk::Label>,
@@ -154,11 +163,24 @@ impl TuItemOverlayPrelude for TuOverviewItem {
         self.imp().overlay.get()
     }
 
-    fn poster_type_ext(&self) -> PosterType {
+    fn card_shape_ext(&self, item: &TuItem) -> CardShape {
         match self.view_group() {
-            ViewGroup::EpisodesView => PosterType::NoRequest,
-            ViewGroup::ListView => PosterType::Poster,
+            ViewGroup::EpisodesView => CardShape::Backdrop,
+            ViewGroup::ListView if item.item_type() == EPISODE => CardShape::Backdrop,
+            ViewGroup::ListView => CardShape::Portrait,
         }
+    }
+
+    fn prefer_thumb_ext(&self) -> bool {
+        self.prefer_thumb()
+    }
+
+    fn prefer_banner_ext(&self) -> bool {
+        self.prefer_banner()
+    }
+
+    fn prefer_parent_poster_ext(&self) -> bool {
+        self.prefer_parent_poster()
     }
 }
 

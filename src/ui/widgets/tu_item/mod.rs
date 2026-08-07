@@ -5,6 +5,8 @@ mod progressbar_animation;
 
 pub use action::TuItemAction;
 pub use overlay::{
+    CardOptions,
+    CardShape,
     TuItemOverlay,
     TuItemOverlayPrelude,
 };

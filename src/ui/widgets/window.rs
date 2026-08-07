@@ -165,7 +165,8 @@ mod imp {
             self.mpv_playlist
                 .set_model(Some(&self.mpv_playlist_selection));
             self.mpv_playlist.set_factory(Some(
-                gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
+                gtk::SignalListItemFactory::new()
+                    .tu_overview_item(ViewGroup::EpisodesView, Default::default()),
             ));
             self.mpv_control_sidebar
                 .set_player(Some(&self.mpvnav.imp().video.get()));
