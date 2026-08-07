@@ -156,6 +156,7 @@
                             <child>
                               <object class="HortuScrolled" id="actorhortu">
                                 <property name="title" translatable="yes">Actors</property>
+                                <property name="card-shape">Portrait</property>
                               </object>
                             </child>
                             <child>

@@ -272,7 +272,7 @@
                             <property name="halign">start</property>
                             <property name="valign">start</property>
                             <child>
-                              <object class="GtkBox" id="logobox">
+                              <object class="AdwBin" id="logo_bin">
                                 <property name="height-request">150</property>
                                 <style>
                                   <class name="logo"/>
@@ -460,6 +460,7 @@
                         <child>
                           <object class="HortuScrolled" id="actorhortu">
                             <property name="title" translatable="yes">Actors</property>
+                            <property name="card-shape">Portrait</property>
                           </object>
                         </child>
                         <child>

@@ -24,7 +24,10 @@ use crate::{
 };
 
 mod imp {
-    use std::cell::RefCell;
+    use std::cell::{
+        Cell,
+        RefCell,
+    };
 
     use glib::subclass::InitializingObject;
 
@@ -42,9 +45,9 @@ mod imp {
         #[property(get, set, nullable)]
         pub series_id: RefCell<Option<String>>,
         #[property(get, set, construct, default = false)]
-        pub is_playable: RefCell<bool>,
+        pub is_playable: Cell<bool>,
         #[property(get, set, default = false)]
-        pub played: RefCell<bool>,
+        pub played: Cell<bool>,
     }
 
     #[glib::object_subclass]

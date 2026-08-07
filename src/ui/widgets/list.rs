@@ -7,18 +7,18 @@ use gtk::{
 };
 
 use super::{
-    hortu_scrolled::UnifySize,
     single_grid::{
         SingleGrid,
         imp::ListType,
     },
+    tu_item::{
+        CardOptions,
+        CardShape,
+    },
 };
 use crate::{
     client::jellyfin_client::JELLYFIN_CLIENT,
-    ui::provider::tu_item::{
-        PreferPoster,
-        TuItem,
-    },
+    ui::provider::tu_item::TuItem,
 };
 mod imp {
 
@@ -112,7 +112,6 @@ impl ListPage {
 
         if &collection_type == "livetv" {
             let page = SingleGrid::new();
-            page.set_unify_size(UnifySize::Majority);
             page.connect_sort_changed_tokio(move |_, _, _| async move {
                 JELLYFIN_CLIENT.get_channels_list(0).await
             });
@@ -138,17 +137,17 @@ impl ListPage {
         for (name, title, list_type) in pages {
             let page = SingleGrid::new();
             page.set_list_type(list_type);
-            page.set_unify_size(if list_type == ListType::Resume {
-                UnifySize::ForceVideo
-            } else {
-                UnifySize::Majority
+            let is_resume = list_type == ListType::Resume;
+            page.set_card_options(CardOptions {
+                shape: if is_resume {
+                    CardShape::Backdrop
+                } else {
+                    CardShape::default()
+                },
+                prefer_thumb: is_resume,
+                ..Default::default()
             });
-            page.set_prefer_poster(if list_type == ListType::Resume {
-                PreferPoster::ParentVideo
-            } else {
-                PreferPoster::Auto
-            });
-            page.set_is_resume(list_type == ListType::Resume);
+            page.set_is_resume(is_resume);
             let id_clone1 = id.to_owned();
             let include_item_types_clone1 = include_item_types.to_owned();
             page.connect_sort_changed_tokio(move |sort_by, sort_order, filters_list| {

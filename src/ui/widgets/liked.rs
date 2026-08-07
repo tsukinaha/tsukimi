@@ -7,10 +7,7 @@ use gtk::{
     subclass::prelude::*,
 };
 
-use super::{
-    hortu_scrolled::UnifySize,
-    utils::GlobalToast,
-};
+use super::utils::GlobalToast;
 use crate::{
     client::{
         error::UserFacingError,
@@ -188,7 +185,6 @@ impl LikedPage {
             move |_| {
                 let tag = format!("{} {}", "Favourite", type_);
                 let page = crate::ui::widgets::single_grid::SingleGrid::new();
-                page.set_unify_size(UnifySize::Majority);
                 let type_clone1 = type_.to_owned();
                 let type_clone2 = type_.to_owned();
                 page.connect_sort_changed_tokio(move |sort_by, sort_order, filters_list| {

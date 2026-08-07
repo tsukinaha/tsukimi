@@ -40,22 +40,22 @@ glib::wrapper! {
     pub struct ImageTags(ObjectSubclass<imp::ImageTags>);
 }
 
-impl Default for ImageTags {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl ImageTags {
-    pub fn new() -> ImageTags {
-        glib::object::Object::new()
-    }
-
-    pub fn all_none(&self) -> bool {
-        let imp = self.imp();
-        imp.backdrop.borrow().is_none()
-            && imp.primary.borrow().is_none()
-            && imp.thumb.borrow().is_none()
-            && imp.banner.borrow().is_none()
+    pub fn new(
+        image_tags: Option<crate::client::structs::ImageTags>,
+        backdrop_image_tags: Option<Vec<String>>,
+    ) -> Option<Self> {
+        let backdrop = backdrop_image_tags.and_then(|tags| tags.into_iter().next());
+        if image_tags.is_none() && backdrop.is_none() {
+            return None;
+        }
+        let provider: Self = glib::object::Object::new();
+        provider.set_backdrop(backdrop);
+        if let Some(image_tags) = image_tags {
+            provider.set_primary(image_tags.primary);
+            provider.set_thumb(image_tags.thumb);
+            provider.set_banner(image_tags.banner);
+        }
+        Some(provider)
     }
 }

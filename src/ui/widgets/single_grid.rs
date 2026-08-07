@@ -7,7 +7,6 @@ use adw::prelude::*;
 use anyhow::Result;
 use glib::Object;
 use gtk::{
-    SignalListItemFactory,
     gio,
     glib,
     subclass::prelude::*,
@@ -22,13 +21,8 @@ use super::{
         FilterPanelDialog,
         FiltersList,
     },
-    hortu_scrolled::UnifySize,
-    tu_list_item::imp::PosterType,
-    tu_overview_item::imp::ViewGroup,
-    utils::{
-        GlobalToast,
-        TuItemBuildExt,
-    },
+    tu_item::CardOptions,
+    utils::GlobalToast,
 };
 use crate::{
     client::{
@@ -38,7 +32,6 @@ use crate::{
             SimpleListItem,
         },
     },
-    ui::provider::tu_item::PreferPoster,
     utils::{
         spawn,
         spawn_tokio,
@@ -76,7 +69,10 @@ pub mod imp {
         models::SETTINGS,
         widgets::{
             filter_panel::FilterPanelDialog,
-            tu_list_item::imp::PosterType,
+            tu_item::{
+                CardOptions,
+                CardShape,
+            },
             tuview_scrolled::TuViewScrolled,
         },
     };
@@ -270,18 +266,21 @@ pub mod imp {
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
             klass.bind_template_instance_callbacks();
-            klass.install_action_async("poster", None, |window, _action, _parameter| async move {
-                window.poster(PosterType::Poster).await;
+            klass.install_action("poster", None, |window, _action, _parameter| {
+                window.set_card_options(CardOptions::default());
             });
-            klass.install_action_async(
-                "backdrop",
-                None,
-                |window, _action, _parameter| async move {
-                    window.poster(PosterType::Backdrop).await;
-                },
-            );
-            klass.install_action_async("banner", None, |window, _action, _parameter| async move {
-                window.poster(PosterType::Banner).await;
+            klass.install_action("backdrop", None, |window, _action, _parameter| {
+                window.set_card_options(CardOptions {
+                    shape: CardShape::Backdrop,
+                    prefer_thumb: true,
+                    ..Default::default()
+                });
+            });
+            klass.install_action("banner", None, |window, _action, _parameter| {
+                window.set_card_options(CardOptions {
+                    shape: CardShape::Banner,
+                    ..Default::default()
+                });
             });
         }
 
@@ -465,23 +464,8 @@ impl SingleGrid {
         }
     }
 
-    pub async fn poster(&self, poster_type: PosterType) {
-        let scrolled = self.imp().scrolled.get();
-        let factory = SignalListItemFactory::new();
-        match self.view_type() {
-            ViewType::GridView => {
-                scrolled
-                    .imp()
-                    .grid
-                    .set_factory(Some(factory.tu_item(poster_type)));
-            }
-            ViewType::ListView => {
-                scrolled
-                    .imp()
-                    .list
-                    .set_factory(Some(factory.tu_overview_item(ViewGroup::ListView)));
-            }
-        };
+    pub fn set_card_options(&self, options: CardOptions) {
+        self.imp().scrolled.get().apply_card_options(options);
     }
 
     pub fn add_items<const C: bool>(&self, items: Vec<SimpleListItem>) {
@@ -511,14 +495,6 @@ impl SingleGrid {
             .total_item_count
             .get()
             .is_some_and(|total_item_count| n_items >= total_item_count)
-    }
-
-    pub fn set_unify_size(&self, unify_size: UnifySize) {
-        self.imp().scrolled.get().set_unify_size(unify_size);
-    }
-
-    pub fn set_prefer_poster(&self, prefer_poster: PreferPoster) {
-        self.imp().scrolled.get().set_prefer_poster(prefer_poster);
     }
 
     pub fn set_is_resume(&self, is_resume: bool) {

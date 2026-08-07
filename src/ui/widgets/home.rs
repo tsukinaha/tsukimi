@@ -11,13 +11,14 @@ use gtk::{
 };
 
 use super::{
-    hortu_scrolled::{
-        HortuScrolled,
-        UnifySize,
-    },
+    hortu_scrolled::HortuScrolled,
     single_grid::{
         SingleGrid,
         imp::ListType,
+    },
+    tu_item::{
+        CardOptions,
+        CardShape,
     },
     utils::GlobalToast,
     window::Window,
@@ -32,10 +33,7 @@ use crate::{
     fraction_reset,
     ui::{
         SETTINGS,
-        provider::tu_item::{
-            PreferPoster,
-            TuItem,
-        },
+        provider::tu_item::TuItem,
     },
     utils::{
         CacheEvent,
@@ -287,8 +285,11 @@ impl HomePage {
                 let page = SingleGrid::new();
 
                 page.set_list_type(ListType::NextUp);
-                page.set_unify_size(UnifySize::ForceVideo);
-                page.set_prefer_poster(PreferPoster::ParentVideo);
+                page.set_card_options(CardOptions {
+                    shape: CardShape::Backdrop,
+                    prefer_thumb: true,
+                    ..Default::default()
+                });
 
                 let title = if SETTINGS.merge_resume_and_next_up() {
                     page.set_is_resume(true);
@@ -386,9 +387,10 @@ impl HomePage {
 
         hortu.set_moreview(true);
 
-        hortu.set_unify_size(UnifySize::Majority);
-
-        hortu.set_prefer_poster(PreferPoster::ParentPost);
+        hortu.set_card_options(CardOptions {
+            prefer_parent_poster: true,
+            ..Default::default()
+        });
 
         hortu.set_title(format!("{} {}", gettext("Latest"), ac_view.name));
 

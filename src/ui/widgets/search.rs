@@ -44,7 +44,6 @@ mod imp {
     use crate::{
         ui::widgets::{
             filter_panel::FilterPanelDialog,
-            hortu_scrolled::UnifySize,
             tuview_scrolled::TuViewScrolled,
         },
         utils::spawn,
@@ -106,9 +105,6 @@ mod imp {
         fn constructed(&self) {
             let obj = self.obj();
             self.parent_constructed();
-            self.searchscrolled
-                .get()
-                .set_unify_size(UnifySize::Majority);
             self.searchscrolled.connect_end_edge_reached(glib::clone!(
                 #[weak]
                 obj,
