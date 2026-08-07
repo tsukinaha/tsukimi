@@ -178,84 +178,106 @@ fn album_primary_source(item: &TuItem) -> Option<PictureSource> {
     )
 }
 
+pub fn select_picture_source(item: &TuItem, options: CardOptions) -> Option<PictureSource> {
+    if let Some(url) = item.image_url().filter(|url| !url.trim().is_empty()) {
+        return Some(PictureSource::Url {
+            image_type: "Primary".to_string(),
+            url,
+        });
+    }
+
+    let CardOptions {
+        shape: card_shape,
+        prefer_thumb,
+        prefer_banner,
+        prefer_parent_poster,
+    } = options;
+
+    if prefer_thumb && let Some(source) = current_source(item, "Thumb", None) {
+        return Some(source);
+    }
+
+    if (prefer_banner || card_shape == CardShape::Banner)
+        && let Some(source) = current_source(item, "Banner", None)
+    {
+        return Some(source);
+    }
+
+    if prefer_thumb && let Some(source) = series_thumb_source(item) {
+        return Some(source);
+    }
+
+    if prefer_thumb && let Some(source) = parent_thumb_source(item) {
+        return Some(source);
+    }
+
+    if prefer_thumb && let Some(source) = current_source(item, "Backdrop", Some(0)) {
+        return Some(source);
+    }
+
+    if prefer_thumb
+        && item.item_type() == EPISODE
+        && let Some(source) = parent_backdrop_source(item)
+    {
+        return Some(source);
+    }
+
+    if prefer_parent_poster
+        && !prefer_thumb
+        && item.item_type() == EPISODE
+        && let Some(source) = parent_primary_source(item).or_else(|| series_primary_source(item))
+    {
+        return Some(source);
+    }
+
+    if (item.item_type() != EPISODE || item.imp().child_count.get() != Some(0))
+        && let Some(source) = current_source(item, "Primary", None)
+    {
+        return Some(source);
+    }
+
+    let skip_episode_parent_poster = item.item_type() == EPISODE && card_shape.is_wide();
+
+    if !skip_episode_parent_poster && let Some(source) = series_primary_source(item) {
+        return Some(source);
+    }
+
+    if let Some(source) = primary_image_source(item) {
+        return Some(source);
+    }
+
+    if !skip_episode_parent_poster && let Some(source) = parent_primary_source(item) {
+        return Some(source);
+    }
+
+    if let Some(source) = album_primary_source(item) {
+        return Some(source);
+    }
+
+    if item.item_type() == SEASON
+        && let Some(source) = current_source(item, "Thumb", None)
+    {
+        return Some(source);
+    }
+
+    current_source(item, "Backdrop", Some(0))
+        .or_else(|| current_source(item, "Thumb", None))
+        .or_else(|| series_thumb_source(item))
+        .or_else(|| parent_thumb_source(item))
+        .or_else(|| parent_backdrop_source(item))
+}
+
 pub trait TuItemOverlayPrelude {
     fn get_image_source(&self, item: &TuItem) -> Option<PictureSource> {
-        let card_shape = self.card_shape_ext(item);
-        let prefer_thumb = self.prefer_thumb_ext();
-
-        if prefer_thumb && let Some(source) = current_source(item, "Thumb", None) {
-            return Some(source);
-        }
-
-        if (self.prefer_banner_ext() || card_shape == CardShape::Banner)
-            && let Some(source) = current_source(item, "Banner", None)
-        {
-            return Some(source);
-        }
-
-        if prefer_thumb && let Some(source) = series_thumb_source(item) {
-            return Some(source);
-        }
-
-        if prefer_thumb && let Some(source) = parent_thumb_source(item) {
-            return Some(source);
-        }
-
-        if prefer_thumb && let Some(source) = current_source(item, "Backdrop", Some(0)) {
-            return Some(source);
-        }
-
-        if prefer_thumb
-            && item.item_type() == EPISODE
-            && let Some(source) = parent_backdrop_source(item)
-        {
-            return Some(source);
-        }
-
-        if self.prefer_parent_poster_ext()
-            && !prefer_thumb
-            && item.item_type() == EPISODE
-            && let Some(source) =
-                parent_primary_source(item).or_else(|| series_primary_source(item))
-        {
-            return Some(source);
-        }
-
-        if (item.item_type() != EPISODE || item.imp().child_count.get() != Some(0))
-            && let Some(source) = current_source(item, "Primary", None)
-        {
-            return Some(source);
-        }
-
-        let skip_episode_parent_poster = item.item_type() == EPISODE && card_shape.is_wide();
-
-        if !skip_episode_parent_poster && let Some(source) = series_primary_source(item) {
-            return Some(source);
-        }
-
-        if let Some(source) = primary_image_source(item) {
-            return Some(source);
-        }
-
-        if !skip_episode_parent_poster && let Some(source) = parent_primary_source(item) {
-            return Some(source);
-        }
-
-        if let Some(source) = album_primary_source(item) {
-            return Some(source);
-        }
-
-        if item.item_type() == SEASON
-            && let Some(source) = current_source(item, "Thumb", None)
-        {
-            return Some(source);
-        }
-
-        current_source(item, "Backdrop", Some(0))
-            .or_else(|| current_source(item, "Thumb", None))
-            .or_else(|| series_thumb_source(item))
-            .or_else(|| parent_thumb_source(item))
-            .or_else(|| parent_backdrop_source(item))
+        select_picture_source(
+            item,
+            CardOptions {
+                shape: self.card_shape_ext(item),
+                prefer_thumb: self.prefer_thumb_ext(),
+                prefer_banner: self.prefer_banner_ext(),
+                prefer_parent_poster: self.prefer_parent_poster_ext(),
+            },
+        )
     }
 
     fn overlay(&self) -> gtk::Overlay;
@@ -281,15 +303,7 @@ where
         let item = self.item();
         let overlay = self.overlay();
 
-        let Some(source) = item
-            .image_url()
-            .filter(|url| !url.trim().is_empty())
-            .map(|url| PictureSource::Url {
-                image_type: "Primary".to_string(),
-                url,
-            })
-            .or_else(|| self.get_image_source(&item))
-        else {
+        let Some(source) = self.get_image_source(&item) else {
             return;
         };
 

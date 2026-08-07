@@ -9,6 +9,7 @@ pub use overlay::{
     CardShape,
     TuItemOverlay,
     TuItemOverlayPrelude,
+    select_picture_source,
 };
 pub use prelude::{
     TuItemBasic,
