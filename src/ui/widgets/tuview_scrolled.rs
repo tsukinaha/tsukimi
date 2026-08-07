@@ -91,8 +91,6 @@ pub(crate) mod imp {
         #[property(get, set, default = false)]
         pub prefer_thumb: Cell<bool>,
         #[property(get, set, default = false)]
-        pub prefer_banner: Cell<bool>,
-        #[property(get, set, default = false)]
         pub prefer_parent_poster: Cell<bool>,
         #[property(get, set, default = false)]
         pub is_resume: Cell<bool>,
@@ -211,7 +209,6 @@ impl TuViewScrolled {
         CardOptions {
             shape: self.effective_card_shape(),
             prefer_thumb: self.prefer_thumb(),
-            prefer_banner: self.prefer_banner(),
             prefer_parent_poster: self.prefer_parent_poster(),
         }
     }
@@ -221,12 +218,9 @@ impl TuViewScrolled {
         self.set_grid_factory();
     }
 
-    pub fn apply_image_options(
-        &self, card_shape: CardShape, prefer_thumb: bool, prefer_banner: bool,
-    ) {
+    pub fn apply_image_options(&self, card_shape: CardShape, prefer_thumb: bool) {
         self.set_card_shape(card_shape);
         self.set_prefer_thumb(prefer_thumb);
-        self.set_prefer_banner(prefer_banner);
         self.set_grid_factory();
     }
 

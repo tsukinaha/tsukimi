@@ -39,7 +39,6 @@ pub enum CardShape {
 pub struct CardOptions {
     pub shape: CardShape,
     pub prefer_thumb: bool,
-    pub prefer_banner: bool,
     pub prefer_parent_poster: bool,
 }
 
@@ -189,7 +188,6 @@ pub fn select_picture_source(item: &TuItem, options: CardOptions) -> Option<Pict
     let CardOptions {
         shape: card_shape,
         prefer_thumb,
-        prefer_banner,
         prefer_parent_poster,
     } = options;
 
@@ -197,7 +195,7 @@ pub fn select_picture_source(item: &TuItem, options: CardOptions) -> Option<Pict
         return Some(source);
     }
 
-    if (prefer_banner || card_shape == CardShape::Banner)
+    if card_shape == CardShape::Banner
         && let Some(source) = current_source(item, "Banner", None)
     {
         return Some(source);
@@ -274,7 +272,6 @@ pub trait TuItemOverlayPrelude {
             CardOptions {
                 shape: self.card_shape_ext(item),
                 prefer_thumb: self.prefer_thumb_ext(),
-                prefer_banner: self.prefer_banner_ext(),
                 prefer_parent_poster: self.prefer_parent_poster_ext(),
             },
         )
@@ -285,8 +282,6 @@ pub trait TuItemOverlayPrelude {
     fn card_shape_ext(&self, item: &TuItem) -> CardShape;
 
     fn prefer_thumb_ext(&self) -> bool;
-
-    fn prefer_banner_ext(&self) -> bool;
 
     fn prefer_parent_poster_ext(&self) -> bool;
 }

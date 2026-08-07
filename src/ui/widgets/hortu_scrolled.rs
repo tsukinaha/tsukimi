@@ -67,8 +67,6 @@ mod imp {
         #[property(get, set, default = false)]
         pub prefer_thumb: Cell<bool>,
         #[property(get, set, default = false)]
-        pub prefer_banner: Cell<bool>,
-        #[property(get, set, default = false)]
         pub prefer_parent_poster: Cell<bool>,
 
         pub show_left_animation: OnceCell<adw::TimedAnimation>,
@@ -117,7 +115,6 @@ mod imp {
                     if let Some(obj) = weak_obj.upgrade() {
                         tu_item.set_card_shape(obj.resolved_card_shape());
                         tu_item.set_prefer_thumb(obj.prefer_thumb());
-                        tu_item.set_prefer_banner(obj.prefer_banner());
                         tu_item.set_prefer_parent_poster(obj.prefer_parent_poster());
                     }
 

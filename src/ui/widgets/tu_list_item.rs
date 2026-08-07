@@ -81,8 +81,6 @@ pub mod imp {
         #[property(get, set, default = false)]
         pub prefer_thumb: Cell<bool>,
         #[property(get, set, default = false)]
-        pub prefer_banner: Cell<bool>,
-        #[property(get, set, default = false)]
         pub prefer_parent_poster: Cell<bool>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
@@ -380,10 +378,6 @@ impl TuItemOverlayPrelude for TuListItem {
 
     fn prefer_thumb_ext(&self) -> bool {
         self.prefer_thumb()
-    }
-
-    fn prefer_banner_ext(&self) -> bool {
-        self.prefer_banner()
     }
 
     fn prefer_parent_poster_ext(&self) -> bool {

@@ -28,7 +28,6 @@ impl TuItemBuildExt for SignalListItemFactory {
             let tu_item = TuListItem::default();
             tu_item.set_card_shape(options.shape);
             tu_item.set_prefer_thumb(options.prefer_thumb);
-            tu_item.set_prefer_banner(options.prefer_banner);
             tu_item.set_prefer_parent_poster(options.prefer_parent_poster);
 
             let list_item = item
@@ -59,7 +58,6 @@ impl TuItemBuildExt for SignalListItemFactory {
             let tu_item = TuOverviewItem::default();
             tu_item.set_view_group(view_group);
             tu_item.set_prefer_thumb(options.prefer_thumb);
-            tu_item.set_prefer_banner(options.prefer_banner);
             tu_item.set_prefer_parent_poster(options.prefer_parent_poster);
             let list_item = item
                 .downcast_ref::<gtk::ListItem>()

@@ -264,13 +264,13 @@ pub mod imp {
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("poster", None, |window, _action, _parameter| {
-                window.set_image_options(CardShape::Auto, false, false);
+                window.set_image_options(CardShape::Auto, false);
             });
             klass.install_action("backdrop", None, |window, _action, _parameter| {
-                window.set_image_options(CardShape::Backdrop, true, false);
+                window.set_image_options(CardShape::Backdrop, true);
             });
             klass.install_action("banner", None, |window, _action, _parameter| {
-                window.set_image_options(CardShape::Banner, false, false);
+                window.set_image_options(CardShape::Banner, false);
             });
         }
 
@@ -458,13 +458,11 @@ impl SingleGrid {
         self.imp().scrolled.get().apply_card_shape(card_shape);
     }
 
-    pub fn set_image_options(
-        &self, card_shape: CardShape, prefer_thumb: bool, prefer_banner: bool,
-    ) {
+    pub fn set_image_options(&self, card_shape: CardShape, prefer_thumb: bool) {
         self.imp()
             .scrolled
             .get()
-            .apply_image_options(card_shape, prefer_thumb, prefer_banner);
+            .apply_image_options(card_shape, prefer_thumb);
     }
 
     pub fn add_items<const C: bool>(&self, items: Vec<SimpleListItem>) {
@@ -498,10 +496,6 @@ impl SingleGrid {
 
     pub fn set_prefer_thumb(&self, prefer_thumb: bool) {
         self.imp().scrolled.get().set_prefer_thumb(prefer_thumb);
-    }
-
-    pub fn set_prefer_banner(&self, prefer_banner: bool) {
-        self.imp().scrolled.get().set_prefer_banner(prefer_banner);
     }
 
     pub fn set_prefer_parent_poster(&self, prefer_parent_poster: bool) {
