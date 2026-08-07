@@ -118,9 +118,9 @@ pub mod imp {
         #[property(get, set)]
         name: RefCell<String>,
         #[property(get, set)]
-        index_number: RefCell<u32>,
+        index_number: Cell<u32>,
         #[property(get, set)]
-        parent_index_number: RefCell<u32>,
+        parent_index_number: Cell<u32>,
         #[property(get, set, nullable)]
         series_name: RefCell<Option<String>>,
         #[property(get, set, nullable)]
@@ -130,19 +130,19 @@ pub mod imp {
         #[property(get, set, nullable)]
         season_id: RefCell<Option<String>>,
         #[property(get, set)]
-        played_percentage: RefCell<f64>,
+        played_percentage: Cell<f64>,
         #[property(get, set)]
-        played: RefCell<bool>,
+        played: Cell<bool>,
         #[property(get, set)]
-        unplayed_item_count: RefCell<u32>,
+        unplayed_item_count: Cell<u32>,
         #[property(get, set)]
-        is_favorite: RefCell<bool>,
+        is_favorite: Cell<bool>,
         #[property(get, set)]
-        is_resume: RefCell<bool>,
+        is_resume: Cell<bool>,
         #[property(get, set)]
         item_type: RefCell<String>,
         #[property(get, set)]
-        production_year: RefCell<u32>,
+        production_year: Cell<u32>,
         #[property(get, set, nullable)]
         parent_thumb_item_id: RefCell<Option<String>>,
         #[property(get, set, nullable)]
@@ -181,7 +181,7 @@ pub mod imp {
         series_thumb_image_tag: RefCell<Option<String>>,
         pub child_count: Cell<Option<u32>>,
         #[property(get, set)]
-        run_time_ticks: RefCell<u64>,
+        run_time_ticks: Cell<u64>,
         #[property(get, set, nullable)]
         collection_type: RefCell<Option<String>>,
         #[property(name = "albumartist-name", get, set, type = String, member = name)]
@@ -206,7 +206,7 @@ pub mod imp {
         #[property(get, set, nullable)]
         path: RefCell<Option<String>>,
         #[property(get, set)]
-        playback_position_ticks: RefCell<u64>,
+        playback_position_ticks: Cell<u64>,
     }
 
     #[glib::derived_properties]

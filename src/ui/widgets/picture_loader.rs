@@ -104,7 +104,7 @@ pub mod imp {
         pub imagetype: RefCell<String>,
         #[property(get, set, nullable)]
         pub tag: RefCell<Option<String>>,
-        pub image_index: RefCell<Option<u8>>,
+        pub image_index: Cell<Option<u8>>,
         #[property(get, set, nullable)]
         pub url: RefCell<Option<String>>,
         #[template_child]
@@ -385,7 +385,7 @@ impl PictureLoader {
                 id: self.id(),
                 tag: self.tag(),
                 image_type: self.imagetype(),
-                image_index: *self.imp().image_index.borrow(),
+                image_index: self.imp().image_index.get(),
             }
         }
     }

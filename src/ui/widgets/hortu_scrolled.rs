@@ -57,7 +57,7 @@ mod imp {
         pub right_button: TemplateChild<gtk::Button>,
 
         #[property(get, set, default_value = false)]
-        pub moreview: RefCell<bool>,
+        pub moreview: Cell<bool>,
         #[property(get, set)]
         pub title: RefCell<String>,
 

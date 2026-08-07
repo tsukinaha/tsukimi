@@ -6,7 +6,10 @@ use gtk::{
 
 mod imp {
 
-    use std::cell::RefCell;
+    use std::cell::{
+        Cell,
+        RefCell,
+    };
 
     use glib::subclass::InitializingObject;
     use gtk::prelude::*;
@@ -18,7 +21,7 @@ mod imp {
     #[properties(wrapper_type = super::VolumeBar)]
     pub struct VolumeBar {
         #[property(get, set = Self::set_level, default_value = 100.0)]
-        pub level: RefCell<f64>,
+        pub level: Cell<f64>,
         #[template_child]
         pub progress: TemplateChild<gtk::ProgressBar>,
         #[template_child]
