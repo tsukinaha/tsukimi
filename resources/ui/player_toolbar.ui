@@ -18,11 +18,36 @@
             <property name="margin-start">6</property>
             <property name="margin-top">6</property>
             <child>
-              <object class="GtkImage" id="cover_image">
+              <object class="GtkBox">
+                <property name="width-request">80</property>
+                <property name="height-request">80</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
-                <property name="height_request">80</property>
-                <property name="width_request">80</property>
+                <property name="hexpand">False</property>
+                <property name="vexpand">False</property>
+                <property name="layout-manager">
+                  <object class="GtkConstraintLayout">
+                    <constraints>
+                      <constraint target="cover_image" target-attribute="width" relation="eq" constant="80" strength="required"/>
+                      <constraint target="cover_image" target-attribute="height" relation="eq" constant="80" strength="required"/>
+                      <constraint target="cover_image" target-attribute="start" relation="eq" source="super" source-attribute="start" strength="required"/>
+                      <constraint target="cover_image" target-attribute="top" relation="eq" source="super" source-attribute="top" strength="required"/>
+                    </constraints>
+                  </object>
+                </property>
+                <child>
+                  <object class="GtkPicture" id="cover_image">
+                    <property name="can-shrink">True</property>
+                    <property name="content-fit">cover</property>
+                    <property name="halign">fill</property>
+                    <property name="valign">fill</property>
+                    <property name="hexpand">False</property>
+                    <property name="vexpand">False</property>
+                    <style>
+                      <class name="boxshadow"/>
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
@@ -33,6 +58,7 @@
                 <property name="orientation">vertical</property>
                 <property name="homogeneous">True</property>
                 <property name="spacing">3</property>
+                <property name="margin-start">8</property>
                 <child>
                   <object class="GtkLabel" id="title_label">
                     <property name="focusable">False</property>
