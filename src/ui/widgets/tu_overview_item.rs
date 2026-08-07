@@ -13,6 +13,7 @@ use imp::ViewGroup;
 
 use super::{
     tu_item::{
+        CardOptions,
         CardShape,
         TuItemBasic,
         TuItemMenuPrelude,
@@ -58,7 +59,10 @@ pub mod imp {
 
     use crate::ui::{
         provider::tu_item::TuItem,
-        widgets::tu_item::TuItemAction,
+        widgets::tu_item::{
+            CardOptions,
+            TuItemAction,
+        },
     };
 
     // Object holding the state
@@ -74,10 +78,7 @@ pub mod imp {
         pub inline_overview: TemplateChild<gtk::Label>,
         #[property(get, set = Self::set_view_group, builder(ViewGroup::default()))]
         pub view_group: Cell<ViewGroup>,
-        #[property(get, set, default = false)]
-        pub prefer_thumb: Cell<bool>,
-        #[property(get, set, default = false)]
-        pub prefer_parent_poster: Cell<bool>,
+        pub card_options: Cell<CardOptions>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub listlabel: TemplateChild<gtk::Label>,
@@ -161,20 +162,16 @@ impl TuItemOverlayPrelude for TuOverviewItem {
         self.imp().overlay.get()
     }
 
-    fn card_shape_ext(&self, item: &TuItem) -> CardShape {
-        match self.view_group() {
+    fn card_options_ext(&self, item: &TuItem) -> CardOptions {
+        let shape = match self.view_group() {
             ViewGroup::EpisodesView => CardShape::Backdrop,
             ViewGroup::ListView if item.item_type() == EPISODE => CardShape::Backdrop,
             ViewGroup::ListView => CardShape::Portrait,
+        };
+        CardOptions {
+            shape,
+            ..self.card_options()
         }
-    }
-
-    fn prefer_thumb_ext(&self) -> bool {
-        self.prefer_thumb()
-    }
-
-    fn prefer_parent_poster_ext(&self) -> bool {
-        self.prefer_parent_poster()
     }
 }
 
@@ -201,6 +198,14 @@ impl TuOverviewItem {
 
     pub fn default() -> Self {
         Object::new()
+    }
+
+    pub fn set_card_options(&self, options: CardOptions) {
+        self.imp().card_options.set(options);
+    }
+
+    fn card_options(&self) -> CardOptions {
+        self.imp().card_options.get()
     }
 
     pub fn set_up(&self) {

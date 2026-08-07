@@ -16,7 +16,10 @@ use super::{
         SingleGrid,
         imp::ListType,
     },
-    tu_item::CardShape,
+    tu_item::{
+        CardOptions,
+        CardShape,
+    },
     utils::GlobalToast,
     window::Window,
 };
@@ -282,8 +285,11 @@ impl HomePage {
                 let page = SingleGrid::new();
 
                 page.set_list_type(ListType::NextUp);
-                page.set_card_shape(CardShape::Backdrop);
-                page.set_prefer_thumb(true);
+                page.set_card_options(CardOptions {
+                    shape: CardShape::Backdrop,
+                    prefer_thumb: true,
+                    ..Default::default()
+                });
 
                 let title = if SETTINGS.merge_resume_and_next_up() {
                     page.set_is_resume(true);
@@ -381,7 +387,10 @@ impl HomePage {
 
         hortu.set_moreview(true);
 
-        hortu.set_prefer_parent_poster(true);
+        hortu.set_card_options(CardOptions {
+            prefer_parent_poster: true,
+            ..Default::default()
+        });
 
         hortu.set_title(format!("{} {}", gettext("Latest"), ac_view.name));
 

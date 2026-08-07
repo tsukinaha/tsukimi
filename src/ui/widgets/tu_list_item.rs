@@ -1,6 +1,7 @@
 use std::cell::RefCell;
 
 use super::tu_item::{
+    CardOptions,
     CardShape,
     TuItemBasic,
     TuItemMenuPrelude,
@@ -61,7 +62,7 @@ pub mod imp {
         },
     };
 
-    use super::CardShape;
+    use super::CardOptions;
 
     pub struct BackdropNodeCache {
         node: gsk::RenderNode,
@@ -76,12 +77,7 @@ pub mod imp {
     pub struct TuListItem {
         #[property(get, set = Self::set_item)]
         pub item: RefCell<TuItem>,
-        #[property(get, set, builder(CardShape::default()))]
-        pub card_shape: Cell<CardShape>,
-        #[property(get, set, default = false)]
-        pub prefer_thumb: Cell<bool>,
-        #[property(get, set, default = false)]
-        pub prefer_parent_poster: Cell<bool>,
+        pub card_options: Cell<CardOptions>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub content_box: TemplateChild<gtk::Box>,
@@ -372,16 +368,11 @@ impl TuItemOverlayPrelude for TuListItem {
         self.imp().overlay.get()
     }
 
-    fn card_shape_ext(&self, item: &TuItem) -> CardShape {
-        self.effective_card_shape(item)
-    }
-
-    fn prefer_thumb_ext(&self) -> bool {
-        self.prefer_thumb()
-    }
-
-    fn prefer_parent_poster_ext(&self) -> bool {
-        self.prefer_parent_poster()
+    fn card_options_ext(&self, item: &TuItem) -> CardOptions {
+        CardOptions {
+            shape: self.effective_card_shape(item),
+            ..self.card_options()
+        }
     }
 }
 
@@ -407,6 +398,14 @@ impl Default for TuListItem {
 impl TuListItem {
     pub fn new(item: TuItem) -> Self {
         Object::builder().property("item", item).build()
+    }
+
+    pub fn set_card_options(&self, options: CardOptions) {
+        self.imp().card_options.set(options);
+    }
+
+    fn card_options(&self) -> CardOptions {
+        self.imp().card_options.get()
     }
 
     fn update_title(&self) {
@@ -466,7 +465,7 @@ impl TuListItem {
     }
 
     fn effective_card_shape(&self, item: &TuItem) -> CardShape {
-        match self.card_shape() {
+        match self.card_options().shape {
             CardShape::Auto => match item.item_type().as_str() {
                 MOVIE | SERIES | BOX_SET | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER
                 | GUEST_STAR | SEASON => CardShape::Portrait,

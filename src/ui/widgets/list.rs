@@ -11,7 +11,10 @@ use super::{
         SingleGrid,
         imp::ListType,
     },
-    tu_item::CardShape,
+    tu_item::{
+        CardOptions,
+        CardShape,
+    },
 };
 use crate::{
     client::jellyfin_client::JELLYFIN_CLIENT,
@@ -134,11 +137,17 @@ impl ListPage {
         for (name, title, list_type) in pages {
             let page = SingleGrid::new();
             page.set_list_type(list_type);
-            if list_type == ListType::Resume {
-                page.set_card_shape(CardShape::Backdrop);
-            }
-            page.set_prefer_thumb(list_type == ListType::Resume);
-            page.set_is_resume(list_type == ListType::Resume);
+            let is_resume = list_type == ListType::Resume;
+            page.set_card_options(CardOptions {
+                shape: if is_resume {
+                    CardShape::Backdrop
+                } else {
+                    CardShape::default()
+                },
+                prefer_thumb: is_resume,
+                ..Default::default()
+            });
+            page.set_is_resume(is_resume);
             let id_clone1 = id.to_owned();
             let include_item_types_clone1 = include_item_types.to_owned();
             page.connect_sort_changed_tokio(move |sort_by, sort_order, filters_list| {

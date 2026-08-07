@@ -213,14 +213,10 @@ impl TuViewScrolled {
         }
     }
 
-    pub fn apply_card_shape(&self, card_shape: CardShape) {
-        self.set_card_shape(card_shape);
-        self.set_grid_factory();
-    }
-
-    pub fn apply_image_options(&self, card_shape: CardShape, prefer_thumb: bool) {
-        self.set_card_shape(card_shape);
-        self.set_prefer_thumb(prefer_thumb);
+    pub fn apply_card_options(&self, options: CardOptions) {
+        self.set_card_shape(options.shape);
+        self.set_prefer_thumb(options.prefer_thumb);
+        self.set_prefer_parent_poster(options.prefer_parent_poster);
         self.set_grid_factory();
     }
 

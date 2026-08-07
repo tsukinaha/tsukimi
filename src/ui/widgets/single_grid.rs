@@ -21,7 +21,7 @@ use super::{
         FilterPanelDialog,
         FiltersList,
     },
-    tu_item::CardShape,
+    tu_item::CardOptions,
     utils::GlobalToast,
 };
 use crate::{
@@ -69,7 +69,10 @@ pub mod imp {
         models::SETTINGS,
         widgets::{
             filter_panel::FilterPanelDialog,
-            tu_item::CardShape,
+            tu_item::{
+                CardOptions,
+                CardShape,
+            },
             tuview_scrolled::TuViewScrolled,
         },
     };
@@ -264,13 +267,20 @@ pub mod imp {
             klass.bind_template();
             klass.bind_template_instance_callbacks();
             klass.install_action("poster", None, |window, _action, _parameter| {
-                window.set_image_options(CardShape::Auto, false);
+                window.set_card_options(CardOptions::default());
             });
             klass.install_action("backdrop", None, |window, _action, _parameter| {
-                window.set_image_options(CardShape::Backdrop, true);
+                window.set_card_options(CardOptions {
+                    shape: CardShape::Backdrop,
+                    prefer_thumb: true,
+                    ..Default::default()
+                });
             });
             klass.install_action("banner", None, |window, _action, _parameter| {
-                window.set_image_options(CardShape::Banner, false);
+                window.set_card_options(CardOptions {
+                    shape: CardShape::Banner,
+                    ..Default::default()
+                });
             });
         }
 
@@ -454,15 +464,8 @@ impl SingleGrid {
         }
     }
 
-    pub fn set_card_shape(&self, card_shape: CardShape) {
-        self.imp().scrolled.get().apply_card_shape(card_shape);
-    }
-
-    pub fn set_image_options(&self, card_shape: CardShape, prefer_thumb: bool) {
-        self.imp()
-            .scrolled
-            .get()
-            .apply_image_options(card_shape, prefer_thumb);
+    pub fn set_card_options(&self, options: CardOptions) {
+        self.imp().scrolled.get().apply_card_options(options);
     }
 
     pub fn add_items<const C: bool>(&self, items: Vec<SimpleListItem>) {
@@ -492,17 +495,6 @@ impl SingleGrid {
             .total_item_count
             .get()
             .is_some_and(|total_item_count| n_items >= total_item_count)
-    }
-
-    pub fn set_prefer_thumb(&self, prefer_thumb: bool) {
-        self.imp().scrolled.get().set_prefer_thumb(prefer_thumb);
-    }
-
-    pub fn set_prefer_parent_poster(&self, prefer_parent_poster: bool) {
-        self.imp()
-            .scrolled
-            .get()
-            .set_prefer_parent_poster(prefer_parent_poster);
     }
 
     pub fn set_is_resume(&self, is_resume: bool) {

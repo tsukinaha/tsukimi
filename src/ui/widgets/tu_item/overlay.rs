@@ -267,23 +267,12 @@ pub fn select_picture_source(item: &TuItem, options: CardOptions) -> Option<Pict
 
 pub trait TuItemOverlayPrelude {
     fn get_image_source(&self, item: &TuItem) -> Option<PictureSource> {
-        select_picture_source(
-            item,
-            CardOptions {
-                shape: self.card_shape_ext(item),
-                prefer_thumb: self.prefer_thumb_ext(),
-                prefer_parent_poster: self.prefer_parent_poster_ext(),
-            },
-        )
+        select_picture_source(item, self.card_options_ext(item))
     }
 
     fn overlay(&self) -> gtk::Overlay;
 
-    fn card_shape_ext(&self, item: &TuItem) -> CardShape;
-
-    fn prefer_thumb_ext(&self) -> bool;
-
-    fn prefer_parent_poster_ext(&self) -> bool;
+    fn card_options_ext(&self, item: &TuItem) -> CardOptions;
 }
 
 pub trait TuItemOverlay: TuItemBasic + TuItemOverlayPrelude {

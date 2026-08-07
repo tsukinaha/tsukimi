@@ -16,7 +16,10 @@ use crate::{
             fix::ScrolledWindowFixExt,
             hor_controls::HorControlsExt,
             lazy_diff_view::LazyDiffView,
-            tu_item::CardShape,
+            tu_item::{
+                CardOptions,
+                CardShape,
+            },
             tu_list_item::TuListItem,
         },
     },
@@ -113,9 +116,7 @@ mod imp {
                 move |_tu_obj: &TuObject| {
                     let tu_item = TuListItem::default();
                     if let Some(obj) = weak_obj.upgrade() {
-                        tu_item.set_card_shape(obj.resolved_card_shape());
-                        tu_item.set_prefer_thumb(obj.prefer_thumb());
-                        tu_item.set_prefer_parent_poster(obj.prefer_parent_poster());
+                        tu_item.set_card_options(obj.card_options());
                     }
 
                     let gesture = gtk::GestureClick::new();
@@ -173,6 +174,20 @@ impl HortuScrolled {
     pub fn set_morebutton(&self) {
         let imp = self.imp();
         imp.morebutton.set_visible(true);
+    }
+
+    pub fn set_card_options(&self, options: CardOptions) {
+        self.set_card_shape(options.shape);
+        self.set_prefer_thumb(options.prefer_thumb);
+        self.set_prefer_parent_poster(options.prefer_parent_poster);
+    }
+
+    fn card_options(&self) -> CardOptions {
+        CardOptions {
+            shape: self.resolved_card_shape(),
+            prefer_thumb: self.prefer_thumb(),
+            prefer_parent_poster: self.prefer_parent_poster(),
+        }
     }
 
     pub fn set_items(&self, items: Vec<SimpleListItem>) {

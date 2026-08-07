@@ -26,9 +26,7 @@ impl TuItemBuildExt for SignalListItemFactory {
     fn tu_item(&self, options: CardOptions) -> &Self {
         self.connect_setup(move |_, item| {
             let tu_item = TuListItem::default();
-            tu_item.set_card_shape(options.shape);
-            tu_item.set_prefer_thumb(options.prefer_thumb);
-            tu_item.set_prefer_parent_poster(options.prefer_parent_poster);
+            tu_item.set_card_options(options);
 
             let list_item = item
                 .downcast_ref::<gtk::ListItem>()
@@ -57,8 +55,7 @@ impl TuItemBuildExt for SignalListItemFactory {
         self.connect_setup(move |_, item| {
             let tu_item = TuOverviewItem::default();
             tu_item.set_view_group(view_group);
-            tu_item.set_prefer_thumb(options.prefer_thumb);
-            tu_item.set_prefer_parent_poster(options.prefer_parent_poster);
+            tu_item.set_card_options(options);
             let list_item = item
                 .downcast_ref::<gtk::ListItem>()
                 .expect("Needs to be ListItem");
