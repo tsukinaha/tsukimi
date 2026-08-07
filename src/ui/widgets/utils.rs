@@ -7,10 +7,8 @@ use super::{
     filter_panel::FilterPanelDialog,
     identify::IdentifyDialog,
     image_dialog::ImageDialog,
-    tu_list_item::{
-        TuListItem,
-        imp::PosterType,
-    },
+    tu_item::CardOptions,
+    tu_list_item::TuListItem,
     tu_overview_item::{
         TuOverviewItem,
         imp::ViewGroup,
@@ -20,15 +18,15 @@ use super::{
 use crate::ui::provider::tu_object::TuObject;
 
 pub trait TuItemBuildExt {
-    fn tu_item(&self, poster: PosterType) -> &Self;
-    fn tu_overview_item(&self, view_group: ViewGroup) -> &Self;
+    fn tu_item(&self, options: CardOptions) -> &Self;
+    fn tu_overview_item(&self, view_group: ViewGroup, options: CardOptions) -> &Self;
 }
 
 impl TuItemBuildExt for SignalListItemFactory {
-    fn tu_item(&self, poster: PosterType) -> &Self {
+    fn tu_item(&self, options: CardOptions) -> &Self {
         self.connect_setup(move |_, item| {
             let tu_item = TuListItem::default();
-            tu_item.set_poster_type(poster);
+            tu_item.set_card_options(options);
 
             let list_item = item
                 .downcast_ref::<gtk::ListItem>()
@@ -53,10 +51,11 @@ impl TuItemBuildExt for SignalListItemFactory {
         self
     }
 
-    fn tu_overview_item(&self, view_group: ViewGroup) -> &Self {
+    fn tu_overview_item(&self, view_group: ViewGroup, options: CardOptions) -> &Self {
         self.connect_setup(move |_, item| {
             let tu_item = TuOverviewItem::default();
             tu_item.set_view_group(view_group);
+            tu_item.set_card_options(options);
             let list_item = item
                 .downcast_ref::<gtk::ListItem>()
                 .expect("Needs to be ListItem");

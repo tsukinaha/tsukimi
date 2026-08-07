@@ -20,16 +20,16 @@
                   <object class="HortuScrolled" id="hishortu">
                     <property name="title" translatable="yes">Continue Watching</property>
                     <property name="is-resume">True</property>
-                    <property name="prefer-poster">ParentVideo</property>
-                    <property name="unify-size">ForceVideo</property>
+                    <property name="prefer-thumb">True</property>
+                    <property name="card-shape">Backdrop</property>
                   </object>
                 </child>
                 <child>
                   <object class="HortuScrolled" id="nextuphortu">
                     <property name="title" translatable="yes">Next Up</property>
                     <property name="is-resume">True</property>
-                    <property name="prefer-poster">ParentVideo</property>
-                    <property name="unify-size">ForceVideo</property>
+                    <property name="prefer-thumb">True</property>
+                    <property name="card-shape">Backdrop</property>
                   </object>
                 </child>
                 <child>

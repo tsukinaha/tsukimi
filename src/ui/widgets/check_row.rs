@@ -6,7 +6,7 @@ use gtk::{
 
 mod imp {
 
-    use std::cell::RefCell;
+    use std::cell::Cell;
 
     use glib::subclass::InitializingObject;
 
@@ -17,7 +17,7 @@ mod imp {
     pub struct CheckRow {
         #[template_child]
         pub check: TemplateChild<gtk::CheckButton>,
-        pub track_id: RefCell<i64>,
+        pub track_id: Cell<i64>,
     }
 
     #[glib::object_subclass]

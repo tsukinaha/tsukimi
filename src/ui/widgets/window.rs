@@ -9,8 +9,8 @@ use gtk::{
 };
 mod imp {
     use std::cell::{
+        Cell,
         OnceCell,
-        RefCell,
     };
 
     use adw::subclass::application_window::AdwApplicationWindowImpl;
@@ -107,11 +107,11 @@ mod imp {
         pub progress_bar_animation: OnceCell<adw::TimedAnimation>,
         pub progress_bar_fade_animation: OnceCell<adw::TimedAnimation>,
 
-        pub last_content_list_selection: RefCell<Option<i32>>,
+        pub last_content_list_selection: Cell<Option<i32>>,
 
         pub mpv_playlist_selection: gtk::SingleSelection,
 
-        pub suspend_cookie: RefCell<Option<u32>>,
+        pub suspend_cookie: Cell<Option<u32>>,
 
         #[template_child]
         pub sidebar_breakpoint: TemplateChild<adw::Breakpoint>,
@@ -165,7 +165,8 @@ mod imp {
             self.mpv_playlist
                 .set_model(Some(&self.mpv_playlist_selection));
             self.mpv_playlist.set_factory(Some(
-                gtk::SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
+                gtk::SignalListItemFactory::new()
+                    .tu_overview_item(ViewGroup::EpisodesView, Default::default()),
             ));
             self.mpv_control_sidebar
                 .set_player(Some(&self.mpvnav.imp().video.get()));
@@ -852,7 +853,7 @@ impl Window {
         }
 
         let pos = item.section_index() as i32;
-        let last_pos = *imp.last_content_list_selection.borrow();
+        let last_pos = imp.last_content_list_selection.get();
         if last_pos == Some(pos) {
             self.update_view(pos);
             return;

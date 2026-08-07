@@ -1,4 +1,7 @@
-use std::cell::RefCell;
+use std::cell::{
+    Cell,
+    RefCell,
+};
 
 use adw::prelude::*;
 use dandanapi_client::{
@@ -74,7 +77,6 @@ use crate::{
             },
         },
         widgets::{
-            hortu_scrolled::UnifySize,
             item::ItemPage,
             list::ListPage,
             music_album::AlbumPage,
@@ -84,7 +86,6 @@ use crate::{
                 imp::ListType,
             },
             song_widget::SongWidget,
-            utils::*,
             window::Window,
         },
     },
@@ -103,26 +104,6 @@ struct AlbumArtist {
     id: String,
 }
 
-#[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
-#[repr(u32)]
-#[enum_type(name = "PreferSize")]
-pub enum PreferSize {
-    #[default]
-    Auto,
-    Video,
-    Post,
-}
-
-#[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
-#[repr(u32)]
-#[enum_type(name = "PreferPoster")]
-pub enum PreferPoster {
-    #[default]
-    Auto,
-    ParentPost,
-    ParentVideo,
-}
-
 pub mod imp {
     use glib::DateTime;
     use gtk::glib::Properties;
@@ -137,9 +118,9 @@ pub mod imp {
         #[property(get, set)]
         name: RefCell<String>,
         #[property(get, set)]
-        index_number: RefCell<u32>,
+        index_number: Cell<u32>,
         #[property(get, set)]
-        parent_index_number: RefCell<u32>,
+        parent_index_number: Cell<u32>,
         #[property(get, set, nullable)]
         series_name: RefCell<Option<String>>,
         #[property(get, set, nullable)]
@@ -149,33 +130,33 @@ pub mod imp {
         #[property(get, set, nullable)]
         season_id: RefCell<Option<String>>,
         #[property(get, set)]
-        played_percentage: RefCell<f64>,
+        played_percentage: Cell<f64>,
         #[property(get, set)]
-        played: RefCell<bool>,
+        played: Cell<bool>,
         #[property(get, set)]
-        unplayed_item_count: RefCell<u32>,
+        unplayed_item_count: Cell<u32>,
         #[property(get, set)]
-        is_favorite: RefCell<bool>,
+        is_favorite: Cell<bool>,
         #[property(get, set)]
-        is_resume: RefCell<bool>,
+        is_resume: Cell<bool>,
         #[property(get, set)]
         item_type: RefCell<String>,
         #[property(get, set)]
-        production_year: RefCell<u32>,
+        production_year: Cell<u32>,
         #[property(get, set, nullable)]
         parent_thumb_item_id: RefCell<Option<String>>,
         #[property(get, set, nullable)]
+        parent_thumb_image_tag: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
         parent_backdrop_item_id: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        parent_backdrop_image_tag: RefCell<Option<String>>,
         #[property(get, set)]
         poster: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         image_url: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         image_tags: RefCell<Option<crate::ui::provider::image_tags::ImageTags>>,
-        #[property(get, set, builder(PreferSize::default()))]
-        prefer_size: RefCell<PreferSize>,
-        #[property(get, set, builder(PreferPoster::default()))]
-        prefer_poster: RefCell<PreferPoster>,
         #[property(get, set, nullable)]
         role: RefCell<Option<String>>,
         #[property(get, set, nullable)]
@@ -183,11 +164,24 @@ pub mod imp {
         #[property(get, set, nullable)]
         album_id: RefCell<Option<String>>,
         #[property(get, set, nullable)]
+        album_primary_image_tag: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
         rating: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         primary_image_item_id: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        primary_image_tag: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        parent_primary_image_item_id: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        parent_primary_image_tag: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        series_primary_image_tag: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        series_thumb_image_tag: RefCell<Option<String>>,
+        pub child_count: Cell<Option<u32>>,
         #[property(get, set)]
-        run_time_ticks: RefCell<u64>,
+        run_time_ticks: Cell<u64>,
         #[property(get, set, nullable)]
         collection_type: RefCell<Option<String>>,
         #[property(name = "albumartist-name", get, set, type = String, member = name)]
@@ -212,7 +206,7 @@ pub mod imp {
         #[property(get, set, nullable)]
         path: RefCell<Option<String>>,
         #[property(get, set)]
-        playback_position_ticks: RefCell<u64>,
+        playback_position_ticks: Cell<u64>,
     }
 
     #[glib::derived_properties]
@@ -222,19 +216,6 @@ pub mod imp {
     impl ObjectSubclass for TuItem {
         const NAME: &'static str = "TuItem";
         type Type = super::TuItem;
-    }
-
-    impl TuItem {
-        pub fn set_image_tags(&self, s: Option<crate::client::structs::ImageTags>) {
-            let image_tags = crate::ui::provider::image_tags::ImageTags::new();
-            if let Some(s) = s {
-                image_tags.set_backdrop(s.backdrop.to_owned());
-                image_tags.set_primary(s.primary.to_owned());
-                image_tags.set_thumb(s.thumb.to_owned());
-                image_tags.set_banner(s.banner.to_owned());
-            }
-            self.image_tags.replace(Some(image_tags));
-        }
     }
 }
 
@@ -268,10 +249,17 @@ impl From<SimpleListItem> for TuItem {
                 .set_playback_position_ticks(userdata.playback_position_ticks.unwrap_or_default());
             tu_item.set_is_favorite(userdata.is_favorite.unwrap_or(false));
         }
-
-        tu_item.imp().set_image_tags(item.image_tags);
+        tu_item.set_image_tags(crate::ui::provider::image_tags::ImageTags::new(
+            item.image_tags,
+            item.backdrop_image_tags,
+        ));
         tu_item.set_parent_thumb_item_id(item.parent_thumb_item_id);
+        tu_item.set_parent_thumb_image_tag(item.parent_thumb_image_tag);
         tu_item.set_parent_backdrop_item_id(item.parent_backdrop_item_id);
+        tu_item.set_parent_backdrop_image_tag(
+            item.parent_backdrop_image_tags
+                .and_then(|tags| tags.into_iter().next()),
+        );
         tu_item.set_series_name(item.series_name);
         tu_item.set_season_name(item.season_name);
 
@@ -297,9 +285,16 @@ impl From<SimpleListItem> for TuItem {
         tu_item.set_role(item.role);
         tu_item.set_artists(item.artists.map(|artists| artists.join(" , ")));
         tu_item.set_album_id(item.album_id);
+        tu_item.set_album_primary_image_tag(item.album_primary_image_tag);
         tu_item.set_run_time_ticks(item.run_time_ticks.unwrap_or_default());
         tu_item.set_tagline(item.taglines.and_then(|taglines| taglines.first().cloned()));
         tu_item.set_primary_image_item_id(item.primary_image_item_id);
+        tu_item.set_primary_image_tag(item.primary_image_tag);
+        tu_item.set_parent_primary_image_item_id(item.parent_primary_image_item_id);
+        tu_item.set_parent_primary_image_tag(item.parent_primary_image_tag);
+        tu_item.set_series_primary_image_tag(item.series_primary_image_tag);
+        tu_item.set_series_thumb_image_tag(item.series_thumb_image_tag);
+        tu_item.imp().child_count.replace(item.child_count);
         tu_item.set_rating(item.community_rating.map(|rating| format!("{rating:.1}")));
         tu_item.set_collection_type(item.collection_type);
 
@@ -426,7 +421,6 @@ impl TuItem {
             }
             TAG | GENRE | MUSIC_GENRE => {
                 let page = SingleGrid::new();
-                page.set_unify_size(UnifySize::Majority);
                 let id = self.id();
 
                 let mut parent_id = None;
@@ -485,7 +479,6 @@ impl TuItem {
             FOLDER => {
                 let page = SingleGrid::new();
                 page.set_list_type(ListType::Folder);
-                page.set_unify_size(UnifySize::Majority);
                 let id = self.id();
                 page.connect_sort_changed_tokio(move |sort_by, sort_order, filters_list| {
                     let id = id.to_owned();
@@ -804,22 +797,6 @@ impl TuItem {
 
     pub fn has_folder_mark(&self) -> bool {
         matches!(self.item_type().as_str(), FOLDER)
-    }
-
-    pub fn size_hint(&self) -> (i32, i32) {
-        match self.prefer_size() {
-            PreferSize::Video => return TU_ITEM_VIDEO_SIZE,
-            PreferSize::Post => return TU_ITEM_POST_SIZE,
-            _ => (),
-        }
-
-        match self.item_type().as_str() {
-            MOVIE | SERIES | BOX_SET | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER
-            | GUEST_STAR | SEASON => TU_ITEM_POST_SIZE,
-            VIDEO | MUSIC_VIDEO | ADULT_VIDEO | TV_CHANNEL | COLLECTION_FOLDER | EPISODE
-            | USER_VIEW => TU_ITEM_VIDEO_SIZE,
-            _ => TU_ITEM_SQUARE_SIZE,
-        }
     }
 
     pub fn list_item_title(&self) -> Option<String> {

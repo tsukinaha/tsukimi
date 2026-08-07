@@ -11,60 +11,19 @@ use gtk::{
 use crate::{
     client::structs::SimpleListItem,
     ui::{
-        provider::{
-            tu_item::{
-                PreferPoster,
-                PreferSize,
-            },
-            tu_object::TuObject,
-        },
+        provider::tu_object::TuObject,
         widgets::{
             fix::ScrolledWindowFixExt,
             hor_controls::HorControlsExt,
             lazy_diff_view::LazyDiffView,
-            tu_list_item::{
-                TuListItem,
-                imp::PosterType,
+            tu_item::{
+                CardOptions,
+                CardShape,
             },
+            tu_list_item::TuListItem,
         },
     },
 };
-
-#[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
-#[repr(u32)]
-#[enum_type(name = "UnifySize")]
-pub enum UnifySize {
-    #[default]
-    Disable,
-    Majority,
-    ForceVideo,
-    ForcePost,
-}
-
-pub fn resolve_prefer_size(unify_size: UnifySize, items: &[SimpleListItem]) -> PreferSize {
-    match unify_size {
-        UnifySize::Disable => PreferSize::Auto,
-        UnifySize::ForceVideo => PreferSize::Video,
-        UnifySize::ForcePost => PreferSize::Post,
-        UnifySize::Majority => {
-            let primary_ratio: Vec<_> = items
-                .iter()
-                .filter(|i| i.item_type != "Episode")
-                .filter_map(|i| i.primary_image_aspect_ratio)
-                .collect();
-            if primary_ratio.is_empty() {
-                return PreferSize::Auto;
-            }
-            let video_percentage = primary_ratio.iter().filter(|i| **i > 1.0).count() as f64
-                / primary_ratio.len() as f64;
-            match video_percentage {
-                p if p > 0.8 => PreferSize::Video,
-                p if p < 0.2 => PreferSize::Post,
-                _ => PreferSize::Auto,
-            }
-        }
-    }
-}
 
 mod imp {
     use std::{
@@ -101,15 +60,17 @@ mod imp {
         pub right_button: TemplateChild<gtk::Button>,
 
         #[property(get, set, default_value = false)]
-        pub moreview: RefCell<bool>,
+        pub moreview: Cell<bool>,
         #[property(get, set)]
         pub title: RefCell<String>,
 
-        #[property(get, set, builder(UnifySize::default()))]
-        pub unify_size: RefCell<UnifySize>,
+        #[property(get, set, builder(CardShape::default()))]
+        pub card_shape: Cell<CardShape>,
 
-        #[property(get, set, builder(PreferPoster::default()))]
-        pub prefer_poster: RefCell<PreferPoster>,
+        #[property(get, set, default = false)]
+        pub prefer_thumb: Cell<bool>,
+        #[property(get, set, default = false)]
+        pub prefer_parent_poster: Cell<bool>,
 
         pub show_left_animation: OnceCell<adw::TimedAnimation>,
         pub hide_left_animation: OnceCell<adw::TimedAnimation>,
@@ -117,6 +78,8 @@ mod imp {
         pub hide_right_animation: OnceCell<adw::TimedAnimation>,
         pub is_hovering: Cell<bool>,
         pub item_cache: RefCell<HashMap<String, TuObject>>,
+        #[property(get, set, builder(CardShape::default()))]
+        pub resolved_card_shape: Cell<CardShape>,
     }
 
     #[glib::object_subclass]
@@ -140,16 +103,21 @@ mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
+            let obj = self.obj();
+
             self.diffview.set_orientation(gtk::Orientation::Horizontal);
             self.diffview
                 .scroll()
                 .fix()
                 .set_hscrollbar_policy(gtk::PolicyType::Never);
+            let weak_obj = obj.downgrade();
             self.diffview.configure(
                 |tu_obj: &TuObject| tu_obj.item().key(),
-                |_tu_obj: &TuObject| {
+                move |_tu_obj: &TuObject| {
                     let tu_item = TuListItem::default();
-                    tu_item.set_poster_type(PosterType::default());
+                    if let Some(obj) = weak_obj.upgrade() {
+                        tu_item.set_card_options(obj.card_options());
+                    }
 
                     let gesture = gtk::GestureClick::new();
                     gesture.set_button(1);
@@ -208,6 +176,20 @@ impl HortuScrolled {
         imp.morebutton.set_visible(true);
     }
 
+    pub fn set_card_options(&self, options: CardOptions) {
+        self.set_card_shape(options.shape);
+        self.set_prefer_thumb(options.prefer_thumb);
+        self.set_prefer_parent_poster(options.prefer_parent_poster);
+    }
+
+    fn card_options(&self) -> CardOptions {
+        CardOptions {
+            shape: self.resolved_card_shape(),
+            prefer_thumb: self.prefer_thumb(),
+            prefer_parent_poster: self.prefer_parent_poster(),
+        }
+    }
+
     pub fn set_items(&self, items: Vec<SimpleListItem>) {
         let imp = self.imp();
 
@@ -217,7 +199,7 @@ impl HortuScrolled {
             return;
         }
 
-        let prefer_size = resolve_prefer_size(self.unify_size(), &items);
+        self.set_resolved_card_shape(self.card_shape().resolve(&items));
         let visible_ids = items
             .iter()
             .map(|item| item.id.as_str())
@@ -240,8 +222,6 @@ impl HortuScrolled {
                 let tu_item = object.item();
                 tu_item.update_user_data(&item.user_data);
                 tu_item.set_is_resume(self.is_resume());
-                tu_item.set_prefer_size(prefer_size);
-                tu_item.set_prefer_poster(self.prefer_poster());
                 object
             })
             .collect::<Vec<_>>();

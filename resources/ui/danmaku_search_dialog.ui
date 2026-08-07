@@ -98,7 +98,7 @@
                         <child>
                           <object class="TuViewScrolled" id="view">
                             <property name="vexpand">True</property>
-                            <property name="unify-size">ForcePost</property>
+                            <property name="card-shape">Portrait</property>
                           </object>
                         </child>
                       </object>

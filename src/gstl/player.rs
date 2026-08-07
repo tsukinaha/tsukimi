@@ -100,7 +100,7 @@ pub mod imp {
         #[property(get, set, builder(ListRepeatMode::default()))]
         pub repeat_mode: Cell<ListRepeatMode>,
         #[property(get, set, default_value = false)]
-        pub gapless: RefCell<bool>,
+        pub gapless: Cell<bool>,
 
         pub mpris_server: OnceCell<LocalServer<super::MusicPlayer>>,
     }

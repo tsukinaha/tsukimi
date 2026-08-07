@@ -22,6 +22,7 @@ use crate::{
 
 mod imp {
     use std::cell::{
+        Cell,
         OnceCell,
         RefCell,
     };
@@ -50,7 +51,7 @@ mod imp {
         #[property(get, set)]
         pub imgid: RefCell<String>,
         #[property(get, set, default_value = 0)]
-        pub image_index: RefCell<u8>,
+        pub image_index: Cell<u8>,
 
         #[template_child]
         pub label1: TemplateChild<gtk::Label>,

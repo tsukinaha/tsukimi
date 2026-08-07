@@ -1,16 +1,8 @@
 use std::cell::RefCell;
 
-use adw::prelude::*;
-use glib::Object;
-use gtk::{
-    gio,
-    glib,
-    glib::subclass::types::ObjectSubclassIsExt,
-    template_callbacks,
-};
-use imp::PosterType;
-
 use super::tu_item::{
+    CardOptions,
+    CardShape,
     TuItemBasic,
     TuItemMenuPrelude,
     TuItemOverlay,
@@ -20,11 +12,24 @@ use super::tu_item::{
 };
 use crate::ui::{
     SETTINGS,
-    provider::tu_item::TuItem,
+    provider::tu_item::{
+        TuItem,
+        item_type::*,
+    },
     widgets::utils::{
         TU_ITEM_BANNER_SIZE,
+        TU_ITEM_POST_SIZE,
+        TU_ITEM_SQUARE_SIZE,
         TU_ITEM_VIDEO_SIZE,
     },
+};
+use adw::prelude::*;
+use glib::Object;
+use gtk::{
+    gio,
+    glib,
+    glib::subclass::types::ObjectSubclassIsExt,
+    template_callbacks,
 };
 
 pub mod imp {
@@ -58,16 +63,7 @@ pub mod imp {
         },
     };
 
-    #[derive(Default, Hash, Eq, PartialEq, Clone, Copy, glib::Enum, Debug)]
-    #[repr(u32)]
-    #[enum_type(name = "PosterType")]
-    pub enum PosterType {
-        Backdrop,
-        Banner,
-        #[default]
-        Poster,
-        NoRequest,
-    }
+    use super::CardOptions;
 
     pub struct BackdropNodeCache {
         node: gsk::RenderNode,
@@ -82,8 +78,7 @@ pub mod imp {
     pub struct TuListItem {
         #[property(get, set = Self::set_item)]
         pub item: RefCell<TuItem>,
-        #[property(get, set, builder(PosterType::default()))]
-        pub poster_type: Cell<PosterType>,
+        pub card_options: Cell<CardOptions>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
         pub content_box: TemplateChild<gtk::Box>,
@@ -378,8 +373,11 @@ impl TuItemOverlayPrelude for TuListItem {
         self.imp().overlay.get()
     }
 
-    fn poster_type_ext(&self) -> PosterType {
-        self.poster_type()
+    fn card_options_ext(&self, item: &TuItem) -> CardOptions {
+        CardOptions {
+            shape: self.effective_card_shape(item),
+            ..self.card_options()
+        }
     }
 }
 
@@ -405,6 +403,14 @@ impl Default for TuListItem {
 impl TuListItem {
     pub fn new(item: TuItem) -> Self {
         Object::builder().property("item", item).build()
+    }
+
+    pub fn set_card_options(&self, options: CardOptions) {
+        self.imp().card_options.set(options);
+    }
+
+    fn card_options(&self) -> CardOptions {
+        self.imp().card_options.get()
     }
 
     fn update_title(&self) {
@@ -435,7 +441,7 @@ impl TuListItem {
 
         self.set_picture();
 
-        let (w, h) = self.size_hint();
+        let (w, h) = self.card_size(&item);
 
         //  - - - - - - - - - - - - - - -
         // |      |      |       |
@@ -475,11 +481,26 @@ impl TuListItem {
         }
     }
 
-    fn size_hint(&self) -> (i32, i32) {
-        match self.poster_type() {
-            PosterType::Banner => TU_ITEM_BANNER_SIZE,
-            PosterType::Backdrop => TU_ITEM_VIDEO_SIZE,
-            _ => self.item().size_hint(),
+    fn effective_card_shape(&self, item: &TuItem) -> CardShape {
+        match self.card_options().shape {
+            CardShape::Auto => match item.item_type().as_str() {
+                MOVIE | SERIES | BOX_SET | ACTOR | PERSON | DIRECTOR | WRITER | PRODUCER
+                | GUEST_STAR | SEASON => CardShape::Portrait,
+                VIDEO | MUSIC_VIDEO | ADULT_VIDEO | TV_CHANNEL | COLLECTION_FOLDER | EPISODE
+                | USER_VIEW => CardShape::Backdrop,
+                _ => CardShape::Square,
+            },
+            card_shape => card_shape,
+        }
+    }
+
+    fn card_size(&self, item: &TuItem) -> (i32, i32) {
+        match self.effective_card_shape(item) {
+            CardShape::Auto => unreachable!(),
+            CardShape::Backdrop => TU_ITEM_VIDEO_SIZE,
+            CardShape::Banner => TU_ITEM_BANNER_SIZE,
+            CardShape::Portrait => TU_ITEM_POST_SIZE,
+            CardShape::Square => TU_ITEM_SQUARE_SIZE,
         }
     }
 

@@ -2,6 +2,11 @@ use super::{
     horbu_scrolled::HorbuScrolled,
     item::dt,
     picture_loader::PictureLoader,
+    tu_item::{
+        CardOptions,
+        CardShape,
+        select_picture_source,
+    },
     utils::GlobalToast,
 };
 use crate::{
@@ -162,7 +167,8 @@ pub(crate) mod imp {
             self.actionbox.set_id(Some(obj.item().id()));
             self.selection.set_model(Some(&store));
             self.episode_list.set_factory(Some(
-                SignalListItemFactory::new().tu_overview_item(ViewGroup::EpisodesView),
+                SignalListItemFactory::new()
+                    .tu_overview_item(ViewGroup::EpisodesView, Default::default()),
             ));
             self.episode_list.set_model(Some(&self.selection));
         }
@@ -192,8 +198,16 @@ impl OtherPage {
 
     pub fn setup_pic(&self) {
         let imp = self.imp();
-        let id = self.item().id();
-        let pic = PictureLoader::new(&id, "Primary", None);
+        let Some(source) = select_picture_source(
+            &self.item(),
+            CardOptions {
+                shape: CardShape::Portrait,
+                ..Default::default()
+            },
+        ) else {
+            return;
+        };
+        let pic = PictureLoader::new_for_source(source);
         pic.set_size_request(218, 328);
         pic.set_halign(gtk::Align::Fill);
         pic.set_valign(gtk::Align::Start);

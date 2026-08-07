@@ -633,11 +633,11 @@ impl JellyfinClient {
     }
 
     pub async fn image_request(
-        &self, id: &str, image_type: &str, tag: Option<u8>, etag: Option<String>,
+        &self, id: &str, image_type: &str, image_index: Option<u8>, etag: Option<String>,
     ) -> Result<Response> {
         let mut path = format!("Items/{id}/Images/{image_type}");
-        if let Some(tag) = tag {
-            path.push_str(&format!("/{tag}"));
+        if let Some(image_index) = image_index {
+            path.push_str(&format!("/{image_index}"));
         }
         let params = [
             (
@@ -660,9 +660,16 @@ impl JellyfinClient {
         self.request_picture(&path, &params, etag).await
     }
 
-    pub async fn get_image(&self, id: &str, image_type: &str, tag: Option<u8>) -> Result<String> {
+    pub async fn get_image(
+        &self, id: &str, image_type: &str, image_index: Option<u8>,
+    ) -> Result<String> {
         let mut path = jellyfin_cache_path().await;
-        path.push(format!("{}-{}-{}", id, image_type, tag.unwrap_or(0)));
+        path.push(format!(
+            "{}-{}-{}",
+            id,
+            image_type,
+            image_index.unwrap_or(0)
+        ));
 
         let mut etag: Option<String> = None;
 
@@ -673,7 +680,7 @@ impl JellyfinClient {
                 .and_then(|v| String::from_utf8(v).ok());
         }
 
-        match self.image_request(id, image_type, tag, etag).await {
+        match self.image_request(id, image_type, image_index, etag).await {
             Ok(response) => {
                 if response.status() == reqwest::StatusCode::NOT_MODIFIED {
                     return Ok(path.to_string_lossy().to_string());
@@ -690,11 +697,13 @@ impl JellyfinClient {
 
                 let bytes = response.bytes().await?;
 
-                let path = if bytes.len() > 1000 {
-                    self.save_image(id, image_type, tag, &bytes, etag).await
-                } else {
-                    String::new()
-                };
+                if bytes.is_empty() {
+                    return Ok(String::new());
+                }
+
+                let path = self
+                    .save_image(id, image_type, image_index, &bytes, etag)
+                    .await;
 
                 Ok(path)
             }
@@ -717,29 +726,30 @@ impl JellyfinClient {
     }
 
     pub async fn post_image_url(
-        &self, id: &str, image_type: &str, tag: u8, url: &str,
+        &self, id: &str, image_type: &str, image_index: u8, url: &str,
     ) -> Result<Response> {
-        let path = format!("Items/{id}/Images/{tag}/{image_type}");
+        let path = format!("Items/{id}/Images/{image_index}/{image_type}");
         let body = json!({ "Url": url });
         self.post(&path, &[], body).await
     }
 
     pub async fn delete_image(
-        &self, id: &str, image_type: &str, tag: Option<u8>,
+        &self, id: &str, image_type: &str, image_index: Option<u8>,
     ) -> Result<Response> {
         let mut path = format!("Items/{id}/Images/{image_type}");
-        if let Some(tag) = tag {
-            path.push_str(&format!("/{tag}"));
+        if let Some(image_index) = image_index {
+            path.push_str(&format!("/{image_index}"));
         }
         path.push_str("/Delete");
         self.post(&path, &[], json!({})).await
     }
 
     pub async fn save_image(
-        &self, id: &str, image_type: &str, tag: Option<u8>, bytes: &[u8], etag: Option<String>,
+        &self, id: &str, image_type: &str, image_index: Option<u8>, bytes: &[u8],
+        etag: Option<String>,
     ) -> String {
         let cache_path = jellyfin_cache_path().await;
-        let path = format!("{}-{}-{}", id, image_type, tag.unwrap_or(0));
+        let path = format!("{}-{}-{}", id, image_type, image_index.unwrap_or(0));
         let path = cache_path.join(path);
         tokio::fs::write(&path, bytes).await.unwrap();
         if let Some(etag) = etag {

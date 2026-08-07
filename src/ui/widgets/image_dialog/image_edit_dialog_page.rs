@@ -43,7 +43,7 @@ mod imp {
         #[property(get, set, construct_only)]
         pub image_type: OnceCell<String>,
         #[property(get, set, construct_only)]
-        pub image_tag: OnceCell<u8>,
+        pub image_index: OnceCell<u8>,
 
         #[template_child]
         pub url_check_button: TemplateChild<gtk::CheckButton>,
@@ -97,11 +97,11 @@ use anyhow::{
 
 #[template_callbacks]
 impl ImageDialogEditPage {
-    pub fn new(id: &str, image_type: &str, image_tag: u8) -> Self {
+    pub fn new(id: &str, image_type: &str, image_index: u8) -> Self {
         glib::Object::builder()
             .property("id", id)
             .property("image-type", image_type)
-            .property("image-tag", image_tag)
+            .property("image-index", image_index)
             .build()
     }
 
@@ -161,11 +161,11 @@ impl ImageDialogEditPage {
 
         let result = if self.imp().url_check_button.is_active() {
             let url = self.imp().entry.text().to_string();
-            let image_tag = self.image_tag();
+            let image_index = self.image_index();
 
             spawn_tokio(async move {
                 JELLYFIN_CLIENT
-                    .post_image_url(&id, &image_type, image_tag, &url)
+                    .post_image_url(&id, &image_type, image_index, &url)
                     .await
             })
             .await

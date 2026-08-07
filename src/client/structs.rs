@@ -315,8 +315,16 @@ pub struct SimpleListItem {
     pub season_name: Option<String>,
     #[serde(rename = "ParentBackdropItemId")]
     pub parent_backdrop_item_id: Option<String>,
+    #[serde(rename = "ParentBackdropImageTags")]
+    pub parent_backdrop_image_tags: Option<Vec<String>>,
+    #[serde(rename = "ParentLogoItemId")]
+    pub parent_logo_item_id: Option<String>,
+    #[serde(rename = "ParentLogoImageTag")]
+    pub parent_logo_image_tag: Option<String>,
     #[serde(rename = "ParentThumbItemId")]
     pub parent_thumb_item_id: Option<String>,
+    #[serde(rename = "ParentThumbImageTag")]
+    pub parent_thumb_image_tag: Option<String>,
     #[serde(rename = "PlayedPercentage")]
     pub played_percentage: Option<f64>,
     #[serde(rename = "ImageUrl")]
@@ -333,12 +341,26 @@ pub struct SimpleListItem {
     pub artists: Option<Vec<String>>,
     #[serde(rename = "AlbumId")]
     pub album_id: Option<String>,
+    #[serde(rename = "AlbumPrimaryImageTag")]
+    pub album_primary_image_tag: Option<String>,
     #[serde(rename = "Role")]
     pub role: Option<String>,
     #[serde(rename = "RunTimeTicks")]
     pub run_time_ticks: Option<u64>,
     #[serde(rename = "PrimaryImageItemId")]
     pub primary_image_item_id: Option<String>,
+    #[serde(rename = "PrimaryImageTag")]
+    pub primary_image_tag: Option<String>,
+    #[serde(rename = "ParentPrimaryImageItemId")]
+    pub parent_primary_image_item_id: Option<String>,
+    #[serde(rename = "ParentPrimaryImageTag")]
+    pub parent_primary_image_tag: Option<String>,
+    #[serde(rename = "SeriesPrimaryImageTag")]
+    pub series_primary_image_tag: Option<String>,
+    #[serde(rename = "SeriesThumbImageTag")]
+    pub series_thumb_image_tag: Option<String>,
+    #[serde(rename = "ChildCount")]
+    pub child_count: Option<u32>,
     #[serde(rename = "BackdropImageTags")]
     pub backdrop_image_tags: Option<Vec<String>>,
     #[serde(rename = "PrimaryImageAspectRatio")]
@@ -415,8 +437,6 @@ pub struct ImageTags {
     pub thumb: Option<String>,
     #[serde(rename = "Banner")]
     pub banner: Option<String>,
-    #[serde(rename = "Backdrop")]
-    pub backdrop: Option<String>,
     #[serde(rename = "Logo")]
     pub logo: Option<String>,
 }
@@ -658,7 +678,6 @@ use gtk::glib;
 
 use super::jellyfin_client::JELLYFIN_CLIENT;
 use crate::ui::widgets::{
-    hortu_scrolled::UnifySize,
     single_grid::SingleGrid,
     window::Window,
 };
@@ -669,7 +688,6 @@ impl SGTitem {
         T: gtk::prelude::WidgetExt + glib::clone::Downgrade,
     {
         let page = SingleGrid::new();
-        page.set_unify_size(UnifySize::Majority);
         let id = self.id.to_string();
         let list_type_clone = list_type.to_owned();
         page.connect_sort_changed_tokio(move |sort_by, sort_order, filters_list| {
