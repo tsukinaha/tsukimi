@@ -44,6 +44,8 @@ mod imp {
         pub id: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         pub series_id: RefCell<Option<String>>,
+        #[property(get, set)]
+        pub item_type: RefCell<String>,
         #[property(get, set, construct, default = false)]
         pub is_playable: Cell<bool>,
         #[property(get, set, default = false)]
@@ -155,7 +157,7 @@ impl ItemActionsBox {
                     };
                     let id = obj.target_id();
                     if let Some(id) = id {
-                        let dialog = ImageDialog::new(&id);
+                        let dialog = ImageDialog::new(&id, &obj.item_type());
                         insert_editm_dialog!(obj, dialog);
                     }
                 }

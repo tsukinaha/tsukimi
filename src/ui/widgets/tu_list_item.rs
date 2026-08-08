@@ -16,12 +16,6 @@ use crate::ui::{
         TuItem,
         item_type::*,
     },
-    widgets::utils::{
-        TU_ITEM_BANNER_SIZE,
-        TU_ITEM_POST_SIZE,
-        TU_ITEM_SQUARE_SIZE,
-        TU_ITEM_VIDEO_SIZE,
-    },
 };
 use adw::prelude::*;
 use glib::Object;
@@ -441,7 +435,7 @@ impl TuListItem {
 
         self.set_picture();
 
-        let (w, h) = self.card_size(&item);
+        let (w, h) = self.effective_card_shape(&item).size();
 
         //  - - - - - - - - - - - - - - -
         // |      |      |       |
@@ -491,16 +485,6 @@ impl TuListItem {
                 _ => CardShape::Square,
             },
             card_shape => card_shape,
-        }
-    }
-
-    fn card_size(&self, item: &TuItem) -> (i32, i32) {
-        match self.effective_card_shape(item) {
-            CardShape::Auto => unreachable!(),
-            CardShape::Backdrop => TU_ITEM_VIDEO_SIZE,
-            CardShape::Banner => TU_ITEM_BANNER_SIZE,
-            CardShape::Portrait => TU_ITEM_POST_SIZE,
-            CardShape::Square => TU_ITEM_SQUARE_SIZE,
         }
     }
 

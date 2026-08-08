@@ -110,8 +110,8 @@ pub(crate) mod imp {
                 "song.editi",
                 None,
                 |window, _action, _parameter| async move {
-                    let id = window.item().id();
-                    let dialog = ImageDialog::new(&id);
+                    let item = window.item();
+                    let dialog = ImageDialog::new(&item.id(), &item.item_type());
                     insert_editm_dialog!(window, dialog);
                 },
             );

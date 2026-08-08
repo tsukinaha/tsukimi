@@ -13,10 +13,7 @@ pub enum PictureSource {
         id: String,
         tag: String,
     },
-    Url {
-        image_type: String,
-        url: String,
-    },
+    Url { url: String },
 }
 
 impl PictureSource {

@@ -173,6 +173,7 @@ impl AlbumPage {
         let imp = self.imp();
 
         imp.actionbox.set_id(Some(item.id()));
+        imp.actionbox.set_item_type(item.item_type());
 
         if item.is_favorite() {
             imp.actionbox.set_btn_active(true);

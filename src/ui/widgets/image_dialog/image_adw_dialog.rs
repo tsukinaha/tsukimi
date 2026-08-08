@@ -10,7 +10,10 @@ use crate::{
         error::UserFacingError,
         jellyfin_client::JELLYFIN_CLIENT,
     },
-    ui::GlobalToast,
+    ui::{
+        GlobalToast,
+        provider::tu_item::image_type::BACKDROP,
+    },
     utils::spawn_tokio,
 };
 
@@ -40,6 +43,8 @@ mod imp {
     pub struct ImagesDialog {
         #[property(get, set, construct_only)]
         pub id: OnceCell<String>,
+        #[property(get, set, construct_only)]
+        pub item_type: OnceCell<String>,
 
         #[template_child]
         pub hint: TemplateChild<adw::ActionRow>,
@@ -193,8 +198,11 @@ impl ImagesDialog {
     const LOADING_STACK_PAGE: &'static str = "loading";
     const VIEW_STACK_PAGE: &'static str = "view";
 
-    pub fn new(id: &str) -> Self {
-        glib::Object::builder().property("id", id).build()
+    pub fn new(id: &str, item_type: &str) -> Self {
+        glib::Object::builder()
+            .property("id", id)
+            .property("item-type", item_type)
+            .build()
     }
 
     pub fn loading_page(&self) {
@@ -239,7 +247,7 @@ impl ImagesDialog {
 
     #[template_callback]
     fn on_backdrop_search_clicked(&self) {
-        let page = super::ImageDialogSearchPage::new(&self.id(), "Backdrop");
+        let page = super::ImageDialogSearchPage::new(&self.id(), BACKDROP, &self.item_type());
         self.imp().view.push(&page);
     }
 

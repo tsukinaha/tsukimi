@@ -12,12 +12,26 @@ use crate::{
     ui::{
         provider::tu_item::{
             TuItem,
+            image_type::{
+                BACKDROP,
+                BANNER,
+                PRIMARY,
+                THUMB,
+            },
             item_type::{
                 EPISODE,
                 SEASON,
             },
         },
-        widgets::picture_loader::PictureLoader,
+        widgets::{
+            picture_loader::PictureLoader,
+            utils::{
+                TU_ITEM_BANNER_SIZE,
+                TU_ITEM_POST_SIZE,
+                TU_ITEM_SQUARE_SIZE,
+                TU_ITEM_VIDEO_SIZE,
+            },
+        },
     },
 };
 
@@ -43,6 +57,16 @@ pub struct CardOptions {
 }
 
 impl CardShape {
+    pub fn size(self) -> (i32, i32) {
+        match self {
+            Self::Auto => unreachable!(),
+            Self::Backdrop => TU_ITEM_VIDEO_SIZE,
+            Self::Banner => TU_ITEM_BANNER_SIZE,
+            Self::Portrait => TU_ITEM_POST_SIZE,
+            Self::Square => TU_ITEM_SQUARE_SIZE,
+        }
+    }
+
     fn is_wide(self) -> bool {
         matches!(self, Self::Backdrop | Self::Banner)
     }
@@ -102,9 +126,9 @@ fn tagged_source(
 
 pub fn select_backdrop_picture_source(item: &TuItem) -> Option<PictureSource> {
     if item.item_type() == EPISODE {
-        parent_backdrop_source(item).or_else(|| current_source(item, "Backdrop", Some(0)))
+        parent_backdrop_source(item).or_else(|| current_source(item, BACKDROP, Some(0)))
     } else {
-        current_source(item, "Backdrop", Some(0))
+        current_source(item, BACKDROP, Some(0))
     }
 }
 
@@ -113,10 +137,10 @@ fn current_source(
 ) -> Option<PictureSource> {
     let image_tags = item.image_tags()?;
     let tag = match image_type {
-        "Primary" => image_tags.primary(),
-        "Thumb" => image_tags.thumb(),
-        "Backdrop" => image_tags.backdrop(),
-        "Banner" => image_tags.banner(),
+        PRIMARY => image_tags.primary(),
+        THUMB => image_tags.thumb(),
+        BACKDROP => image_tags.backdrop(),
+        BANNER => image_tags.banner(),
         _ => None,
     };
     tagged_source(Some(item.id()), tag, image_type, image_index)
@@ -126,7 +150,7 @@ fn parent_thumb_source(item: &TuItem) -> Option<PictureSource> {
     tagged_source(
         item.parent_thumb_item_id(),
         item.parent_thumb_image_tag(),
-        "Thumb",
+        THUMB,
         None,
     )
 }
@@ -135,7 +159,7 @@ fn parent_backdrop_source(item: &TuItem) -> Option<PictureSource> {
     tagged_source(
         item.parent_backdrop_item_id(),
         item.parent_backdrop_image_tag(),
-        "Backdrop",
+        BACKDROP,
         Some(0),
     )
 }
@@ -144,7 +168,7 @@ fn primary_image_source(item: &TuItem) -> Option<PictureSource> {
     tagged_source(
         Some(item.primary_image_item_id().unwrap_or_else(|| item.id())),
         item.primary_image_tag(),
-        "Primary",
+        PRIMARY,
         None,
     )
 }
@@ -153,7 +177,7 @@ fn parent_primary_source(item: &TuItem) -> Option<PictureSource> {
     tagged_source(
         item.parent_primary_image_item_id(),
         item.parent_primary_image_tag(),
-        "Primary",
+        PRIMARY,
         None,
     )
 }
@@ -162,7 +186,7 @@ fn series_primary_source(item: &TuItem) -> Option<PictureSource> {
     tagged_source(
         item.series_id(),
         item.series_primary_image_tag(),
-        "Primary",
+        PRIMARY,
         None,
     )
 }
@@ -171,7 +195,7 @@ fn series_thumb_source(item: &TuItem) -> Option<PictureSource> {
     tagged_source(
         item.series_id(),
         item.series_thumb_image_tag(),
-        "Thumb",
+        THUMB,
         None,
     )
 }
@@ -180,17 +204,14 @@ fn album_primary_source(item: &TuItem) -> Option<PictureSource> {
     tagged_source(
         item.album_id(),
         item.album_primary_image_tag(),
-        "Primary",
+        PRIMARY,
         None,
     )
 }
 
 pub fn select_picture_source(item: &TuItem, options: CardOptions) -> Option<PictureSource> {
     if let Some(url) = item.image_url().filter(|url| !url.trim().is_empty()) {
-        return Some(PictureSource::Url {
-            image_type: "Primary".to_string(),
-            url,
-        });
+        return Some(PictureSource::Url { url });
     }
 
     let CardOptions {
@@ -199,12 +220,12 @@ pub fn select_picture_source(item: &TuItem, options: CardOptions) -> Option<Pict
         prefer_parent_poster,
     } = options;
 
-    if prefer_thumb && let Some(source) = current_source(item, "Thumb", None) {
+    if prefer_thumb && let Some(source) = current_source(item, THUMB, None) {
         return Some(source);
     }
 
     if card_shape == CardShape::Banner
-        && let Some(source) = current_source(item, "Banner", None)
+        && let Some(source) = current_source(item, BANNER, None)
     {
         return Some(source);
     }
@@ -217,7 +238,7 @@ pub fn select_picture_source(item: &TuItem, options: CardOptions) -> Option<Pict
         return Some(source);
     }
 
-    if prefer_thumb && let Some(source) = current_source(item, "Backdrop", Some(0)) {
+    if prefer_thumb && let Some(source) = current_source(item, BACKDROP, Some(0)) {
         return Some(source);
     }
 
@@ -237,7 +258,7 @@ pub fn select_picture_source(item: &TuItem, options: CardOptions) -> Option<Pict
     }
 
     if (item.item_type() != EPISODE || item.imp().child_count.get() != Some(0))
-        && let Some(source) = current_source(item, "Primary", None)
+        && let Some(source) = current_source(item, PRIMARY, None)
     {
         return Some(source);
     }
@@ -261,13 +282,13 @@ pub fn select_picture_source(item: &TuItem, options: CardOptions) -> Option<Pict
     }
 
     if item.item_type() == SEASON
-        && let Some(source) = current_source(item, "Thumb", None)
+        && let Some(source) = current_source(item, THUMB, None)
     {
         return Some(source);
     }
 
-    current_source(item, "Backdrop", Some(0))
-        .or_else(|| current_source(item, "Thumb", None))
+    current_source(item, BACKDROP, Some(0))
+        .or_else(|| current_source(item, THUMB, None))
         .or_else(|| series_thumb_source(item))
         .or_else(|| parent_thumb_source(item))
         .or_else(|| parent_backdrop_source(item))

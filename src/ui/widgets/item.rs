@@ -30,7 +30,13 @@ use crate::{
                 DropdownList,
                 DropdownListBuilder,
             },
-            tu_item::TuItem,
+            tu_item::{
+                TuItem,
+                item_type::{
+                    EPISODE,
+                    SERIES,
+                },
+            },
             tu_object::TuObject,
         },
         widgets::tu_item::select_backdrop_picture_source,
@@ -326,7 +332,7 @@ impl ItemPage {
             imp.line1.set_text(&item.name());
         }
 
-        if type_ == "Series" {
+        if type_ == SERIES {
             let series_id = item.id();
 
             if let Some(item) = self.set_shows_next_up(&series_id).await {
@@ -348,9 +354,10 @@ impl ItemPage {
             }
 
             self.imp().actionbox.set_id(Some(series_id.to_owned()));
+            self.imp().actionbox.set_item_type(type_);
             self.setup_item(&series_id, backdrop_source).await;
             self.setup_seasons(&series_id).await;
-        } else if type_ == "Episode" && item.series_name().is_some() {
+        } else if type_ == EPISODE && item.series_name().is_some() {
             let series_id = item.series_id().unwrap_or(item.id());
             self.set_current_item(Some(&item));
             spawn(glib::clone!(
@@ -364,6 +371,7 @@ impl ItemPage {
             ));
 
             self.imp().actionbox.set_id(Some(series_id.to_owned()));
+            self.imp().actionbox.set_item_type(SERIES);
             self.setup_item(&series_id, backdrop_source).await;
             self.setup_seasons(&series_id).await;
         } else {
@@ -378,6 +386,7 @@ impl ItemPage {
             ));
 
             self.imp().actionbox.set_id(Some(id.to_owned()));
+            self.imp().actionbox.set_item_type(type_);
             self.setup_item(&id, backdrop_source).await;
         }
     }

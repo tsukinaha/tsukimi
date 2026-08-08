@@ -17,7 +17,27 @@ mod imp {
     };
     use gtk::prelude::*;
 
-    use crate::ui::widgets::picture_loader::PictureLoader;
+    use crate::ui::{
+        provider::tu_item::{
+            image_type::{
+                ART,
+                BACKDROP,
+                BANNER,
+                DISC,
+                LOGO,
+                THUMB,
+            },
+            item_type::{
+                EPISODE,
+                MUSIC_ALBUM,
+                MUSIC_ARTIST,
+            },
+        },
+        widgets::{
+            picture_loader::PictureLoader,
+            tu_item::CardShape,
+        },
+    };
 
     use super::*;
 
@@ -77,8 +97,19 @@ mod imp {
                 self.label3.set_visible(true);
             }
             if let Some(url) = item.image_url().or(item.image_original_url()) {
-                let picture_loader =
-                    PictureLoader::new_for_url(&item.image_type().unwrap_or_default(), &url);
+                let shape = match item.image_type().as_deref() {
+                    Some(BACKDROP | ART | THUMB | LOGO) => CardShape::Backdrop,
+                    Some(BANNER) => CardShape::Banner,
+                    Some(DISC) => CardShape::Square,
+                    _ => match item.item_type().as_deref() {
+                        Some(EPISODE) => CardShape::Backdrop,
+                        Some(MUSIC_ALBUM | MUSIC_ARTIST) => CardShape::Square,
+                        _ => CardShape::Portrait,
+                    },
+                };
+                let size = shape.size();
+                let picture_loader = PictureLoader::new_for_url(&url);
+                picture_loader.set_size_request(size.0, size.1);
                 self.picture_container.append(&picture_loader);
             }
             self.item.replace(item);

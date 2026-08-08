@@ -20,6 +20,8 @@ use crate::{
     utils::spawn_tokio,
 };
 
+use super::ImageDialogNavigtion;
+
 mod imp {
     use std::cell::{
         Cell,
@@ -178,8 +180,14 @@ impl ImageInfoCard {
     }
 
     fn on_search(&self) {
-        if let Some(view) = self.navigation_view() {
-            let page = super::ImageDialogSearchPage::new(&self.imgid(), &self.imgtype());
+        if let Some(view) = self.navigation_view()
+            && let Some(dialog) = self.image_dialog()
+        {
+            let page = super::ImageDialogSearchPage::new(
+                &self.imgid(),
+                &self.imgtype(),
+                &dialog.item_type(),
+            );
             view.push(&page);
         }
     }

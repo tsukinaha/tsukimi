@@ -1,12 +1,6 @@
 use std::sync::LazyLock;
 
-use super::{
-    image_paintable::paintable_from_file,
-    utils::{
-        TU_ITEM_POST_SIZE,
-        TU_ITEM_VIDEO_SIZE,
-    },
-};
+use super::image_paintable::paintable_from_file;
 use crate::{
     client::picture_source::PictureSource,
     utils::{
@@ -134,9 +128,8 @@ glib::wrapper! {
 }
 
 impl PictureLoader {
-    pub fn new_for_url(image_type: &str, url: &str) -> Self {
+    pub fn new_for_url(url: &str) -> Self {
         Self::new_for_source(PictureSource::Url {
-            image_type: image_type.to_string(),
             url: url.to_string(),
         })
     }
@@ -157,9 +150,8 @@ impl PictureLoader {
                 obj.imp().image_index.replace(image_index);
                 obj
             }
-            PictureSource::Url { image_type, url } => glib::Object::builder()
+            PictureSource::Url { url } => glib::Object::builder()
                 .property("id", "")
-                .property("imagetype", image_type)
                 .property("url", url)
                 .build(),
             PictureSource::User { .. } => unreachable!(),
@@ -167,9 +159,8 @@ impl PictureLoader {
         obj
     }
 
-    pub fn reload_for_url(&self, image_type: &str, url: &str) {
+    pub fn reload_for_url(&self, url: &str) {
         self.reload_source(PictureSource::Url {
-            image_type: image_type.to_string(),
             url: url.to_string(),
         });
     }
@@ -189,9 +180,8 @@ impl PictureLoader {
                 self.imp().image_index.replace(*image_index);
                 self.set_url(None::<String>);
             }
-            PictureSource::Url { image_type, url } => {
+            PictureSource::Url { url } => {
                 self.set_id("");
-                self.set_imagetype(image_type.as_str());
                 self.imp().image_index.replace(None);
                 self.set_url(Some(url.as_str()));
             }
@@ -228,9 +218,6 @@ impl PictureLoader {
 
     fn load_source(&self, source: PictureSource) {
         let load_token = self.new_request();
-        if let PictureSource::Url { image_type, .. } = &source {
-            self.configure_picture_size(image_type);
-        }
         let weak_self = self.downgrade();
         spawn(async move {
             let paintable = Self::load_paintable(load_token.clone(), source).await;
@@ -267,15 +254,6 @@ impl PictureLoader {
         generation
     }
 
-    fn configure_picture_size(&self, image_type: &str) {
-        let size = match image_type {
-            "Primary" => &TU_ITEM_POST_SIZE,
-            _ => &TU_ITEM_VIDEO_SIZE,
-        };
-        self.imp().picture.set_width_request(size.0);
-        self.imp().picture.set_height_request(size.1);
-    }
-
     async fn load_paintable(
         load_token: LoadToken, source: PictureSource,
     ) -> Result<gdk::Paintable> {
@@ -304,10 +282,7 @@ impl PictureLoader {
 
     fn image_source(&self) -> PictureSource {
         if let Some(url) = self.url() {
-            PictureSource::Url {
-                image_type: self.imagetype(),
-                url,
-            }
+            PictureSource::Url { url }
         } else {
             PictureSource::Item {
                 id: self.id(),
