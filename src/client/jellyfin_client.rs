@@ -33,12 +33,7 @@ use reqwest::{
     Method,
     RequestBuilder,
     Response,
-    StatusCode,
-    header::{
-        ETAG,
-        HeaderValue,
-        IF_NONE_MATCH,
-    },
+    header::HeaderValue,
 };
 use serde::{
     Deserialize,
@@ -95,7 +90,6 @@ use crate::{
 };
 
 pub static JELLYFIN_CLIENT: Lazy<JellyfinClient> = Lazy::new(JellyfinClient::default);
-static EXTERNAL_IMAGE_CLIENT: Lazy<Client> = Lazy::new(ReqClient::build);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| {
     let uuid = SETTINGS.device_uuid();
     if uuid.is_empty() {
@@ -180,44 +174,6 @@ fn generate_hash(s: &str) -> String {
     let mut hasher = fnv::FnvHasher::default();
     hasher.write(s.as_bytes());
     format!("{:x}", hasher.finish())
-}
-
-async fn download_external_image(url: &str, path: PathBuf) -> Result<PathBuf> {
-    let etag_path = path.with_extension("etag");
-    let etag = tokio::fs::read_to_string(&etag_path).await.ok();
-
-    let mut request = EXTERNAL_IMAGE_CLIENT.get(url);
-    if let Some(etag) = etag {
-        request = request.header(IF_NONE_MATCH, etag);
-    }
-    let response = request.send().await?;
-
-    if response.status() == StatusCode::NOT_MODIFIED {
-        return Ok(path);
-    }
-    if response.status() == StatusCode::NOT_FOUND {
-        let _ = tokio::fs::remove_file(&etag_path).await;
-        let _ = tokio::fs::remove_file(&path).await;
-        bail!("image not found");
-    }
-    let response = response.error_for_status()?;
-    let etag = response
-        .headers()
-        .get(ETAG)
-        .and_then(|etag| etag.to_str().ok())
-        .map(str::to_owned);
-
-    let bytes = response.bytes().await?;
-    if bytes.is_empty() {
-        bail!("image is empty");
-    }
-    tokio::fs::write(&path, bytes).await?;
-    if let Some(etag) = etag {
-        let _ = tokio::fs::write(etag_path, etag).await;
-    } else {
-        let _ = tokio::fs::remove_file(etag_path).await;
-    }
-    Ok(path)
 }
 
 impl Default for JellyfinClient {
@@ -677,10 +633,6 @@ impl JellyfinClient {
     pub async fn get_image(&self, source: &PictureSource) -> Result<PathBuf> {
         let mut path = jellyfin_cache_path().await;
         path.push(source.cache_key());
-
-        if let PictureSource::Url { url, .. } = source {
-            return download_external_image(url, path).await;
-        }
 
         if tokio::fs::metadata(&path)
             .await
