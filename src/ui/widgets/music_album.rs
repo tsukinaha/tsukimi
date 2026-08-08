@@ -35,16 +35,22 @@ use crate::{
             core_song::CoreSong,
             tu_item::TuItem,
         },
-        widgets::song_widget::{
-            SongWidget,
-            State,
+        widgets::{
+            song_widget::{
+                SongWidget,
+                State,
+            },
+            tu_item::{
+                CardOptions,
+                select_picture_source,
+            },
         },
     },
     utils::{
         CacheEvent,
         CachePolicy,
         fetch_with_cache,
-        get_image_with_cache,
+        resolve_picture_file,
         spawn,
     },
 };
@@ -194,31 +200,20 @@ impl AlbumPage {
             imp.released_label.set_text(&release);
         }
 
-        let path = if let Some(image_tags) = item.primary_image_item_id() {
-            get_image_with_cache(image_tags, "Primary".to_string(), None)
-                .await
-                .unwrap_or_default()
-        } else {
-            get_image_with_cache(item.id(), "Primary".to_string(), None)
-                .await
-                .unwrap_or_default()
-        };
+        if let Some(source) = select_picture_source(&item, CardOptions::default())
+            && let Ok(image) = resolve_picture_file(source).await
+        {
+            imp.cover_image.set_file(Some(&image));
 
-        if !std::path::PathBuf::from(&path).is_file() {
-            return;
+            spawn(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                async move {
+                    let window = obj.root().and_downcast::<super::window::Window>().unwrap();
+                    window.set_rootpic(image);
+                }
+            ));
         }
-
-        let image = gtk::gio::File::for_path(path);
-        imp.cover_image.set_file(Some(&image));
-
-        spawn(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            async move {
-                let window = obj.root().and_downcast::<super::window::Window>().unwrap();
-                window.set_rootpic(image);
-            }
-        ));
     }
 
     pub async fn get_songs(&self) {

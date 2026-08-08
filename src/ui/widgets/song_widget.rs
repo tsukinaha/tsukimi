@@ -16,7 +16,13 @@ use crate::{
             core_song::CoreSong,
             tu_item::TuItem,
         },
-        widgets::picture_loader::PictureLoader,
+        widgets::{
+            picture_loader::PictureLoader,
+            tu_item::{
+                CardOptions,
+                select_picture_source,
+            },
+        },
     },
     utils::spawn,
 };
@@ -122,8 +128,6 @@ pub(crate) mod imp {
             self.parent_constructed();
 
             let obj = self.obj();
-            obj.set_up();
-
             let core_song = self.obj().coresong();
 
             let item = obj.item();
@@ -133,12 +137,9 @@ pub(crate) mod imp {
             core_song.set_artist(item.albumartist_name());
             core_song.set_name(item.name());
             core_song.set_id(item.id());
-            if let Some(image_tags) = item.image_tags()
-                && image_tags.primary().is_some()
-            {
-                core_song.set_have_single_track_image(true);
-            }
+            core_song.set_image_source(select_picture_source(&item, CardOptions::default()));
             core_song.set_duration(item.run_time_ticks() / 10000000);
+            obj.set_up();
             obj.bind(&core_song);
         }
     }
@@ -201,13 +202,10 @@ impl SongWidget {
         if view_type == SongWidgetView::MusicAlbumItem {
             imp.cover_container.set_visible(false);
         } else {
-            let picture_loader = if let Some(image_tags) = item.primary_image_item_id() {
-                PictureLoader::new(&image_tags, "Primary", None)
-            } else {
-                PictureLoader::new(&item.id(), "Primary", None)
-            };
-
-            imp.cover_container.append(&picture_loader);
+            if let Some(source) = self.coresong().image_source() {
+                let picture_loader = PictureLoader::new_for_source(source);
+                imp.cover_container.append(&picture_loader);
+            }
             imp.number_label.set_visible(false);
         }
 

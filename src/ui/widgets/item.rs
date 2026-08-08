@@ -17,6 +17,7 @@ use crate::{
     client::{
         error::UserFacingError,
         jellyfin_client::JELLYFIN_CLIENT,
+        picture_source::PictureSource,
         structs::*,
     },
     ui::{
@@ -32,12 +33,13 @@ use crate::{
             tu_item::TuItem,
             tu_object::TuObject,
         },
+        widgets::tu_item::select_backdrop_picture_source,
     },
     utils::{
         CacheEvent,
         CachePolicy,
         fetch_with_cache,
-        get_image_with_cache,
+        resolve_picture_file,
         spawn,
         spawn_tokio,
     },
@@ -315,6 +317,7 @@ impl ItemPage {
     pub async fn setup(&self) {
         let item = self.item();
         let type_ = item.item_type();
+        let backdrop_source = select_backdrop_picture_source(&item);
         let imp = self.imp();
 
         if let Some(series_name) = item.series_name() {
@@ -345,7 +348,7 @@ impl ItemPage {
             }
 
             self.imp().actionbox.set_id(Some(series_id.to_owned()));
-            self.setup_item(&series_id).await;
+            self.setup_item(&series_id, backdrop_source).await;
             self.setup_seasons(&series_id).await;
         } else if type_ == "Episode" && item.series_name().is_some() {
             let series_id = item.series_id().unwrap_or(item.id());
@@ -361,7 +364,7 @@ impl ItemPage {
             ));
 
             self.imp().actionbox.set_id(Some(series_id.to_owned()));
-            self.setup_item(&series_id).await;
+            self.setup_item(&series_id, backdrop_source).await;
             self.setup_seasons(&series_id).await;
         } else {
             let id = item.id();
@@ -375,7 +378,7 @@ impl ItemPage {
             ));
 
             self.imp().actionbox.set_id(Some(id.to_owned()));
-            self.setup_item(&id).await;
+            self.setup_item(&id, backdrop_source).await;
         }
     }
 
@@ -403,10 +406,12 @@ impl ItemPage {
         }
     }
 
-    async fn setup_item(&self, id: &str) {
+    async fn setup_item(&self, id: &str, backdrop_source: Option<PictureSource>) {
         let id = id.to_string();
 
-        self.setup_background(&id).await;
+        if let Some(backdrop_source) = backdrop_source {
+            self.setup_background(backdrop_source).await;
+        }
         self.set_overview(&id).await;
         self.set_lists(&id).await;
     }
@@ -789,49 +794,48 @@ impl ItemPage {
         }
     }
 
-    pub async fn setup_background(&self, id: &str) {
+    pub async fn setup_background(&self, source: PictureSource) {
         let imp = self.imp();
 
         let backdrop = imp.carousel.imp().backdrop.get();
-        let path = get_image_with_cache(id.to_string(), "Backdrop".to_string(), Some(0))
-            .await
-            .unwrap_or_default();
-        let file = gtk::gio::File::for_path(&path);
-        backdrop.set_file(Some(&file));
-        self.imp()
-            .carousel
-            .imp()
-            .backrevealer
-            .set_reveal_child(true);
-        spawn(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            async move {
-                let Some(window) = obj.root().and_downcast::<super::window::Window>() else {
-                    return;
-                };
-                window.set_rootpic(file);
-            }
-        ));
+        if let Ok(file) = resolve_picture_file(source).await {
+            backdrop.set_file(Some(&file));
+            self.imp()
+                .carousel
+                .imp()
+                .backrevealer
+                .set_reveal_child(true);
+            spawn(glib::clone!(
+                #[weak(rename_to = obj)]
+                self,
+                async move {
+                    if let Some(window) = obj.root().and_downcast::<super::window::Window>() {
+                        window.set_rootpic(file);
+                    }
+                }
+            ));
+        }
     }
 
     pub async fn add_backdrops(&self, image_tags: Vec<String>, id: &str) {
         let imp = self.imp();
-        let tags = image_tags.len();
         let carousel = imp.carousel.imp().carousel.get();
-        for tag_num in 1..tags {
-            let path =
-                get_image_with_cache(id.to_string(), "Backdrop".to_string(), Some(tag_num as u8))
-                    .await
-                    .unwrap_or_default();
-            let file = gtk::gio::File::for_path(&path);
-            let picture = gtk::Picture::builder()
-                .halign(gtk::Align::Fill)
-                .valign(gtk::Align::Fill)
-                .content_fit(gtk::ContentFit::Cover)
-                .file(&file)
-                .build();
-            carousel.append(&picture);
+        for (tag_num, tag) in image_tags.into_iter().enumerate().skip(1) {
+            let source = PictureSource::Item {
+                id: id.to_string(),
+                tag,
+                image_type: "Backdrop".to_string(),
+                image_index: Some(tag_num as u8),
+            };
+            if let Ok(file) = resolve_picture_file(source).await {
+                let picture = gtk::Picture::builder()
+                    .halign(gtk::Align::Fill)
+                    .valign(gtk::Align::Fill)
+                    .content_fit(gtk::ContentFit::Cover)
+                    .file(&file)
+                    .build();
+                carousel.append(&picture);
+            }
         }
     }
 
@@ -890,23 +894,31 @@ impl ItemPage {
     pub async fn set_logo(&self, item: &SimpleListItem) {
         let logo_bin = self.imp().logo_bin.get();
 
-        let logo_id = item
+        let logo_source = item
             .image_tags
             .as_ref()
-            .and_then(|tags| tags.logo.as_deref())
-            .map(|_| item.id.as_str())
+            .and_then(|tags| tags.logo.clone())
+            .map(|tag| PictureSource::Item {
+                id: item.id.clone(),
+                tag,
+                image_type: "Logo".to_string(),
+                image_index: None,
+            })
             .or_else(|| {
-                item.parent_logo_image_tag.as_ref()?;
-                item.parent_logo_item_id.as_deref()
+                Some(PictureSource::Item {
+                    id: item.parent_logo_item_id.clone()?,
+                    tag: item.parent_logo_image_tag.clone()?,
+                    image_type: "Logo".to_string(),
+                    image_index: None,
+                })
             });
 
-        let Some(logo_id) = logo_id else {
+        if let Some(logo_source) = logo_source {
+            let logo = super::logo::set_logo(logo_source).await;
+            logo_bin.set_child(Some(&logo));
+        } else {
             logo_bin.set_child(None::<&gtk::Widget>);
-            return;
-        };
-
-        let logo = super::logo::set_logo(logo_id.to_string(), "Logo", None).await;
-        logo_bin.set_child(Some(&logo));
+        }
     }
 
     pub async fn set_overview(&self, id: &str) {

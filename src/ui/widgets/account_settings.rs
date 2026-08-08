@@ -14,6 +14,7 @@ use crate::{
         },
     },
     utils::{
+        resolve_picture_file,
         spawn,
         spawn_tokio,
     },
@@ -458,22 +459,22 @@ impl AccountSettings {
             #[weak(rename_to = obj)]
             self,
             async move {
-                let avatar =
-                    match spawn_tokio(async move { JELLYFIN_CLIENT.get_user_avatar().await }).await
-                    {
-                        Ok(avatar) => avatar,
-                        Err(e) => {
-                            obj.toast(e.to_string());
-                            return;
-                        }
-                    };
-
-                let Some(texture) = gtk::gdk::Texture::from_file(&gio::File::for_path(avatar)).ok()
-                else {
-                    return;
+                let source =
+                    spawn_tokio(async move { JELLYFIN_CLIENT.get_user_avatar_source().await })
+                        .await;
+                let source = match source {
+                    Ok(source) => source,
+                    Err(e) => {
+                        obj.toast(e.to_string());
+                        return;
+                    }
                 };
-
-                obj.imp().avatar.set_custom_image(Some(&texture));
+                if let Some(source) = source
+                    && let Ok(avatar) = resolve_picture_file(source).await
+                    && let Ok(texture) = gtk::gdk::Texture::from_file(&avatar)
+                {
+                    obj.imp().avatar.set_custom_image(Some(&texture));
+                }
             }
         ));
     }

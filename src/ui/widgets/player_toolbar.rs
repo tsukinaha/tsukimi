@@ -18,7 +18,7 @@ use crate::{
         provider::core_song::CoreSong,
     },
     utils::{
-        get_image_with_cache,
+        resolve_picture_file,
         spawn,
     },
 };
@@ -191,17 +191,12 @@ impl PlayerToolbarBox {
             #[weak]
             imp,
             async move {
-                if core_song.have_single_track_image() {
-                    let path = get_image_with_cache(core_song.id(), "Primary".to_string(), None)
-                        .await
-                        .unwrap_or_default();
-                    imp.cover_image.set_file(Some(&gio::File::for_path(&path)));
+                if let Some(source) = core_song.image_source()
+                    && let Ok(file) = resolve_picture_file(source).await
+                {
+                    imp.cover_image.set_file(Some(&file));
                 } else {
-                    let path =
-                        get_image_with_cache(core_song.album_id(), "Primary".to_string(), None)
-                            .await
-                            .unwrap_or_default();
-                    imp.cover_image.set_file(Some(&gio::File::for_path(&path)));
+                    imp.cover_image.set_file(None::<&gio::File>);
                 }
             }
         ));

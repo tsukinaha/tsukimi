@@ -3,6 +3,7 @@ use std::{
     collections::HashMap,
     future,
     hash::Hasher,
+    path::PathBuf,
     time::Duration,
 };
 
@@ -32,7 +33,12 @@ use reqwest::{
     Method,
     RequestBuilder,
     Response,
-    header::HeaderValue,
+    StatusCode,
+    header::{
+        ETAG,
+        HeaderValue,
+        IF_NONE_MATCH,
+    },
 };
 use serde::{
     Deserialize,
@@ -52,9 +58,9 @@ use super::{
     Account,
     ReqClient,
     error::UserFacingError,
+    picture_source::PictureSource,
     structs::{
         ActivityLogs,
-        AuthenticateResponse,
         Back,
         DeleteInfo,
         ExternalIdInfo,
@@ -71,6 +77,7 @@ use super::{
         ScheduledTask,
         ServerInfo,
         SimpleListItem,
+        User,
     },
 };
 use crate::{
@@ -88,6 +95,7 @@ use crate::{
 };
 
 pub static JELLYFIN_CLIENT: Lazy<JellyfinClient> = Lazy::new(JellyfinClient::default);
+static EXTERNAL_IMAGE_CLIENT: Lazy<Client> = Lazy::new(ReqClient::build);
 pub static DEVICE_ID: Lazy<String> = Lazy::new(|| {
     let uuid = SETTINGS.device_uuid();
     if uuid.is_empty() {
@@ -174,6 +182,44 @@ fn generate_hash(s: &str) -> String {
     format!("{:x}", hasher.finish())
 }
 
+async fn download_external_image(url: &str, path: PathBuf) -> Result<PathBuf> {
+    let etag_path = path.with_extension("etag");
+    let etag = tokio::fs::read_to_string(&etag_path).await.ok();
+
+    let mut request = EXTERNAL_IMAGE_CLIENT.get(url);
+    if let Some(etag) = etag {
+        request = request.header(IF_NONE_MATCH, etag);
+    }
+    let response = request.send().await?;
+
+    if response.status() == StatusCode::NOT_MODIFIED {
+        return Ok(path);
+    }
+    if response.status() == StatusCode::NOT_FOUND {
+        let _ = tokio::fs::remove_file(&etag_path).await;
+        let _ = tokio::fs::remove_file(&path).await;
+        bail!("image not found");
+    }
+    let response = response.error_for_status()?;
+    let etag = response
+        .headers()
+        .get(ETAG)
+        .and_then(|etag| etag.to_str().ok())
+        .map(str::to_owned);
+
+    let bytes = response.bytes().await?;
+    if bytes.is_empty() {
+        bail!("image is empty");
+    }
+    tokio::fs::write(&path, bytes).await?;
+    if let Some(etag) = etag {
+        let _ = tokio::fs::write(etag_path, etag).await;
+    } else {
+        let _ = tokio::fs::remove_file(etag_path).await;
+    }
+    Ok(path)
+}
+
 impl Default for JellyfinClient {
     fn default() -> Self {
         Self {
@@ -237,7 +283,7 @@ impl JellyfinClient {
 
         crate::ui::provider::set_admin(false);
         spawn_tokio_without_await(async move {
-            match JELLYFIN_CLIENT.authenticate_admin().await {
+            match JELLYFIN_CLIENT.get_current_user().await {
                 Ok(r) => {
                     if r.policy.is_administrator {
                         crate::ui::provider::set_admin(true);
@@ -301,12 +347,8 @@ impl JellyfinClient {
         }
     }
 
-    pub async fn request_picture(
-        &self, path: &str, params: &[(&str, &str)], etag: Option<String>,
-    ) -> Result<Response> {
-        let request = self
-            .prepare_request(Method::GET, path, params)?
-            .header("If-None-Match", etag.unwrap_or_default());
+    pub async fn request_picture(&self, path: &str, params: &[(&str, &str)]) -> Result<Response> {
+        let request = self.prepare_request(Method::GET, path, params)?;
         let res = self.send_request(request).await?;
         Ok(res)
     }
@@ -385,7 +427,7 @@ impl JellyfinClient {
             .map_err(|e| anyhow!(e.to_user_facing()))
     }
 
-    pub async fn authenticate_admin(&self) -> Result<AuthenticateResponse> {
+    pub async fn get_current_user(&self) -> Result<User> {
         let s = self.session();
         let path = format!("Users/{}", s.account.user_id);
         let res = self.request(&path, &[]).await?;
@@ -632,83 +674,64 @@ impl JellyfinClient {
         self.request(&path, &[]).await
     }
 
-    pub async fn image_request(
-        &self, id: &str, image_type: &str, image_index: Option<u8>, etag: Option<String>,
-    ) -> Result<Response> {
-        let mut path = format!("Items/{id}/Images/{image_type}");
-        if let Some(image_index) = image_index {
-            path.push_str(&format!("/{image_index}"));
-        }
-        let params = [
-            (
-                "maxHeight",
-                if image_type == "Backdrop" {
-                    "800"
-                } else {
-                    "300"
-                },
-            ),
-            (
-                "maxWidth",
-                if image_type == "Backdrop" {
-                    "1280"
-                } else {
-                    "300"
-                },
-            ),
-        ];
-        self.request_picture(&path, &params, etag).await
-    }
-
-    pub async fn get_image(
-        &self, id: &str, image_type: &str, image_index: Option<u8>,
-    ) -> Result<String> {
+    pub async fn get_image(&self, source: &PictureSource) -> Result<PathBuf> {
         let mut path = jellyfin_cache_path().await;
-        path.push(format!(
-            "{}-{}-{}",
-            id,
-            image_type,
-            image_index.unwrap_or(0)
-        ));
+        path.push(source.cache_key());
 
-        let mut etag: Option<String> = None;
-
-        if path.exists() {
-            etag = xattr::get(&path, "user.etag")
-                .ok()
-                .flatten()
-                .and_then(|v| String::from_utf8(v).ok());
+        if let PictureSource::Url { url, .. } = source {
+            return download_external_image(url, path).await;
         }
 
-        match self.image_request(id, image_type, image_index, etag).await {
-            Ok(response) => {
-                if response.status() == reqwest::StatusCode::NOT_MODIFIED {
-                    return Ok(path.to_string_lossy().to_string());
-                } else if response.status() == reqwest::StatusCode::NOT_FOUND {
-                    return Ok(String::new());
-                } else if !response.status().is_success() {
-                    return Err(anyhow!("Failed to get image: {}", response.status()));
+        if tokio::fs::metadata(&path)
+            .await
+            .is_ok_and(|m| m.is_file())
+        {
+            return Ok(path);
+        }
+
+        let (request_path, max_height, max_width, tag) = match source {
+            PictureSource::Item {
+                id,
+                tag,
+                image_type,
+                image_index,
+            } => {
+                let mut request_path = format!("Items/{id}/Images/{image_type}");
+                if let Some(image_index) = image_index {
+                    request_path.push_str(&format!("/{image_index}"));
                 }
-
-                let etag = response
-                    .headers()
-                    .get("ETag")
-                    .map(|v| v.to_str().unwrap_or_default().to_string());
-
-                let bytes = response.bytes().await?;
-
-                if bytes.is_empty() {
-                    return Ok(String::new());
-                }
-
-                let path = self
-                    .save_image(id, image_type, image_index, &bytes, etag)
-                    .await;
-
-                Ok(path)
+                let (max_height, max_width) = if image_type == "Backdrop" {
+                    ("800", "1280")
+                } else {
+                    ("300", "300")
+                };
+                (request_path, max_height, max_width, tag.as_str())
             }
-            Err(e) => Err(e),
+            PictureSource::User { id, tag } => (
+                format!("Users/{id}/Images/Primary"),
+                "50",
+                "50",
+                tag.as_str(),
+            ),
+            PictureSource::Url { .. } => unreachable!(),
+        };
+
+        let params = [
+            ("maxHeight", max_height),
+            ("maxWidth", max_width),
+            ("tag", tag),
+        ];
+        let response = self.request_picture(&request_path, &params).await?;
+        if response.status() == reqwest::StatusCode::NOT_FOUND {
+            bail!("Image not found");
         }
+        let response = response.error_for_status()?;
+        let bytes = response.bytes().await?;
+        if bytes.is_empty() {
+            bail!("Image is empty");
+        }
+        tokio::fs::write(&path, bytes).await?;
+        Ok(path)
     }
 
     // Only support base64 encoded images
@@ -742,22 +765,6 @@ impl JellyfinClient {
         }
         path.push_str("/Delete");
         self.post(&path, &[], json!({})).await
-    }
-
-    pub async fn save_image(
-        &self, id: &str, image_type: &str, image_index: Option<u8>, bytes: &[u8],
-        etag: Option<String>,
-    ) -> String {
-        let cache_path = jellyfin_cache_path().await;
-        let path = format!("{}-{}-{}", id, image_type, image_index.unwrap_or(0));
-        let path = cache_path.join(path);
-        tokio::fs::write(&path, bytes).await.unwrap();
-        if let Some(etag) = etag {
-            xattr::set(&path, "user.etag", etag.as_bytes()).unwrap_or_else(|e| {
-                tracing::warn!("Failed to set etag xattr: {}", e);
-            });
-        }
-        path.to_string_lossy().to_string()
     }
 
     pub async fn get_artist_albums(&self, id: &str, artist_id: &str) -> Result<List> {
@@ -874,20 +881,11 @@ impl JellyfinClient {
         self.post(&path, &params, json! {value}).await
     }
 
-    pub async fn get_user_avatar(&self) -> Result<String> {
-        let s = self.session();
-        let path = format!("Users/{}/Images/Primary", s.account.user_id);
-        let params = [("maxHeight", "50"), ("maxWidth", "50")];
-        let response = self.request_picture(&path, &params, None).await?;
-        let etag = response
-            .headers()
-            .get("ETag")
-            .map(|v| v.to_str().unwrap_or_default().to_string());
-        let bytes = response.bytes().await?;
-        let path = self
-            .save_image(&s.account.user_id, "Primary", None, &bytes, etag)
-            .await;
-        Ok(path)
+    pub async fn get_user_avatar_source(&self) -> Result<Option<PictureSource>> {
+        let user = self.get_current_user().await?;
+        Ok(user
+            .primary_image_tag
+            .map(|tag| PictureSource::User { id: user.id, tag }))
     }
 
     pub async fn get_external_id_info(&self, id: &str) -> Result<Vec<ExternalIdInfo>> {

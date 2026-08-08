@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use anyhow::Result;
+use gtk::gio;
 use serde::{
     Deserialize,
     Serialize,
@@ -10,6 +11,7 @@ use xxhash_rust::xxh3::xxh3_64;
 use crate::{
     client::{
         jellyfin_client::JELLYFIN_CLIENT,
+        picture_source::PictureSource,
         runtime::runtime,
     },
     ui::jellyfin_cache_path,
@@ -236,10 +238,7 @@ where
     Ok(CacheWrite::Written)
 }
 
-pub async fn get_image_with_cache(
-    id: String, img_type: String, image_index: Option<u8>,
-) -> Result<String> {
-    runtime()
-        .spawn(async move { JELLYFIN_CLIENT.get_image(&id, &img_type, image_index).await })
-        .await?
+pub async fn resolve_picture_file(source: PictureSource) -> Result<gio::File> {
+    let path = spawn_tokio(async move { JELLYFIN_CLIENT.get_image(&source).await }).await?;
+    Ok(gio::File::for_path(path))
 }

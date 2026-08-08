@@ -65,7 +65,6 @@ build_libmpv = []                 # build libmpv automatically, provided MPV_SOU
 
 [target.'cfg(target_os = "linux")'.dependencies]
 mpris-server = "0.10"
-xattr = { version = "1.6.1" }
 gdk-x11 = { version = "0.11", package = "gdk4-x11", features = [
   "v4_18",
   "xlib",

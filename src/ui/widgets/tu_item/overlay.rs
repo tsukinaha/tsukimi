@@ -5,7 +5,10 @@ use gtk::{
 };
 
 use crate::{
-    client::structs::SimpleListItem,
+    client::{
+        picture_source::PictureSource,
+        structs::SimpleListItem,
+    },
     ui::{
         provider::tu_item::{
             TuItem,
@@ -14,10 +17,7 @@ use crate::{
                 SEASON,
             },
         },
-        widgets::picture_loader::{
-            PictureLoader,
-            PictureSource,
-        },
+        widgets::picture_loader::PictureLoader,
     },
 };
 
@@ -94,10 +94,18 @@ fn tagged_source(
     let (id, tag) = (id?, tag?);
     Some(PictureSource::Item {
         id,
-        tag: Some(tag),
+        tag,
         image_type: image_type.to_string(),
         image_index,
     })
+}
+
+pub fn select_backdrop_picture_source(item: &TuItem) -> Option<PictureSource> {
+    if item.item_type() == EPISODE {
+        parent_backdrop_source(item).or_else(|| current_source(item, "Backdrop", Some(0)))
+    } else {
+        current_source(item, "Backdrop", Some(0))
+    }
 }
 
 fn current_source(
