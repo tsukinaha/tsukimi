@@ -106,8 +106,8 @@ struct Cached<T> {
     hash: CacheHash,
 }
 
-enum CacheWrite {
-    Written,
+enum CacheWrite<T> {
+    Written(T),
     Unchanged,
 }
 
@@ -144,7 +144,7 @@ where
     let mut cache_hash = None;
     let mut cached_data = None;
     let cache_hit = read_cache_hash
-        && read_from_cache(&path).is_some_and(|cached| {
+        && read_from_cache(path.clone()).await.is_some_and(|cached| {
             cache_hash = Some(cached.hash);
             if read_cache_data {
                 let _ = tx.try_send(CacheEvent::Data {
@@ -170,23 +170,23 @@ where
 
     runtime().spawn(async move {
         match future.await {
-            Ok(data) => {
+            Ok(mut network_data) => {
                 if write_cache {
-                    match write_to_cache_if_changed(&path, &data, cache_hash) {
+                    match write_to_cache_if_changed(path, network_data, cache_hash).await {
                         Ok(CacheWrite::Unchanged) => {
-                            if let (CachePolicy::RefreshAndEmitLatest, Some(data)) =
-                                (cache_policy, cached_data)
+                            if matches!(cache_policy, CachePolicy::RefreshAndEmitLatest)
+                                && let Some(cached_data) = cached_data
                             {
                                 let _ = tx
                                     .send(CacheEvent::Data {
                                         source: CacheSource::Cache,
-                                        data,
+                                        data: cached_data,
                                     })
                                     .await;
                             }
                             return;
                         }
-                        Ok(CacheWrite::Written) => {}
+                        Ok(CacheWrite::Written(data)) => network_data = data,
                         Err(e) => {
                             let _ = tx.send(CacheEvent::Error(e)).await;
                             return;
@@ -196,7 +196,7 @@ where
                 let _ = tx
                     .send(CacheEvent::Data {
                         source: CacheSource::Network,
-                        data,
+                        data: network_data,
                     })
                     .await;
             }
@@ -209,33 +209,39 @@ where
     rx
 }
 
-fn read_from_cache<T>(path: &PathBuf) -> Option<Cached<T>>
+async fn read_from_cache<T>(path: PathBuf) -> Option<Cached<T>>
 where
-    T: for<'de> Deserialize<'de>,
+    T: for<'de> Deserialize<'de> + Send + 'static,
 {
-    std::fs::read_to_string(path).ok().and_then(|contents| {
-        Some(Cached {
-            data: serde_json::from_str(&contents).ok()?,
-            hash: xxh3_64(contents.as_bytes()),
+    spawn_tokio_blocking(move || {
+        std::fs::read_to_string(path).ok().and_then(|contents| {
+            Some(Cached {
+                data: serde_json::from_str(&contents).ok()?,
+                hash: xxh3_64(contents.as_bytes()),
+            })
         })
     })
+    .await
 }
 
-fn write_to_cache_if_changed<T>(
-    path: &PathBuf, data: &T, old_hash: Option<CacheHash>,
-) -> Result<CacheWrite>
+async fn write_to_cache_if_changed<T>(
+    path: PathBuf, data: T, old_hash: Option<CacheHash>,
+) -> Result<CacheWrite<T>>
 where
-    T: Serialize,
+    T: Serialize + Send + 'static,
 {
-    let serialized = serde_json::to_string(data)?;
-    let new_hash = xxh3_64(serialized.as_bytes());
+    spawn_tokio_blocking(move || {
+        let serialized = serde_json::to_string(&data)?;
+        let new_hash = xxh3_64(serialized.as_bytes());
 
-    if old_hash.is_some_and(|h| h == new_hash) {
-        return Ok(CacheWrite::Unchanged);
-    }
+        if old_hash.is_some_and(|h| h == new_hash) {
+            return Ok(CacheWrite::Unchanged);
+        }
 
-    std::fs::write(path, serialized)?;
-    Ok(CacheWrite::Written)
+        std::fs::write(path, serialized)?;
+        Ok(CacheWrite::Written(data))
+    })
+    .await
 }
 
 pub async fn resolve_picture_file(source: PictureSource) -> Result<gio::File> {
