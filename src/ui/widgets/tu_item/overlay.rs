@@ -192,12 +192,7 @@ fn series_primary_source(item: &TuItem) -> Option<PictureSource> {
 }
 
 fn series_thumb_source(item: &TuItem) -> Option<PictureSource> {
-    tagged_source(
-        item.series_id(),
-        item.series_thumb_image_tag(),
-        THUMB,
-        None,
-    )
+    tagged_source(item.series_id(), item.series_thumb_image_tag(), THUMB, None)
 }
 
 fn album_primary_source(item: &TuItem) -> Option<PictureSource> {

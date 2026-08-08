@@ -634,10 +634,7 @@ impl JellyfinClient {
         let mut path = jellyfin_cache_path().await;
         path.push(source.cache_key());
 
-        if tokio::fs::metadata(&path)
-            .await
-            .is_ok_and(|m| m.is_file())
-        {
+        if tokio::fs::metadata(&path).await.is_ok_and(|m| m.is_file()) {
             return Ok(path);
         }
 
