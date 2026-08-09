@@ -10,6 +10,7 @@ pub use overlay::{
     TuItemOverlay,
     TuItemOverlayPrelude,
     select_backdrop_picture_source,
+    select_logo_picture_source,
     select_picture_source,
 };
 pub use prelude::{

@@ -32,10 +32,7 @@ use crate::{
             },
             tu_item::{
                 TuItem,
-                image_type::{
-                    BACKDROP,
-                    LOGO,
-                },
+                image_type::BACKDROP,
                 item_type::{
                     EPISODE,
                     SERIES,
@@ -43,7 +40,10 @@ use crate::{
             },
             tu_object::TuObject,
         },
-        widgets::tu_item::select_backdrop_picture_source,
+        widgets::tu_item::{
+            select_backdrop_picture_source,
+            select_logo_picture_source,
+        },
     },
     utils::{
         CacheEvent,
@@ -906,25 +906,7 @@ impl ItemPage {
 
     pub async fn set_logo(&self, item: &SimpleListItem) {
         let logo_bin = self.imp().logo_bin.get();
-
-        let logo_source = item
-            .image_tags
-            .as_ref()
-            .and_then(|tags| tags.logo.clone())
-            .map(|tag| PictureSource::Item {
-                id: item.id.clone(),
-                tag,
-                image_type: LOGO.to_owned(),
-                image_index: None,
-            })
-            .or_else(|| {
-                Some(PictureSource::Item {
-                    id: item.parent_logo_item_id.clone()?,
-                    tag: item.parent_logo_image_tag.clone()?,
-                    image_type: LOGO.to_owned(),
-                    image_index: None,
-                })
-            });
+        let logo_source = select_logo_picture_source(item);
 
         if let Some(logo_source) = logo_source {
             let logo = super::logo::set_logo(logo_source).await;
