@@ -359,8 +359,10 @@ impl ItemPage {
 
             self.imp().actionbox.set_id(Some(series_id.to_owned()));
             self.imp().actionbox.set_item_type(type_);
-            self.setup_item(&series_id, backdrop_source).await;
-            self.setup_seasons(&series_id).await;
+            futures_util::join!(
+                self.setup_item(&series_id, backdrop_source),
+                self.setup_seasons(&series_id),
+            );
         } else if type_ == EPISODE && item.series_name().is_some() {
             let series_id = item.series_id().unwrap_or(item.id());
             self.set_current_item(Some(&item));
@@ -376,8 +378,10 @@ impl ItemPage {
 
             self.imp().actionbox.set_id(Some(series_id.to_owned()));
             self.imp().actionbox.set_item_type(SERIES);
-            self.setup_item(&series_id, backdrop_source).await;
-            self.setup_seasons(&series_id).await;
+            futures_util::join!(
+                self.setup_item(&series_id, backdrop_source),
+                self.setup_seasons(&series_id),
+            );
         } else {
             let id = item.id();
 
@@ -420,13 +424,15 @@ impl ItemPage {
     }
 
     async fn setup_item(&self, id: &str, backdrop_source: Option<PictureSource>) {
-        let id = id.to_string();
-
-        if let Some(backdrop_source) = backdrop_source {
-            self.setup_background(backdrop_source).await;
-        }
-        self.set_overview(&id).await;
-        self.set_lists(&id).await;
+        futures_util::join!(
+            async {
+                if let Some(backdrop_source) = backdrop_source {
+                    self.setup_background(backdrop_source).await;
+                }
+            },
+            self.set_overview(id),
+            self.set_lists(id),
+        );
     }
 
     async fn set_intro<const IS_VIDEO: bool>(&self, intro: &TuItem) {
@@ -487,87 +493,83 @@ impl ItemPage {
         let current_item = self.current_item();
         let current_season_id = current_item.as_ref().and_then(|item| item.season_id());
 
-        let items = match (position, current_season_id) {
-            (0, None) => vec![],
-            (0, Some(season_id)) => {
-                self.set_current_season(Some(season_id.to_owned()));
-                match spawn_tokio(async move {
-                    JELLYFIN_CLIENT
-                        .get_episodes_all(&series_id, &season_id)
-                        .await
-                })
-                .await
-                {
-                    Ok(res) => res.items,
-                    Err(e) => {
-                        self.toast(e.to_user_facing());
-                        return;
-                    }
-                }
+        let season_id = match (position, current_season_id) {
+            (0, None) => {
+                self.set_episode_list(Vec::new(), 0);
+                imp.episode_switcher.clear();
+                return;
             }
+            (0, Some(season_id)) => season_id,
             _ => {
-                let season_id = {
-                    let season_list = imp.season_list_vec.borrow();
-                    let Some(season) = season_list.get(position.saturating_sub(1) as usize) else {
-                        return;
-                    };
-                    self.set_current_season(Some(season.id.to_owned()));
-                    season.id.to_owned()
+                let season_list = imp.season_list_vec.borrow();
+                let Some(season) = season_list.get(position.saturating_sub(1) as usize) else {
+                    return;
                 };
-                match spawn_tokio(async move {
-                    JELLYFIN_CLIENT
-                        .get_episodes_all(&series_id, &season_id)
-                        .await
-                })
-                .await
-                {
-                    Ok(res) => res.items,
-                    Err(e) => {
-                        self.toast(e.to_user_facing());
-                        return;
-                    }
-                }
+                season.id.to_owned()
             }
         };
+        self.set_current_season(Some(season_id.to_owned()));
 
-        let start_idx = if let Some(current_item) = current_item
-            && self.current_season() == current_item.season_id()
-        {
-            Self::search_episode_index(&items, &current_item)
-                .map(|_| {
-                    current_item.index_number().saturating_sub(1) as usize
-                        / EpisodeSwitcher::EPISODES_PER_GROUP
-                        * EpisodeSwitcher::EPISODES_PER_GROUP
-                })
-                .unwrap_or_default()
-        } else {
-            0
-        };
+        let mut events = fetch_with_cache(
+            &format!("season_{season_id}"),
+            CachePolicy::ReadCacheAndRefresh,
+            async move {
+                JELLYFIN_CLIENT
+                    .get_episodes_all(&series_id, &season_id)
+                    .await
+            },
+        )
+        .await;
 
-        let max_episode_number = items
-            .last()
-            .and_then(|item| item.index_number)
-            .unwrap_or_default() as usize;
+        while let Some(event) = events.recv().await {
+            match event {
+                CacheEvent::Data { data, .. } => {
+                    let items = data.items;
+                    let start_idx = if let Some(current_item) = current_item.as_ref()
+                        && self.current_season() == current_item.season_id()
+                    {
+                        Self::search_episode_index(&items, current_item)
+                            .map(|_| {
+                                current_item.index_number().saturating_sub(1) as usize
+                                    / EpisodeSwitcher::EPISODES_PER_GROUP
+                                    * EpisodeSwitcher::EPISODES_PER_GROUP
+                            })
+                            .unwrap_or_default()
+                    } else {
+                        0
+                    };
 
-        self.set_episode_list(items, start_idx);
-        self.imp().episode_switcher.load_from_range(
-            max_episode_number,
-            glib::clone!(
-                #[weak(rename_to = obj)]
-                self,
-                move |btn| {
-                    spawn(glib::clone!(
-                        #[weak]
-                        obj,
-                        #[weak]
-                        btn,
-                        async move {
-                            obj.on_episode_switcher_clicked(&btn).await;
-                        }
-                    ))
+                    let max_episode_number = items
+                        .last()
+                        .and_then(|item| item.index_number)
+                        .unwrap_or_default() as usize;
+
+                    self.set_episode_list(items, start_idx);
+                    self.imp().episode_switcher.load_from_range(
+                        max_episode_number,
+                        glib::clone!(
+                            #[weak(rename_to = obj)]
+                            self,
+                            move |btn| {
+                                spawn(glib::clone!(
+                                    #[weak]
+                                    obj,
+                                    #[weak]
+                                    btn,
+                                    async move {
+                                        obj.on_episode_switcher_clicked(&btn).await;
+                                    }
+                                ))
+                            }
+                        ),
+                    );
                 }
-            ),
-        );
+                CacheEvent::Error(e) => {
+                    self.toast(e.to_user_facing());
+                    return;
+                }
+            }
+        }
     }
 
     fn set_episode_list(&self, list: Vec<SimpleListItem>, start_index: usize) {
@@ -1174,8 +1176,7 @@ impl ItemPage {
     }
 
     pub async fn set_lists(&self, id: &str) {
-        self.sets("Recommend", id).await;
-        self.sets("Included In", id).await;
+        futures_util::join!(self.sets("Recommend", id), self.sets("Included In", id));
     }
 
     pub async fn sets(&self, types: &str, id: &str) {
