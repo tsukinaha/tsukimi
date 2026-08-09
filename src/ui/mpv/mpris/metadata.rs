@@ -67,21 +67,18 @@ impl MPVPage {
             #[weak(rename_to = obj)]
             self,
             async move {
+                if let Some(source) = source
+                    && let Ok(file) = resolve_picture_file(source).await
+                {
+                    metadata.set_art_url(Some(file.uri()));
+                }
                 if obj
                     .current_video()
                     .is_none_or(|video| video.id() != video_id)
                 {
                     return;
                 }
-                if let Some(source) = source
-                    && let Ok(file) = resolve_picture_file(source).await
-                {
-                    let art_url = file.uri().to_string();
-                    obj.imp().mpris_art_url.replace(Some(art_url.clone()));
-                    metadata.set_art_url(Some(art_url));
-                } else {
-                    obj.imp().mpris_art_url.replace(None);
-                }
+                obj.imp().mpris_art_url.replace(metadata.art_url());
                 obj.mpris_properties_changed([Property::Metadata(metadata)]);
             }
         ));

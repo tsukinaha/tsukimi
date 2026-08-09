@@ -32,6 +32,10 @@ use crate::{
             },
             tu_item::{
                 TuItem,
+                image_type::{
+                    BACKDROP,
+                    LOGO,
+                },
                 item_type::{
                     EPISODE,
                     SERIES,
@@ -833,7 +837,7 @@ impl ItemPage {
             let source = PictureSource::Item {
                 id: id.to_string(),
                 tag,
-                image_type: "Backdrop".to_string(),
+                image_type: BACKDROP.to_owned(),
                 image_index: Some(tag_num as u8),
             };
             if let Ok(file) = resolve_picture_file(source).await {
@@ -910,14 +914,14 @@ impl ItemPage {
             .map(|tag| PictureSource::Item {
                 id: item.id.clone(),
                 tag,
-                image_type: "Logo".to_string(),
+                image_type: LOGO.to_owned(),
                 image_index: None,
             })
             .or_else(|| {
                 Some(PictureSource::Item {
                     id: item.parent_logo_item_id.clone()?,
                     tag: item.parent_logo_image_tag.clone()?,
-                    image_type: "Logo".to_string(),
+                    image_type: LOGO.to_owned(),
                     image_index: None,
                 })
             });

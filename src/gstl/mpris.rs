@@ -149,8 +149,7 @@ impl MusicPlayer {
                     if let Some(source) = core_song.image_source()
                         && let Ok(file) = resolve_picture_file(source).await
                     {
-                        let url = file.uri().to_string();
-                        metadata.set_art_url(Some(url));
+                        metadata.set_art_url(Some(file.uri()));
                     };
                     imp.mpris_properties_changed([Property::Metadata(metadata)]);
                 }
