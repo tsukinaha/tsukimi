@@ -9,7 +9,10 @@ use std::{
 
 use crate::{
     client::account::ServerType,
-    ui::PlaybackDirectMode,
+    ui::{
+        PlaybackDirectMode,
+        provider::tu_item::image_type::BACKDROP,
+    },
 };
 use anyhow::{
     Context,
@@ -630,7 +633,7 @@ impl JellyfinClient {
         self.request(&path, &[]).await
     }
 
-    pub async fn get_image(&self, source: &PictureSource) -> Result<PathBuf> {
+    pub async fn get_image(&self, source: PictureSource) -> Result<PathBuf> {
         let mut path = jellyfin_cache_path().await;
         path.push(source.cache_key());
 
@@ -649,26 +652,23 @@ impl JellyfinClient {
                 if let Some(image_index) = image_index {
                     request_path.push_str(&format!("/{image_index}"));
                 }
-                let (max_height, max_width) = if image_type == "Backdrop" {
+                let (max_height, max_width) = if image_type == BACKDROP {
                     ("800", "1280")
                 } else {
                     ("300", "300")
                 };
-                (request_path, max_height, max_width, tag.as_str())
+                (request_path, max_height, max_width, tag)
             }
-            PictureSource::User { id, tag } => (
-                format!("Users/{id}/Images/Primary"),
-                "50",
-                "50",
-                tag.as_str(),
-            ),
+            PictureSource::User { id, tag } => {
+                (format!("Users/{id}/Images/Primary"), "50", "50", tag)
+            }
             PictureSource::Url { .. } => unreachable!(),
         };
 
         let params = [
             ("maxHeight", max_height),
             ("maxWidth", max_width),
-            ("tag", tag),
+            ("tag", tag.as_str()),
         ];
         let response = self.request_picture(&request_path, &params).await?;
         if response.status() == reqwest::StatusCode::NOT_FOUND {

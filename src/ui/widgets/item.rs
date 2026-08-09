@@ -837,7 +837,7 @@ impl ItemPage {
             let source = PictureSource::Item {
                 id: id.to_string(),
                 tag,
-                image_type: BACKDROP.to_owned(),
+                image_type: BACKDROP,
                 image_index: Some(tag_num as u8),
             };
             if let Ok(file) = resolve_picture_file(source).await {

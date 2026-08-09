@@ -114,13 +114,13 @@ impl CardShape {
 }
 
 fn tagged_source(
-    id: Option<String>, tag: Option<String>, image_type: &str, image_index: Option<u8>,
+    id: Option<String>, tag: Option<String>, image_type: &'static str, image_index: Option<u8>,
 ) -> Option<PictureSource> {
     let (id, tag) = (id?, tag?);
     Some(PictureSource::Item {
         id,
         tag,
-        image_type: image_type.to_string(),
+        image_type,
         image_index,
     })
 }
@@ -146,7 +146,7 @@ pub fn select_logo_picture_source(item: &SimpleListItem) -> Option<PictureSource
 }
 
 fn current_source(
-    item: &TuItem, image_type: &str, image_index: Option<u8>,
+    item: &TuItem, image_type: &'static str, image_index: Option<u8>,
 ) -> Option<PictureSource> {
     let image_tags = item.image_tags()?;
     let tag = match image_type {

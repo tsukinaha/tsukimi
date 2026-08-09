@@ -64,8 +64,7 @@ pub mod imp {
     pub struct PictureLoader {
         #[property(get, set)]
         pub id: RefCell<String>,
-        #[property(get, set)]
-        pub imagetype: RefCell<String>,
+        pub imagetype: Cell<&'static str>,
         #[property(get, set)]
         pub tag: RefCell<String>,
         pub image_index: Cell<Option<u8>>,
@@ -144,9 +143,9 @@ impl PictureLoader {
             } => {
                 let obj: Self = glib::Object::builder()
                     .property("id", id)
-                    .property("imagetype", image_type)
                     .property("tag", tag)
                     .build();
+                obj.imp().imagetype.set(image_type);
                 obj.imp().image_index.replace(image_index);
                 obj
             }
@@ -175,7 +174,7 @@ impl PictureLoader {
                 image_index,
             } => {
                 self.set_id(id.as_str());
-                self.set_imagetype(image_type.as_str());
+                self.imp().imagetype.set(image_type);
                 self.set_tag(tag.as_str());
                 self.imp().image_index.replace(*image_index);
                 self.set_url(None::<String>);
@@ -287,7 +286,7 @@ impl PictureLoader {
             PictureSource::Item {
                 id: self.id(),
                 tag: self.tag(),
-                image_type: self.imagetype(),
+                image_type: self.imp().imagetype.get(),
                 image_index: self.imp().image_index.get(),
             }
         }

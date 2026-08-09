@@ -6,7 +6,7 @@ pub enum PictureSource {
     Item {
         id: String,
         tag: String,
-        image_type: String,
+        image_type: &'static str,
         image_index: Option<u8>,
     },
     User {

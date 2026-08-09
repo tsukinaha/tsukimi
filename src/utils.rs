@@ -248,7 +248,7 @@ pub async fn resolve_picture_file(source: PictureSource) -> Result<gio::File> {
     match source {
         PictureSource::Url { url, .. } => Ok(gio::File::for_uri(&url)),
         source => {
-            let path = spawn_tokio(async move { JELLYFIN_CLIENT.get_image(&source).await }).await?;
+            let path = spawn_tokio(async move { JELLYFIN_CLIENT.get_image(source).await }).await?;
             Ok(gio::File::for_path(path))
         }
     }
