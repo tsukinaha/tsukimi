@@ -134,10 +134,7 @@ pub fn select_backdrop_picture_source(item: &TuItem) -> Option<PictureSource> {
 }
 
 pub fn select_logo_picture_source(item: &SimpleListItem) -> Option<PictureSource> {
-    let tag = item
-        .image_tags
-        .as_ref()
-        .and_then(|tags| tags.logo.clone());
+    let tag = item.image_tags.as_ref().and_then(|tags| tags.logo.clone());
     tagged_source(Some(item.id.clone()), tag, LOGO, None).or_else(|| {
         tagged_source(
             item.parent_logo_item_id.clone(),

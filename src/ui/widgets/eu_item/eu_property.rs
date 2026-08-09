@@ -55,6 +55,7 @@ impl Default for EuItem {
 }
 
 impl EuItem {
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         image_url: Option<String>, image_original_url: Option<String>, line1: Option<String>,
         line2: Option<String>, line3: Option<String>, item_type: Option<String>,
