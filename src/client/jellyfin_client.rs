@@ -1247,6 +1247,10 @@ impl JellyfinClient {
     }
 
     pub async fn get_included(&self, id: &str) -> Result<List> {
+        if self.is_jellyfin() {
+            // TODO: Jellyfin does not support filtering by ListItemIds, return an empty list temporarily.
+            return Ok(List::default());
+        }
         let s = self.session();
         let path = format!("Users/{}/Items", s.account.user_id);
         let params = [
