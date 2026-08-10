@@ -31,7 +31,7 @@ chrono = { version = "0.4", features = ["serde"] }
 tracing = "0.1"
 gst = { version = "0.25", package = "gstreamer" }
 url = "2.5.8"
-gettext-rs = { version = "~0.7", features = ["gettext-system"] }
+gettext-rs = { version = "~0.8", features = ["gettext-system"] }
 hostname = "0.4.2"
 arc-swap = "1.9.1"
 flume = "0.12.0"
