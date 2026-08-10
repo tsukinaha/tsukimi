@@ -232,22 +232,16 @@ impl AccountWindow {
     }
 
     fn parse_url(&self, url: &url::Url) {
-        match url.scheme() {
-            "http" => {
-                self.imp().protocol.set_selected(0);
-            }
-            "https" => {
-                self.imp().protocol.set_selected(1);
-                if url.port().is_none() {
-                    self.imp().port_entry.set_text("443");
-                }
-            }
-            _ => {}
-        }
+        let (protocol_idx, default_port) = match url.scheme() {
+            "http" => (0, 80),
+            "https" => (1, 443),
+            _ => return,
+        };
 
-        if let Some(port) = url.port() {
-            self.imp().port_entry.set_text(&port.to_string());
-        }
+        self.imp().protocol.set_selected(protocol_idx);
+        self.imp()
+            .port_entry
+            .set_text(&url.port().unwrap_or(default_port).to_string());
 
         if let Some(host) = url.host_str() {
             self.imp().server_entry.set_text(host);

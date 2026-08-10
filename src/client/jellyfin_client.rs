@@ -8,7 +8,10 @@ use std::{
 };
 
 use crate::{
-    client::account::ServerType,
+    client::account::{
+        ServerType,
+        build_url,
+    },
     ui::{
         PlaybackDirectMode,
         provider::tu_item::image_type::BACKDROP,
@@ -190,11 +193,7 @@ fn build_headers(
     Ok(headers)
 }
 
-fn build_base_url(url_str: &str, port: &str, server_type: ServerType) -> Result<Url> {
-    let mut url = Url::parse(url_str)?;
-    let port = port.parse::<u16>().context("Invalid server port")?;
-    url.set_port(Some(port))
-        .map_err(|_| anyhow!("Failed to set port"))?;
+fn build_base_url(url: Url, server_type: ServerType) -> Result<Url> {
     match server_type {
         ServerType::Emby => Ok(url.join("emby/")?),
         ServerType::Jellyfin => Ok(url),
@@ -242,7 +241,7 @@ impl JellyfinClient {
             Some(&account.access_token),
             server_type,
         )?;
-        let url = build_base_url(&account.server, &account.port, server_type)?;
+        let url = build_base_url(account.url()?, server_type)?;
         self.session.store(Arc::new(Session {
             account: account.clone(),
             url_headers: Some((url, headers)),
@@ -351,7 +350,7 @@ impl JellyfinClient {
     fn prepare_unauthenticated_request(
         &self, method: Method, server: &str, port: &str, server_type: ServerType, path: &str,
     ) -> Result<RequestBuilder> {
-        let url = build_base_url(server, port, server_type)?.join(path)?;
+        let url = build_base_url(build_url(server, port)?, server_type)?.join(path)?;
         Ok(self
             .client
             .request(method, url)
