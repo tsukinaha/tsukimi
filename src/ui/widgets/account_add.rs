@@ -134,7 +134,7 @@ impl AccountWindow {
 
     pub async fn add(&self) {
         let imp = self.imp();
-        let mut servername = imp.servername_entry.text().to_string();
+        let servername = imp.servername_entry.text().to_string();
         let scheme = imp.protocol.selected();
         let protocol = if scheme == 0 { "http://" } else { "https://" };
         let server = imp.server_entry.text();
@@ -149,50 +149,39 @@ impl AccountWindow {
         imp.stack.set_visible_child_name("loading");
 
         let server = format!("{protocol}{server}");
-
-        let _ = JELLYFIN_CLIENT.header_change_url(&server, &port);
-        let _ = JELLYFIN_CLIENT.header_change_token(&servername);
-        let un = username.to_string();
-        let pw = password.to_string();
-        let res =
-            match spawn_tokio(async move { JELLYFIN_CLIENT.login(&username, &password).await })
-                .await
-            {
-                Ok(res) => res,
-                Err(e) => {
-                    imp.stack.toast(e.to_user_facing());
-                    imp.stack.set_visible_child_name("entry");
-                    return;
-                }
+        let server_type = ServerType::from_index(imp.server_type.selected());
+        let account = match spawn_tokio(async move {
+            let login = JELLYFIN_CLIENT
+                .login(&server, &port, server_type, &username, &password)
+                .await?;
+            let servername = if servername.is_empty() {
+                JELLYFIN_CLIENT
+                    .get_server_info_public(&server, &port, server_type)
+                    .await?
+                    .server_name
+            } else {
+                servername
             };
 
-        if servername.is_empty() {
-            let res =
-                match spawn_tokio(async move { JELLYFIN_CLIENT.get_server_info_public().await })
-                    .await
-                {
-                    Ok(res) => res,
-                    Err(e) => {
-                        imp.stack.toast(e.to_user_facing());
-                        imp.stack.set_visible_child_name("entry");
-                        return;
-                    }
-                };
-
-            servername = res.server_name;
-        }
-
-        let server_type = ServerType::from_index(imp.server_type.selected());
-
-        let account = Account {
-            servername,
-            server,
-            username: un,
-            password: pw,
-            port: port.to_string(),
-            user_id: res.user.id,
-            access_token: res.access_token,
-            server_type: Some(server_type),
+            Ok::<_, anyhow::Error>(Account {
+                servername,
+                server,
+                username: username.to_string(),
+                password: password.to_string(),
+                port: port.to_string(),
+                user_id: login.user.id,
+                access_token: login.access_token,
+                server_type: Some(server_type),
+            })
+        })
+        .await
+        {
+            Ok(account) => account,
+            Err(e) => {
+                imp.stack.toast(e.to_user_facing());
+                imp.stack.set_visible_child_name("entry");
+                return;
+            }
         };
 
         let action_type = imp.action_type.get();

@@ -6,7 +6,6 @@ use serde::{
 use crate::ui::provider::descriptor::VecSerialize;
 
 #[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, Default)]
-
 pub enum ServerType {
     #[default]
     Emby = 0,

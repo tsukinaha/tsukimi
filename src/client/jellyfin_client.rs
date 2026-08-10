@@ -36,7 +36,10 @@ use reqwest::{
     Method,
     RequestBuilder,
     Response,
-    header::HeaderValue,
+    header::{
+        HeaderMap,
+        HeaderValue,
+    },
 };
 use serde::{
     Deserialize,
@@ -123,30 +126,15 @@ pub enum BackType {
 #[derive(Clone)]
 pub struct Session {
     pub account: Account,
-    pub url: Option<Url>,
-    pub headers: reqwest::header::HeaderMap,
+    pub url_headers: Option<(Url, HeaderMap)>,
     pub server_name_hash: String,
 }
 
 impl Session {
     fn empty() -> Self {
-        let mut headers = reqwest::header::HeaderMap::new();
-        headers.insert("Accept-Encoding", HeaderValue::from_static("gzip"));
-        headers.insert(
-            "X-Emby-authorization",
-            HeaderValue::from_str(&generate_jellyfin_authorization(
-                "",
-                CLIENT_ID,
-                &DEVICE_NAME,
-                &DEVICE_ID,
-                version(),
-            ))
-            .unwrap(),
-        );
         Self {
             account: Account::default(),
-            url: None,
-            headers,
+            url_headers: None,
             server_name_hash: String::new(),
         }
     }
@@ -165,12 +153,52 @@ struct NextUpDateKey {
     item_id: String,
 }
 
-fn generate_jellyfin_authorization(
-    user_id: &str, client: &str, device: &str, device_id: &str, version: &str,
-) -> String {
-    format!(
-        "Emby UserId={user_id},Client={client},Device={device},DeviceId={device_id},Version={version}"
-    )
+fn build_headers(
+    user_id: Option<&str>, token: Option<&str>, server_type: ServerType,
+) -> Result<HeaderMap> {
+    let mut authorization = format!(
+        "Client={},Device={},DeviceId={},Version={}",
+        CLIENT_ID,
+        *DEVICE_NAME,
+        *DEVICE_ID,
+        version()
+    );
+    if let Some(user_id) = user_id {
+        authorization.push_str(&format!(",UserId={}", user_id));
+    }
+    let mut headers = HeaderMap::new();
+    match server_type {
+        ServerType::Emby => {
+            headers.insert(
+                "X-Emby-authorization",
+                HeaderValue::from_str(&format!("Emby {authorization}"))?,
+            );
+            if let Some(token) = token {
+                headers.insert("X-Emby-Token", HeaderValue::from_str(token)?);
+            }
+        }
+        ServerType::Jellyfin => {
+            if let Some(token) = token {
+                authorization.push_str(&format!(",Token={token}"));
+            }
+            headers.insert(
+                "Authorization",
+                HeaderValue::from_str(&format!("MediaBrowser {authorization}"))?,
+            );
+        }
+    }
+    Ok(headers)
+}
+
+fn build_base_url(url_str: &str, port: &str, server_type: ServerType) -> Result<Url> {
+    let mut url = Url::parse(url_str)?;
+    let port = port.parse::<u16>().context("Invalid server port")?;
+    url.set_port(Some(port))
+        .map_err(|_| anyhow!("Failed to set port"))?;
+    match server_type {
+        ServerType::Emby => Ok(url.join("emby/")?),
+        ServerType::Jellyfin => Ok(url),
+    }
 }
 
 fn generate_hash(s: &str) -> String {
@@ -208,34 +236,16 @@ impl JellyfinClient {
     }
 
     pub async fn init(&self, account: &Account) -> Result<(), Box<dyn std::error::Error>> {
-        let url = {
-            let mut url = Url::parse(&account.server)?;
-            url.set_port(Some(account.port.parse::<u16>().unwrap_or_default()))
-                .map_err(|_| anyhow!("Failed to set port"))?;
-            url.join("emby/")?
-        };
-
-        let mut headers = reqwest::header::HeaderMap::new();
-        headers.insert("Accept-Encoding", HeaderValue::from_static("gzip"));
-        headers.insert(
-            "X-Emby-Token",
-            HeaderValue::from_str(&account.access_token)?,
-        );
-        headers.insert(
-            "X-Emby-authorization",
-            HeaderValue::from_str(&generate_jellyfin_authorization(
-                &account.user_id,
-                CLIENT_ID,
-                &DEVICE_NAME,
-                &DEVICE_ID,
-                version(),
-            ))?,
-        );
-
+        let server_type = account.server_type.unwrap_or_default();
+        let headers = build_headers(
+            Some(&account.user_id),
+            Some(&account.access_token),
+            server_type,
+        )?;
+        let url = build_base_url(&account.server, &account.port, server_type)?;
         self.session.store(Arc::new(Session {
             account: account.clone(),
-            url: Some(url),
-            headers,
+            url_headers: Some((url, headers)),
             server_name_hash: generate_hash(&account.servername),
         }));
         self.next_up_date_cache.invalidate_all();
@@ -254,29 +264,6 @@ impl JellyfinClient {
         Ok(())
     }
 
-    pub fn header_change_url(&self, url_str: &str, port: &str) -> Result<()> {
-        let mut url = Url::parse(url_str)?;
-        url.set_port(Some(port.parse::<u16>().unwrap_or_default()))
-            .map_err(|_| anyhow!("Failed to set port"))?;
-        let url = url.join("emby/")?;
-        self.session.rcu(|current| {
-            let mut session = (**current).clone();
-            session.url = Some(url.clone());
-            Arc::new(session)
-        });
-        Ok(())
-    }
-
-    pub fn header_change_token(&self, token: &str) -> Result<()> {
-        let token = HeaderValue::from_str(token)?;
-        self.session.rcu(|current| {
-            let mut session = (**current).clone();
-            session.headers.insert("X-Emby-Token", token.clone());
-            Arc::new(session)
-        });
-        Ok(())
-    }
-
     pub async fn request<T>(&self, path: &str, params: &[(&str, &str)]) -> Result<T>
     where
         T: for<'de> Deserialize<'de> + Send + 'static,
@@ -288,9 +275,9 @@ impl JellyfinClient {
             Ok(r) => r,
             Err(e) => {
                 let Some(status) = e.status() else {
-                    return Err(anyhow!("Failed to get status"));
+                    bail!("Failed to get status");
                 };
-                return Err(anyhow!("{}", status));
+                bail!("{}", status);
             }
         };
 
@@ -353,27 +340,37 @@ impl JellyfinClient {
         &self, method: Method, path: &str, params: &[(&str, &str)],
     ) -> Result<RequestBuilder> {
         let s = self.session();
-        let url = s.url.as_ref().context("URL is not set")?.join(path)?;
+        let (url, headers) = s.url_headers.as_ref().context("URL is not set")?;
+        Ok(self
+            .client
+            .request(method, url.join(path)?)
+            .query(params)
+            .headers(headers.clone()))
+    }
+
+    fn prepare_unauthenticated_request(
+        &self, method: Method, server: &str, port: &str, server_type: ServerType, path: &str,
+    ) -> Result<RequestBuilder> {
+        let url = build_base_url(server, port, server_type)?.join(path)?;
         Ok(self
             .client
             .request(method, url)
-            .query(params)
-            .headers(s.headers.clone()))
+            .headers(build_headers(None, None, server_type)?))
     }
 
     fn prepare_request_headers(
         &self, method: Method, path: &str, params: &[(&str, &str)], content_type: &str,
     ) -> Result<RequestBuilder> {
         let s = self.session();
-        let url = s.url.as_ref().context("URL is not set")?.join(path)?;
-        let mut headers = s.headers.clone();
+        let (url, headers) = s.url_headers.as_ref().context("URL is not set")?;
+        let mut headers = headers.clone();
         headers.insert(
             reqwest::header::CONTENT_TYPE,
             HeaderValue::from_str(content_type)?,
         );
         Ok(self
             .client
-            .request(method, url)
+            .request(method, url.join(path)?)
             .query(params)
             .headers(headers))
     }
@@ -393,28 +390,51 @@ impl JellyfinClient {
         Ok(res)
     }
 
-    pub async fn login(&self, username: &str, password: &str) -> Result<LoginResponse> {
+    pub async fn login(
+        &self, server: &str, port: &str, server_type: ServerType, username: &str, password: &str,
+    ) -> Result<LoginResponse> {
         let body = json!({
             "Username": username,
             "Pw": password
         });
-        self.post_json("Users/authenticatebyname", &[], body).await
+        let request = self
+            .prepare_unauthenticated_request(
+                Method::POST,
+                server,
+                port,
+                server_type,
+                "Users/AuthenticateByName",
+            )?
+            .json(&body);
+        Ok(self
+            .send_request(request)
+            .await?
+            .error_for_status()?
+            .json()
+            .await?)
     }
 
     pub async fn get_item_stream_url(
         &self, container: &str, item_id: &str, media_source_id: &str,
     ) -> Result<String> {
         let s = self.session();
-        let Some(url) = s.url.as_ref() else {
-            bail!("URL is not set");
-        };
+        let (url, _) = s.url_headers.as_ref().context("URL is not set")?;
         let path = format!("Videos/{}/stream.{}", item_id, container);
         let mut url = url.join(&path).context("Failed to build item stream URL")?;
-        url.query_pairs_mut()
+        let mut query_pairs = url.query_pairs_mut();
+        query_pairs
             .append_pair("Static", "true")
             .append_pair("deviceId", &DEVICE_ID)
-            .append_pair("api_key", &s.account.access_token)
             .append_pair("MediaSourceId", media_source_id);
+        match self.server_type() {
+            ServerType::Emby => {
+                query_pairs.append_pair("api_key", &s.account.access_token);
+            }
+            ServerType::Jellyfin => {
+                query_pairs.append_pair("ApiKey", &s.account.access_token);
+            }
+        }
+        drop(query_pairs);
         Ok(url.to_string())
     }
 
@@ -867,7 +887,7 @@ impl JellyfinClient {
 
     pub async fn get_streaming_url(&self, path: &str) -> String {
         let s = self.session();
-        let url = s.url.as_ref().expect("URL not set");
+        let (url, _) = s.url_headers.as_ref().expect("URL not set");
         url.join(path.trim_start_matches('/')).unwrap().to_string()
     }
 
@@ -1331,8 +1351,32 @@ impl JellyfinClient {
 
     pub async fn get_song_streaming_uri(&self, id: &str) -> String {
         let s = self.session();
-        s.url.as_ref().expect("URL not set").join(&format!("Audio/{}/universal?UserId={}&DeviceId={}&MaxStreamingBitrate=4000000&Container=opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg&TranscodingContainer=aac&TranscodingProtocol=hls&AudioCodec=aac&api_key={}&PlaySessionId=1715006733496&StartTimeTicks=0&EnableRedirection=true&EnableRemoteMedia=false",
-        id, s.account.user_id, *DEVICE_ID, s.account.access_token, )).unwrap().to_string()
+        let (url, _) = s.url_headers.as_ref().expect("URL not set");
+        let path = format!("Audio/{}/universal", id);
+        let mut url = url.join(&path).unwrap();
+        let mut query_pairs = url.query_pairs_mut();
+        query_pairs
+            .append_pair("UserId", &s.account.user_id)
+            .append_pair("DeviceId", &DEVICE_ID)
+            .append_pair("MaxStreamingBitrate", "4000000")
+            .append_pair("Container", "opus,mp3|mp3,mp2,mp3|mp2,m4a|aac,mp4|aac,flac,webma,webm,wav|PCM_S16LE,wav|PCM_S24LE,ogg")
+            .append_pair("TranscodingContainer", "aac")
+            .append_pair("TranscodingProtocol", "hls")
+            .append_pair("AudioCodec", "aac")
+            .append_pair("PlaySessionId", "1715006733496")
+            .append_pair("StartTimeTicks", "0")
+            .append_pair("EnableRedirection", "true")
+            .append_pair("EnableRemoteMedia", "false");
+        match self.server_type() {
+            ServerType::Emby => {
+                query_pairs.append_pair("api_key", &s.account.access_token);
+            }
+            ServerType::Jellyfin => {
+                query_pairs.append_pair("ApiKey", &s.account.access_token);
+            }
+        }
+        drop(query_pairs);
+        url.to_string()
     }
 
     pub async fn get_additional(&self, id: &str) -> Result<List> {
@@ -1375,8 +1419,22 @@ impl JellyfinClient {
         self.request("System/Info", &[]).await
     }
 
-    pub async fn get_server_info_public(&self) -> Result<PublicServerInfo> {
-        self.request("System/Info/Public", &[]).await
+    pub async fn get_server_info_public(
+        &self, server: &str, port: &str, server_type: ServerType,
+    ) -> Result<PublicServerInfo> {
+        let request = self.prepare_unauthenticated_request(
+            Method::GET,
+            server,
+            port,
+            server_type,
+            "System/Info/Public",
+        )?;
+        Ok(self
+            .send_request(request)
+            .await?
+            .error_for_status()?
+            .json()
+            .await?)
     }
 
     pub async fn shut_down(&self) -> Result<Response> {
@@ -1411,7 +1469,8 @@ impl JellyfinClient {
     ) -> String {
         let s = self.session();
         let path = format!("Items/{id}/Images/{image_type}/");
-        let url = s.url.as_ref().expect("URL not set").join(&path).unwrap();
+        let (url, _) = s.url_headers.as_ref().expect("URL not set");
+        let url = url.join(&path).unwrap();
         match image_index {
             Some(index) => url.join(&index.to_string()).unwrap().to_string(),
             None => url.to_string(),
@@ -1504,8 +1563,15 @@ mod tests {
 
     #[tokio::test]
     async fn search() {
-        let _ = JELLYFIN_CLIENT.header_change_url("https://example.com", "443");
-        let result = JELLYFIN_CLIENT.login("test", "test").await;
+        let result = JELLYFIN_CLIENT
+            .login(
+                "https://example.com",
+                "443",
+                ServerType::Jellyfin,
+                "test",
+                "test",
+            )
+            .await;
         match result {
             Ok(response) => {
                 println!("{}", response.access_token);
@@ -1553,8 +1619,15 @@ mod tests {
 
     #[tokio::test]
     async fn test_upload_image() {
-        let _ = JELLYFIN_CLIENT.header_change_url("http://127.0.0.1", "8096");
-        let result = JELLYFIN_CLIENT.login("inaha", "").await;
+        let result = JELLYFIN_CLIENT
+            .login(
+                "http://127.0.0.1",
+                "8096",
+                ServerType::Jellyfin,
+                "inaha",
+                "",
+            )
+            .await;
         match result {
             Ok(response) => {
                 println!("{}", response.access_token);
