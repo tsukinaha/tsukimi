@@ -339,7 +339,7 @@ impl JellyfinClient {
         &self, method: Method, path: &str, params: &[(&str, &str)],
     ) -> Result<RequestBuilder> {
         let s = self.session();
-        let (url, headers) = s.url_headers.as_ref().context("URL is not set")?;
+        let (url, headers) = s.url_headers.as_ref().context("Client not initialized")?;
         Ok(self
             .client
             .request(method, url.join(path)?)
@@ -361,7 +361,7 @@ impl JellyfinClient {
         &self, method: Method, path: &str, params: &[(&str, &str)], content_type: &str,
     ) -> Result<RequestBuilder> {
         let s = self.session();
-        let (url, headers) = s.url_headers.as_ref().context("URL is not set")?;
+        let (url, headers) = s.url_headers.as_ref().context("Client not initialized")?;
         let mut headers = headers.clone();
         headers.insert(
             reqwest::header::CONTENT_TYPE,
@@ -417,7 +417,7 @@ impl JellyfinClient {
         &self, container: &str, item_id: &str, media_source_id: &str,
     ) -> Result<String> {
         let s = self.session();
-        let (url, _) = s.url_headers.as_ref().context("URL is not set")?;
+        let (url, _) = s.url_headers.as_ref().context("Client not initialized")?;
         let path = format!("Videos/{}/stream.{}", item_id, container);
         let mut url = url.join(&path).context("Failed to build item stream URL")?;
         let mut query_pairs = url.query_pairs_mut();
@@ -886,7 +886,7 @@ impl JellyfinClient {
 
     pub async fn get_streaming_url(&self, path: &str) -> String {
         let s = self.session();
-        let (url, _) = s.url_headers.as_ref().expect("URL not set");
+        let (url, _) = s.url_headers.as_ref().expect("Client not initialized");
         url.join(path.trim_start_matches('/')).unwrap().to_string()
     }
 
@@ -1350,7 +1350,7 @@ impl JellyfinClient {
 
     pub async fn get_song_streaming_uri(&self, id: &str) -> String {
         let s = self.session();
-        let (url, _) = s.url_headers.as_ref().expect("URL not set");
+        let (url, _) = s.url_headers.as_ref().expect("Client not initialized");
         let path = format!("Audio/{}/universal", id);
         let mut url = url.join(&path).unwrap();
         let mut query_pairs = url.query_pairs_mut();
@@ -1468,7 +1468,7 @@ impl JellyfinClient {
     ) -> String {
         let s = self.session();
         let path = format!("Items/{id}/Images/{image_type}/");
-        let (url, _) = s.url_headers.as_ref().expect("URL not set");
+        let (url, _) = s.url_headers.as_ref().expect("Client not initialized");
         let url = url.join(&path).unwrap();
         match image_index {
             Some(index) => url.join(&index.to_string()).unwrap().to_string(),
