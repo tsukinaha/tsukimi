@@ -52,6 +52,8 @@ mod imp {
         pub id: OnceCell<String>,
         #[property(get, set, construct_only)]
         pub image_type: OnceCell<String>,
+        #[property(get, set, construct_only)]
+        pub item_type: OnceCell<String>,
 
         #[template_child]
         pub items_count_label: TemplateChild<gtk::Label>,
@@ -111,10 +113,11 @@ glib::wrapper! {
 
 #[template_callbacks]
 impl ImageDialogSearchPage {
-    pub fn new(id: &str, image_type: &str) -> Self {
+    pub fn new(id: &str, image_type: &str, item_type: &str) -> Self {
         glib::Object::builder()
             .property("id", id)
             .property("image-type", image_type)
+            .property("item-type", item_type)
             .build()
     }
 
@@ -257,7 +260,8 @@ impl ImageDialogSearchPage {
                     Some(item.provider_name.clone()),
                     Some(line2),
                     item.community_rating.map(|x| x.to_string()),
-                    Some(self.image_type().to_string()),
+                    Some(self.item_type()),
+                    Some(self.image_type()),
                     None,
                 );
                 eu_item::EuObject::new(&eu_item)

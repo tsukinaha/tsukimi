@@ -1,5 +1,8 @@
 use adw::subclass::prelude::ObjectSubclassIsExt;
-use gtk::glib;
+use gtk::{
+    gio::prelude::FileExt,
+    glib,
+};
 use mpris_server::{
     Metadata,
     Property,
@@ -10,9 +13,13 @@ use crate::{
     ui::{
         mpv::page::MPVPage,
         provider::tu_item::TuItem,
+        widgets::tu_item::{
+            CardOptions,
+            select_picture_source,
+        },
     },
     utils::{
-        get_image_with_cache,
+        resolve_picture_file,
         spawn,
     },
 };
@@ -55,24 +62,23 @@ impl MPVPage {
 
     pub(super) fn notify_mpris_art_changed(&self, video: TuItem, mut metadata: Metadata) {
         let video_id = video.id();
-        let image_id = video.primary_image_item_id().unwrap_or_else(|| video.id());
+        let source = select_picture_source(&video, CardOptions::default());
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
             self,
             async move {
-                let path = get_image_with_cache(image_id, "Primary".to_string(), None)
-                    .await
-                    .unwrap_or_default();
-                if path.is_empty()
-                    || obj
-                        .current_video()
-                        .is_none_or(|video| video.id() != video_id)
+                if let Some(source) = source
+                    && let Ok(file) = resolve_picture_file(source).await
+                {
+                    metadata.set_art_url(Some(file.uri()));
+                }
+                if obj
+                    .current_video()
+                    .is_none_or(|video| video.id() != video_id)
                 {
                     return;
                 }
-                let art_url = format!("file://{path}");
-                obj.imp().mpris_art_url.replace(Some(art_url.clone()));
-                metadata.set_art_url(Some(art_url));
+                obj.imp().mpris_art_url.replace(metadata.art_url());
                 obj.mpris_properties_changed([Property::Metadata(metadata)]);
             }
         ));

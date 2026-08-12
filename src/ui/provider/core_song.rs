@@ -16,7 +16,10 @@ pub mod imp {
     use gtk::glib::Properties;
 
     use super::*;
-    use crate::ui::widgets::song_widget::State;
+    use crate::{
+        client::picture_source::PictureSource,
+        ui::widgets::song_widget::State,
+    };
 
     #[derive(Properties, Default)]
     #[properties(wrapper_type = super::CoreSong)]
@@ -31,8 +34,8 @@ pub mod imp {
         pub artist: RefCell<String>,
         #[property(get, set)]
         pub album_id: RefCell<String>,
-        #[property(get, set)]
-        pub have_single_track_image: Cell<bool>,
+        #[property(get, set, nullable)]
+        pub image_source: RefCell<Option<PictureSource>>,
         #[property(get, set)]
         pub duration: Cell<u64>,
     }

@@ -165,6 +165,7 @@ pub(crate) mod imp {
             ));
 
             self.actionbox.set_id(Some(obj.item().id()));
+            self.actionbox.set_item_type(obj.item().item_type());
             self.selection.set_model(Some(&store));
             self.episode_list.set_factory(Some(
                 SignalListItemFactory::new()

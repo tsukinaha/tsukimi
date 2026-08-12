@@ -247,9 +247,11 @@ where
                             #[weak]
                             obj,
                             async move {
-                                let id = obj.item().id();
-                                let dialog =
-                                    crate::ui::widgets::image_dialog::ImageDialog::new(&id);
+                                let item = obj.item();
+                                let dialog = crate::ui::widgets::image_dialog::ImageDialog::new(
+                                    &item.id(),
+                                    &item.item_type(),
+                                );
                                 crate::insert_editm_dialog!(obj, dialog);
                             }
                         ))

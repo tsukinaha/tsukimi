@@ -13,12 +13,6 @@ use std::{
 };
 
 #[derive(Serialize, Deserialize, Clone)]
-pub struct AuthenticateResponse {
-    #[serde(rename = "Policy")]
-    pub policy: Policy,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
 pub struct Policy {
     #[serde(rename = "IsAdministrator")]
     pub is_administrator: bool,
@@ -593,6 +587,10 @@ pub struct LoginResponse {
 pub struct User {
     #[serde(rename = "Id")]
     pub id: String,
+    #[serde(rename = "PrimaryImageTag")]
+    pub primary_image_tag: Option<String>,
+    #[serde(rename = "Policy")]
+    pub policy: Policy,
 }
 
 #[derive(Serialize, Deserialize, Clone)]

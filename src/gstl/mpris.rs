@@ -6,6 +6,7 @@ use adw::subclass::prelude::{
 };
 use gtk::{
     self,
+    gio::prelude::FileExt,
     glib,
 };
 use mpris_server::{
@@ -33,7 +34,7 @@ use crate::{
     CLIENT_ID,
     gstl::player::imp::ListRepeatMode,
     utils::{
-        get_image_with_cache,
+        resolve_picture_file,
         spawn,
     },
 };
@@ -145,16 +146,11 @@ impl MusicPlayer {
             self,
             async move {
                 if let Some(core_song) = imp.active_core_song().as_ref() {
-                    let id = if core_song.have_single_track_image() {
-                        core_song.id()
-                    } else {
-                        core_song.album_id()
+                    if let Some(source) = core_song.image_source()
+                        && let Ok(file) = resolve_picture_file(source).await
+                    {
+                        metadata.set_art_url(Some(file.uri()));
                     };
-                    let path = get_image_with_cache(id, "Primary".to_string(), None)
-                        .await
-                        .unwrap_or_default();
-                    let url = format!("file://{}", path);
-                    metadata.set_art_url(Some(url));
                     imp.mpris_properties_changed([Property::Metadata(metadata)]);
                 }
             }

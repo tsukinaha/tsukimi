@@ -7,11 +7,8 @@ use crate::{
 };
 pub static SETTINGS: Lazy<Settings> = Lazy::new(Settings::default);
 
-pub static CACHE_PATH: Lazy<std::path::PathBuf> = Lazy::new(|| {
-    let path = gtk::glib::user_cache_dir().join("tsukimi");
-    std::fs::create_dir_all(&path).expect("Failed to create directory");
-    path
-});
+static CACHE_PATH: Lazy<std::path::PathBuf> =
+    Lazy::new(|| gtk::glib::user_cache_dir().join("tsukimi"));
 
 pub async fn jellyfin_cache_path() -> std::path::PathBuf {
     let path = CACHE_PATH.join(&JELLYFIN_CLIENT.session().server_name_hash);

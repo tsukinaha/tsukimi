@@ -199,6 +199,7 @@ impl IdentifyDialogSearchPage {
                     item.production_year.map(|p| p.to_string()),
                     None,
                     Some(item_type.to_owned()),
+                    None,
                     Some(item_value.to_string()),
                 );
                 Some(EuObject::new(&eu_item))

@@ -20,6 +20,8 @@ pub mod imp {
         #[property(get, set, nullable)]
         image_original_url: RefCell<Option<String>>,
         #[property(get, set, nullable)]
+        item_type: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
         image_type: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         line1: RefCell<Option<String>>,
@@ -53,14 +55,16 @@ impl Default for EuItem {
 }
 
 impl EuItem {
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         image_url: Option<String>, image_original_url: Option<String>, line1: Option<String>,
-        line2: Option<String>, line3: Option<String>, image_type: Option<String>,
-        json_value: Option<String>,
+        line2: Option<String>, line3: Option<String>, item_type: Option<String>,
+        image_type: Option<String>, json_value: Option<String>,
     ) -> Self {
         glib::Object::builder()
             .property("image-url", image_url)
             .property("image-original-url", image_original_url)
+            .property("item-type", item_type)
             .property("image-type", image_type)
             .property("line1", line1)
             .property("line2", line2)

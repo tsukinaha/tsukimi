@@ -1,21 +1,11 @@
-use std::{
-    path::PathBuf,
-    sync::LazyLock,
-};
+use std::sync::LazyLock;
 
-use super::{
-    image_paintable::paintable_from_file,
-    utils::{
-        TU_ITEM_POST_SIZE,
-        TU_ITEM_VIDEO_SIZE,
-    },
-};
+use super::image_paintable::paintable_from_file;
 use crate::{
-    client::jellyfin_client::JELLYFIN_CLIENT,
-    ui::models::jellyfin_cache_path,
+    client::picture_source::PictureSource,
     utils::{
+        resolve_picture_file,
         spawn,
-        spawn_tokio,
     },
 };
 use adw::{
@@ -32,7 +22,6 @@ use gtk::{
     gio,
     glib,
 };
-use tracing::warn;
 
 const IMAGE_LOAD_DELAY: std::time::Duration = std::time::Duration::from_millis(80);
 static IMAGE_LOAD_SEMAPHORE: LazyLock<tokio::sync::Semaphore> = LazyLock::new(|| {
@@ -59,31 +48,6 @@ impl LoadToken {
     }
 }
 
-#[derive(Clone)]
-pub enum PictureSource {
-    Item {
-        id: String,
-        tag: Option<String>,
-        image_type: String,
-        image_index: Option<u8>,
-    },
-    Url {
-        image_type: String,
-        url: String,
-    },
-}
-
-impl PictureSource {
-    pub fn item(id: &str, image_type: &str, image_index: Option<u8>) -> Self {
-        Self::Item {
-            id: id.to_string(),
-            tag: None,
-            image_type: image_type.to_string(),
-            image_index,
-        }
-    }
-}
-
 pub mod imp {
     use std::cell::{
         Cell,
@@ -100,10 +64,9 @@ pub mod imp {
     pub struct PictureLoader {
         #[property(get, set)]
         pub id: RefCell<String>,
+        pub imagetype: Cell<&'static str>,
         #[property(get, set)]
-        pub imagetype: RefCell<String>,
-        #[property(get, set, nullable)]
-        pub tag: RefCell<Option<String>>,
+        pub tag: RefCell<String>,
         pub image_index: Cell<Option<u8>>,
         #[property(get, set, nullable)]
         pub url: RefCell<Option<String>>,
@@ -164,13 +127,8 @@ glib::wrapper! {
 }
 
 impl PictureLoader {
-    pub fn new(id: &str, image_type: &str, image_index: Option<u8>) -> Self {
-        Self::new_for_source(PictureSource::item(id, image_type, image_index))
-    }
-
-    pub fn new_for_url(image_type: &str, url: &str) -> Self {
+    pub fn new_for_url(url: &str) -> Self {
         Self::new_for_source(PictureSource::Url {
-            image_type: image_type.to_string(),
             url: url.to_string(),
         })
     }
@@ -185,24 +143,23 @@ impl PictureLoader {
             } => {
                 let obj: Self = glib::Object::builder()
                     .property("id", id)
-                    .property("imagetype", image_type)
-                    .property("tag", tag.as_deref())
+                    .property("tag", tag)
                     .build();
+                obj.imp().imagetype.set(image_type);
                 obj.imp().image_index.replace(image_index);
                 obj
             }
-            PictureSource::Url { image_type, url } => glib::Object::builder()
+            PictureSource::Url { url } => glib::Object::builder()
                 .property("id", "")
-                .property("imagetype", image_type)
                 .property("url", url)
                 .build(),
+            PictureSource::User { .. } => unreachable!(),
         };
         obj
     }
 
-    pub fn reload_for_url(&self, image_type: &str, url: &str) {
+    pub fn reload_for_url(&self, url: &str) {
         self.reload_source(PictureSource::Url {
-            image_type: image_type.to_string(),
             url: url.to_string(),
         });
     }
@@ -217,17 +174,17 @@ impl PictureLoader {
                 image_index,
             } => {
                 self.set_id(id.as_str());
-                self.set_imagetype(image_type.as_str());
-                self.set_tag(tag.as_deref());
+                self.imp().imagetype.set(image_type);
+                self.set_tag(tag.as_str());
                 self.imp().image_index.replace(*image_index);
                 self.set_url(None::<String>);
             }
-            PictureSource::Url { image_type, url } => {
+            PictureSource::Url { url } => {
                 self.set_id("");
-                self.set_imagetype(image_type.as_str());
                 self.imp().image_index.replace(None);
                 self.set_url(Some(url.as_str()));
             }
+            PictureSource::User { .. } => unreachable!(),
         }
         self.load_source(source);
     }
@@ -260,9 +217,6 @@ impl PictureLoader {
 
     fn load_source(&self, source: PictureSource) {
         let load_token = self.new_request();
-        if let PictureSource::Url { image_type, .. } = &source {
-            self.configure_picture_size(image_type);
-        }
         let weak_self = self.downgrade();
         spawn(async move {
             let paintable = Self::load_paintable(load_token.clone(), source).await;
@@ -299,15 +253,6 @@ impl PictureLoader {
         generation
     }
 
-    fn configure_picture_size(&self, image_type: &str) {
-        let size = match image_type {
-            "Primary" => &TU_ITEM_POST_SIZE,
-            _ => &TU_ITEM_VIDEO_SIZE,
-        };
-        self.imp().picture.set_width_request(size.0);
-        self.imp().picture.set_height_request(size.1);
-    }
-
     async fn load_paintable(
         load_token: LoadToken, source: PictureSource,
     ) -> Result<gdk::Paintable> {
@@ -315,34 +260,18 @@ impl PictureLoader {
             bail!("image load cancelled");
         }
 
-        match source {
-            PictureSource::Url { url, .. } => {
-                Self::load_file(gio::File::for_uri(&url), &load_token).await
-            }
-            PictureSource::Item {
-                id,
-                tag: _,
-                image_type,
-                image_index,
-            } => {
-                glib::timeout_future(IMAGE_LOAD_DELAY).await;
-                if load_token.is_cancelled() {
-                    bail!("image load cancelled");
-                }
-                let cache_path = Self::cache_file(&id, &image_type, image_index).await;
-                let file = gio::File::for_path(&cache_path);
-
-                if let Ok(paintable) = Self::load_file(file.clone(), &load_token).await {
-                    return Ok(paintable);
-                }
-
-                Self::download_image(&id, &image_type, image_index).await;
-                if load_token.is_cancelled() {
-                    bail!("image load cancelled");
-                }
-                Self::load_file(file, &load_token).await
+        if matches!(&source, PictureSource::Item { .. }) {
+            glib::timeout_future(IMAGE_LOAD_DELAY).await;
+            if load_token.is_cancelled() {
+                bail!("image load cancelled");
             }
         }
+
+        let file = resolve_picture_file(source).await?;
+        if load_token.is_cancelled() {
+            bail!("image load cancelled");
+        }
+        Self::load_file(file, &load_token).await
     }
 
     async fn load_file(file: gio::File, load_token: &LoadToken) -> Result<gdk::Paintable> {
@@ -350,41 +279,14 @@ impl PictureLoader {
         paintable_from_file(file, Some(load_token.cancellable.clone())).await
     }
 
-    async fn cache_file(id: &str, image_type: &str, image_index: Option<u8>) -> PathBuf {
-        let cache_path = jellyfin_cache_path().await;
-        let path = format!("{}-{}-{}", id, image_type, image_index.unwrap_or(0));
-        cache_path.join(path)
-    }
-
-    async fn download_image(id: &str, image_type: &str, image_index: Option<u8>) {
-        let id = id.to_string();
-        let image_type = image_type.to_string();
-        let warn_id = id.clone();
-        let warn_image_type = image_type.clone();
-
-        let result = spawn_tokio(async move {
-            JELLYFIN_CLIENT
-                .get_image(&id, &image_type, image_index)
-                .await
-        })
-        .await;
-
-        if let Err(error) = result {
-            warn!("{}: {}-{}", error, warn_id, warn_image_type);
-        }
-    }
-
     fn image_source(&self) -> PictureSource {
         if let Some(url) = self.url() {
-            PictureSource::Url {
-                image_type: self.imagetype(),
-                url,
-            }
+            PictureSource::Url { url }
         } else {
             PictureSource::Item {
                 id: self.id(),
                 tag: self.tag(),
-                image_type: self.imagetype(),
+                image_type: self.imp().imagetype.get(),
                 image_index: self.imp().image_index.get(),
             }
         }

@@ -51,6 +51,16 @@ pub mod item_type {
     pub const DANMAKU_EPISODE: &str = "DanmakuEpisode";
 }
 
+pub mod image_type {
+    pub const PRIMARY: &str = "Primary";
+    pub const BACKDROP: &str = "Backdrop";
+    pub const ART: &str = "Art";
+    pub const THUMB: &str = "Thumb";
+    pub const LOGO: &str = "Logo";
+    pub const BANNER: &str = "Banner";
+    pub const DISC: &str = "Disc";
+}
+
 pub use item_type::*;
 
 use crate::{
