@@ -236,7 +236,7 @@ impl TuOverviewItem {
                 imp.overview.set_text(Some(
                     &item
                         .overview()
-                        .unwrap_or("No Inscription".to_string())
+                        .unwrap_or_else(|| gettext("No Inscriptions"))
                         .replace(['\n', '\r'], " "),
                 ));
                 self.set_progress(self.item().played_percentage());
