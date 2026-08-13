@@ -134,7 +134,7 @@ impl AccountWindow {
 
     pub async fn add(&self) {
         let imp = self.imp();
-        let mut servername = imp.servername_entry.text().to_string();
+        let servername = imp.servername_entry.text().to_string();
         let scheme = imp.protocol.selected();
         let protocol = if scheme == 0 { "http://" } else { "https://" };
         let server = imp.server_entry.text();
@@ -149,50 +149,39 @@ impl AccountWindow {
         imp.stack.set_visible_child_name("loading");
 
         let server = format!("{protocol}{server}");
-
-        let _ = JELLYFIN_CLIENT.header_change_url(&server, &port);
-        let _ = JELLYFIN_CLIENT.header_change_token(&servername);
-        let un = username.to_string();
-        let pw = password.to_string();
-        let res =
-            match spawn_tokio(async move { JELLYFIN_CLIENT.login(&username, &password).await })
-                .await
-            {
-                Ok(res) => res,
-                Err(e) => {
-                    imp.stack.toast(e.to_user_facing());
-                    imp.stack.set_visible_child_name("entry");
-                    return;
-                }
+        let server_type = ServerType::from_index(imp.server_type.selected());
+        let account = match spawn_tokio(async move {
+            let login = JELLYFIN_CLIENT
+                .login(&server, &port, server_type, &username, &password)
+                .await?;
+            let servername = if servername.is_empty() {
+                JELLYFIN_CLIENT
+                    .get_server_info_public(&server, &port, server_type)
+                    .await?
+                    .server_name
+            } else {
+                servername
             };
 
-        if servername.is_empty() {
-            let res =
-                match spawn_tokio(async move { JELLYFIN_CLIENT.get_server_info_public().await })
-                    .await
-                {
-                    Ok(res) => res,
-                    Err(e) => {
-                        imp.stack.toast(e.to_user_facing());
-                        imp.stack.set_visible_child_name("entry");
-                        return;
-                    }
-                };
-
-            servername = res.server_name;
-        }
-
-        let server_type = ServerType::from_index(imp.server_type.selected());
-
-        let account = Account {
-            servername,
-            server,
-            username: un,
-            password: pw,
-            port: port.to_string(),
-            user_id: res.user.id,
-            access_token: res.access_token,
-            server_type: Some(server_type),
+            Ok::<_, anyhow::Error>(Account {
+                servername,
+                server,
+                username: username.to_string(),
+                password: password.to_string(),
+                port: port.to_string(),
+                user_id: login.user.id,
+                access_token: login.access_token,
+                server_type: Some(server_type),
+            })
+        })
+        .await
+        {
+            Ok(account) => account,
+            Err(e) => {
+                imp.stack.toast(e.to_user_facing());
+                imp.stack.set_visible_child_name("entry");
+                return;
+            }
         };
 
         let action_type = imp.action_type.get();
@@ -243,22 +232,16 @@ impl AccountWindow {
     }
 
     fn parse_url(&self, url: &url::Url) {
-        match url.scheme() {
-            "http" => {
-                self.imp().protocol.set_selected(0);
-            }
-            "https" => {
-                self.imp().protocol.set_selected(1);
-                if url.port().is_none() {
-                    self.imp().port_entry.set_text("443");
-                }
-            }
-            _ => {}
-        }
+        let (protocol_idx, default_port) = match url.scheme() {
+            "http" => (0, 80),
+            "https" => (1, 443),
+            _ => return,
+        };
 
-        if let Some(port) = url.port() {
-            self.imp().port_entry.set_text(&port.to_string());
-        }
+        self.imp().protocol.set_selected(protocol_idx);
+        self.imp()
+            .port_entry
+            .set_text(&url.port().unwrap_or(default_port).to_string());
 
         if let Some(host) = url.host_str() {
             self.imp().server_entry.set_text(host);

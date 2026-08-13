@@ -17,14 +17,21 @@ mod imp {
             RGBA,
         },
     };
+    use once_cell::sync::Lazy;
     use url::Url;
 
-    use crate::ui::{
-        SETTINGS,
-        match_audio_channels,
-        match_hwdec_interop,
-        match_sub_border_style,
-        match_video_upscale,
+    use crate::{
+        client::jellyfin_client::{
+            DEVICE_ID,
+            JELLYFIN_CLIENT,
+        },
+        ui::{
+            SETTINGS,
+            match_audio_channels,
+            match_hwdec_interop,
+            match_sub_border_style,
+            match_video_upscale,
+        },
     };
 
     use super::*;
@@ -89,6 +96,11 @@ mod imp {
 
         fn startup(&self) {
             self.parent_startup();
+
+            // Eagerly initialize `DEVICE_ID` and `JELLYFIN_CLIENT` because they depend on `SETTINGS`, which can only be accessed from the main thread.
+            // If either is first accessed inside `spawn_tokio`, the application will panic.
+            Lazy::force(&DEVICE_ID);
+            Lazy::force(&JELLYFIN_CLIENT);
 
             let window = crate::Window::new(&self.obj());
             window.load_window_state();

@@ -143,8 +143,9 @@ impl ServerActionRow {
             .imp()
             .servername_entry
             .set_text(&account.servername);
-        account_window.imp().port_entry.set_text(&account.port);
-        account_window.imp().server_entry.set_text(&account.server);
+        if let Ok(url) = account.url() {
+            account_window.imp().server_entry.set_text(url.as_str());
+        }
         account_window
             .imp()
             .server_type
