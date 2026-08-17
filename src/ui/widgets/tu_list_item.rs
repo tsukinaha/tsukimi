@@ -65,6 +65,20 @@ pub mod imp {
         key: (i32, i32, bool, usize),
     }
 
+    struct DefaultTrueCell(Cell<bool>);
+
+    impl Default for DefaultTrueCell {
+        fn default() -> Self {
+            Self(Cell::new(true))
+        }
+    }
+
+    impl DefaultTrueCell {
+        fn replace(&self, value: bool) -> bool {
+            self.0.replace(value)
+        }
+    }
+
     // Object holding the state
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/listitem.ui")]
@@ -75,13 +89,14 @@ pub mod imp {
         pub card_options: Cell<CardOptions>,
         pub popover: RefCell<Option<PopoverMenu>>,
         #[template_child]
-        pub content_box: TemplateChild<gtk::Box>,
+        pub card_box: TemplateChild<gtk::Box>,
         #[template_child]
-        pub scaled_title_slot: TemplateChild<gtk::Box>,
+        pub integrated_title_slot: TemplateChild<gtk::Box>,
         #[template_child]
-        pub plain_title_slot: TemplateChild<gtk::Box>,
+        pub separated_title_slot: TemplateChild<gtk::Box>,
         #[template_child]
         pub title_box: TemplateChild<gtk::Box>,
+        title_is_integrated: DefaultTrueCell,
         #[template_child]
         pub title: TemplateChild<gtk::Label>,
         #[template_child]
@@ -197,33 +212,38 @@ pub mod imp {
     impl TuListItem {
         fn update_item_card_style(&self) {
             let integrated = SETTINGS.item_card_style_is_integrated();
-            let title_box = self.title_box.get();
-            let target = if integrated {
-                self.scaled_title_slot.get()
-            } else {
-                self.plain_title_slot.get()
-            };
 
-            if title_box.parent().as_ref() != Some(target.upcast_ref()) {
-                if let Some(parent) = title_box.parent()
-                    && let Ok(parent) = parent.downcast::<gtk::Box>()
-                {
-                    parent.remove(&title_box);
+            if self.title_is_integrated.replace(integrated) != integrated {
+                self.title_box.unparent();
+                if integrated {
+                    self.integrated_title_slot.append(&*self.title_box);
+                } else {
+                    self.separated_title_slot.append(&*self.title_box);
                 }
-                target.append(&title_box);
             }
 
             if integrated {
-                self.content_box.add_css_class("tulistitem");
+                self.card_box.add_css_class("tu-list-item-card");
             } else {
-                self.content_box.remove_css_class("tulistitem");
+                self.card_box.remove_css_class("tu-list-item-card");
             }
+            self.update_cover_shadow(integrated);
             self.update_title_slot_visibility(integrated, self.title.get_visible());
         }
 
+        fn update_cover_shadow(&self, integrated: bool) {
+            if integrated {
+                self.cover_frame.add_css_class("inbox");
+            } else {
+                self.cover_frame.remove_css_class("inbox");
+            }
+        }
+
         pub(super) fn update_title_slot_visibility(&self, integrated: bool, has_title: bool) {
-            self.scaled_title_slot.set_visible(integrated && has_title);
-            self.plain_title_slot.set_visible(!integrated && has_title);
+            self.integrated_title_slot
+                .set_visible(integrated && has_title);
+            self.separated_title_slot
+                .set_visible(!integrated && has_title);
         }
 
         fn draw_backdrop(&self, snapshot: &gtk::Snapshot) {
