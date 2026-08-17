@@ -199,20 +199,20 @@ msgstr "ஊடகம்"
 msgid "Music Player"
 msgstr "மியூசிக் பிளேயர்"
 
-#: resources/ui/account_settings.ui:355 resources/ui/player_toolbar.ui:197
+#: resources/ui/account_settings.ui:355 resources/ui/player_toolbar.ui:223
 msgid "Repeat Mode"
 msgstr "மீண்டும் பயன்முறை"
 
-#: resources/ui/account_settings.ui:359 resources/ui/player_toolbar.ui:231
+#: resources/ui/account_settings.ui:359 resources/ui/player_toolbar.ui:257
 msgid "Repeat One"
 msgstr "ஒன்றை மீண்டும் செய்யவும்"
 
-#: resources/ui/account_settings.ui:360 resources/ui/player_toolbar.ui:235
+#: resources/ui/account_settings.ui:360 resources/ui/player_toolbar.ui:261
 msgid "Repeat All"
 msgstr "அனைத்தையும் மீண்டும் செய்யவும்"
 
 #: resources/ui/account_settings.ui:361 resources/ui/account_settings.ui:436
-#: resources/ui/player_toolbar.ui:239
+#: resources/ui/player_toolbar.ui:265
 msgid "None"
 msgstr "எதுவுமில்லை"
 
@@ -273,9 +273,9 @@ msgstr "ஒரு விவரிப்பாளரைச் சேர்க்�
 
 #: resources/ui/account_settings.ui:564 resources/ui/account_settings.ui:674
 #: src/ui/widgets/identify/search_page.rs:130
-#: src/ui/widgets/image_dialog/search_page.rs:148
-#: src/ui/widgets/metadata_dialog.rs:289 src/ui/widgets/tu_item/action.rs:489
-#: src/ui/widgets/tu_item/action.rs:549
+#: src/ui/widgets/image_dialog/search_page.rs:151
+#: src/ui/widgets/metadata_dialog.rs:289 src/ui/widgets/tu_item/action.rs:499
+#: src/ui/widgets/tu_item/action.rs:559
 msgid "Cancel"
 msgstr "ரத்துசெய்"
 
@@ -363,8 +363,8 @@ msgstr "கடவுச்சொல்"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:184
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:95
-#: resources/ui/player_toolbar.ui:90 src/ui/mpv/page.rs:409
-#: src/ui/mpv/page.rs:411 src/ui/widgets/item.rs:693
+#: resources/ui/player_toolbar.ui:116 src/ui/mpv/page.rs:414
+#: src/ui/mpv/page.rs:416 src/ui/widgets/item.rs:704
 msgid "Play"
 msgstr "விளையாடுங்கள்"
 
@@ -512,7 +512,7 @@ msgid "Search Danmaku"
 msgstr "டென்மார்க்"
 
 #: resources/ui/danmaku_search_dialog.ui:32 resources/ui/metadata_dialog.ui:91
-#: resources/ui/single_grid.ui:105 src/ui/widgets/item.rs:1087
+#: resources/ui/single_grid.ui:105 src/ui/widgets/item.rs:1105
 msgid "Title"
 msgstr "தலைப்பு"
 
@@ -580,7 +580,7 @@ msgstr "படம்"
 #: resources/ui/danmaku_search_dialog.ui:70 resources/ui/identify_dialog.ui:95
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:261
-#: src/ui/widgets/window.rs:310
+#: src/ui/widgets/window.rs:307
 msgid "Search"
 msgstr "தேடல்"
 
@@ -623,13 +623,13 @@ msgstr "விளையாடப்படாதது"
 msgid "Continue Play"
 msgstr "தொடர்ந்து விளையாடுங்கள்"
 
-#: resources/ui/filter.ui:78 resources/ui/item.ui:482 resources/ui/other.ui:173
-#: src/ui/widgets/list.rs:133
+#: resources/ui/filter.ui:78 resources/ui/item.ui:483 resources/ui/other.ui:174
+#: src/ui/widgets/list.rs:132
 msgid "Genres"
 msgstr "வகைகள்"
 
-#: resources/ui/filter.ui:85 resources/ui/item.ui:487 resources/ui/other.ui:168
-#: src/ui/widgets/list.rs:132
+#: resources/ui/filter.ui:85 resources/ui/item.ui:488 resources/ui/other.ui:169
+#: src/ui/widgets/list.rs:131
 msgid "Tags"
 msgstr "குறிச்சொற்கள்"
 
@@ -641,8 +641,8 @@ msgstr "ஆண்டுகள்"
 msgid "Official Ratings"
 msgstr "அதிகாரப்பூர்வ மதிப்பீடுகள்"
 
-#: resources/ui/filter.ui:106 resources/ui/item.ui:477
-#: resources/ui/other.ui:163
+#: resources/ui/filter.ui:106 resources/ui/item.ui:478
+#: resources/ui/other.ui:164
 msgid "Studios"
 msgstr "ச்டுடியோச்"
 
@@ -680,11 +680,11 @@ msgid "Library"
 msgstr "நூலகம்"
 
 #. if merged, next up will contain resume items, so change title to continue watching
-#: resources/ui/home.ui:21 resources/ui/item.ui:298 src/ui/widgets/home.rs:228
+#: resources/ui/home.ui:21 resources/ui/item.ui:298 src/ui/widgets/home.rs:226
 msgid "Continue Watching"
 msgstr "தொடர்ந்து பார்த்துக் கொள்ளுங்கள்"
 
-#: resources/ui/home.ui:29 src/ui/widgets/home.rs:230
+#: resources/ui/home.ui:29 src/ui/widgets/home.rs:228
 #, fuzzy
 #| msgid "Next"
 msgid "Next Up"
@@ -780,7 +780,7 @@ msgid "Edit"
 msgstr "தொகு"
 
 #: resources/ui/image_info_card.ui:139 resources/ui/pop-menu.ui:93
-#: resources/ui/server_action_row.ui:52 src/ui/widgets/tu_item/action.rs:490
+#: resources/ui/server_action_row.ui:52 src/ui/widgets/tu_item/action.rs:500
 msgid "Delete"
 msgstr "நீக்கு"
 
@@ -849,15 +849,15 @@ msgstr "பருவங்கள்"
 msgid "Actors"
 msgstr "நடிகர்கள்"
 
-#: resources/ui/item.ui:467
+#: resources/ui/item.ui:468
 msgid "Recommend"
 msgstr "பரிந்துரைக்கவும்"
 
-#: resources/ui/item.ui:472 resources/ui/other.ui:178
+#: resources/ui/item.ui:473 resources/ui/other.ui:179
 msgid "Links"
 msgstr "இணைப்புகள்"
 
-#: resources/ui/item.ui:505
+#: resources/ui/item.ui:506
 msgid "MediaInfo"
 msgstr "மீடியாஇன்ஃபோ"
 
@@ -1251,7 +1251,7 @@ msgstr ""
 msgid "Media info (MPV)"
 msgstr "மீடியா செய்தி (எம்.பி.வி)"
 
-#: resources/ui/mpvpage.ui:279 src/ui/mpv/page.rs:414 src/ui/mpv/page.rs:416
+#: resources/ui/mpvpage.ui:279 src/ui/mpv/page.rs:419 src/ui/mpv/page.rs:421
 msgid "Pause"
 msgstr "இடைநிறுத்தம்"
 
@@ -1477,7 +1477,7 @@ msgstr ""
 msgid "Quit and Save Position"
 msgstr ""
 
-#: resources/ui/other.ui:113
+#: resources/ui/other.ui:113 src/ui/widgets/tu_overview_item.rs:239
 msgid "No Inscriptions"
 msgstr "கல்வெட்டுகள் இல்லை"
 
@@ -1489,15 +1489,15 @@ msgstr "தொடர்"
 msgid "Episode"
 msgstr "அத்தியாயம்"
 
-#: resources/ui/player_toolbar.ui:78
+#: resources/ui/player_toolbar.ui:104
 msgid "Previous"
 msgstr "முந்தைய"
 
-#: resources/ui/player_toolbar.ui:108
+#: resources/ui/player_toolbar.ui:134
 msgid "Next"
 msgstr "அடுத்தது"
 
-#: resources/ui/player_toolbar.ui:180
+#: resources/ui/player_toolbar.ui:206
 msgid "Stop And Hide PlayerBar"
 msgstr "பிளேயர்பரை நிறுத்தி மறைக்கவும்"
 
@@ -1513,8 +1513,8 @@ msgstr "போன்ற"
 msgid "Unlike"
 msgstr "போலல்லாமல்"
 
-#: resources/ui/pop-menu.ui:63 src/ui/widgets/tu_item/action.rs:544
-#: src/ui/widgets/tu_item/action.rs:545 src/ui/widgets/tu_item/action.rs:550
+#: resources/ui/pop-menu.ui:63 src/ui/widgets/tu_item/action.rs:554
+#: src/ui/widgets/tu_item/action.rs:555 src/ui/widgets/tu_item/action.rs:560
 msgid "Remove Identification"
 msgstr "அடையாளத்தை அகற்று"
 
@@ -1542,7 +1542,7 @@ msgstr "எல்லா படங்களையும் மாற்றவு�
 msgid "Refresh"
 msgstr "புதுப்பிப்பு"
 
-#: resources/ui/search.ui:60 src/ui/widgets/list.rs:131
+#: resources/ui/search.ui:60 src/ui/widgets/list.rs:130
 msgid "BoxSet"
 msgstr "பாக்ச் செட்"
 
@@ -1614,7 +1614,7 @@ msgstr "இறங்கு"
 msgid "Sort By"
 msgstr "வரிசைப்படுத்தவும்"
 
-#: resources/ui/single_grid.ui:106 src/ui/widgets/item.rs:1091
+#: resources/ui/single_grid.ui:106 src/ui/widgets/item.rs:1109
 msgid "Bitrate"
 msgstr "பிட்ரேட்"
 
@@ -1706,12 +1706,12 @@ msgstr "விடுபதிகை"
 msgid "Contents"
 msgstr "உள்ளடக்கங்கள்"
 
-#: resources/ui/window.ui:249 src/ui/widgets/window.rs:286
+#: resources/ui/window.ui:249 src/ui/widgets/window.rs:283
 msgid "Home"
 msgstr "வீடு"
 
-#: resources/ui/window.ui:255 src/ui/widgets/list.rs:134
-#: src/ui/widgets/window.rs:298
+#: resources/ui/window.ui:255 src/ui/widgets/list.rs:133
+#: src/ui/widgets/window.rs:295
 msgid "Liked"
 msgstr "பிடித்திருந்தது"
 
@@ -1772,7 +1772,7 @@ msgid "No danmaku found"
 msgstr "டான்மகச் ஏற்றப்படவில்லை"
 
 #: src/ui/mpv/danmaku_popover.rs:50
-msgid "This feature needs a official build"
+msgid "This feature requires an official build"
 msgstr ""
 
 #: src/ui/mpv/danmaku_popover.rs:51
@@ -1813,19 +1813,19 @@ msgstr "தேடல்"
 msgid "Invalid episode ID"
 msgstr "தவறான ரீசெக்ச்"
 
-#: src/ui/mpv/page.rs:1059
+#: src/ui/mpv/page.rs:1079
 msgid "Skip Intro"
 msgstr ""
 
-#: src/ui/mpv/page.rs:1060
+#: src/ui/mpv/page.rs:1080
 msgid "Skip Outro"
 msgstr ""
 
-#: src/ui/mpv/page.rs:1214
+#: src/ui/mpv/page.rs:1234
 msgid "No more video found"
 msgstr "மேலும் வீடியோ கிடைக்கவில்லை"
 
-#: src/ui/mpv/page.rs:1324
+#: src/ui/mpv/page.rs:1344
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -1833,17 +1833,17 @@ msgstr ""
 "MPV பணிநிறுத்தம் செய்யப்பட்டுள்ளது, விண்ணப்பம் வெளியேறும்.\n"
 " சுகிமி எம்.பி.வி.யை மறுதொடக்கம் செய்ய முடியாது."
 
-#: src/ui/provider/tu_item.rs:632
+#: src/ui/provider/tu_item.rs:638
 msgid "No next up video found"
 msgstr "அடுத்த வீடியோ எதுவும் கிடைக்கவில்லை"
 
-#: src/ui/provider/tu_item.rs:661 src/ui/widgets/tu_overview_item.rs:250
+#: src/ui/provider/tu_item.rs:667 src/ui/widgets/tu_overview_item.rs:276
 msgid "Present"
 msgstr "தற்போது"
 
-#: src/ui/provider/tu_item.rs:669 src/ui/provider/tu_item.rs:687
-#: src/ui/provider/tu_item.rs:710 src/ui/provider/tu_item.rs:733
-#: src/ui/provider/tu_item.rs:736
+#: src/ui/provider/tu_item.rs:675 src/ui/provider/tu_item.rs:693
+#: src/ui/provider/tu_item.rs:716 src/ui/provider/tu_item.rs:739
+#: src/ui/provider/tu_item.rs:742
 msgid "Unknown"
 msgstr ""
 
@@ -1851,51 +1851,51 @@ msgstr ""
 msgid "Fields must be filled in"
 msgstr "புலங்கள் நிரப்பப்பட வேண்டும்"
 
-#: src/ui/widgets/account_add.rs:206
+#: src/ui/widgets/account_add.rs:195
 msgid "Server edited successfully"
 msgstr "சேவையகம் வெற்றிகரமாக திருத்தப்பட்டது"
 
-#: src/ui/widgets/account_add.rs:211
+#: src/ui/widgets/account_add.rs:200
 msgid "Server added successfully"
 msgstr "சேவையகம் வெற்றிகரமாக சேர்க்கப்பட்டது"
 
-#: src/ui/widgets/account_settings.rs:235
+#: src/ui/widgets/account_settings.rs:236
 msgid "Password cannot be empty!"
 msgstr "கடவுச்சொல் காலியாக இருக்க முடியாது!"
 
-#: src/ui/widgets/account_settings.rs:239
+#: src/ui/widgets/account_settings.rs:240
 msgid "Passwords do not match!"
 msgstr "கடவுச்சொற்கள் பொருந்தவில்லை!"
 
-#: src/ui/widgets/account_settings.rs:246
+#: src/ui/widgets/account_settings.rs:247
 msgid "Password changed successfully! Please login again."
 msgstr "கடவுச்சொல் வெற்றிகரமாக மாற்றப்பட்டது! மீண்டும் உள்நுழைக."
 
-#: src/ui/widgets/account_settings.rs:250
+#: src/ui/widgets/account_settings.rs:251
 msgid "Failed to change password"
 msgstr "கடவுச்சொல்லை மாற்றுவதில் தோல்வி"
 
-#: src/ui/widgets/account_settings.rs:284
+#: src/ui/widgets/account_settings.rs:285
 msgid "Cache Cleared"
 msgstr "கேச் அழிக்கப்பட்டது"
 
-#: src/ui/widgets/account_settings.rs:305
+#: src/ui/widgets/account_settings.rs:306
 msgid "No file selected"
 msgstr "எந்த கோப்பும் தேர்ந்தெடுக்கப்படவில்லை"
 
-#: src/ui/widgets/account_settings.rs:561
-#: src/ui/widgets/account_settings.rs:570
-#: src/ui/widgets/account_settings.rs:604
-#: src/ui/widgets/account_settings.rs:613
+#: src/ui/widgets/account_settings.rs:562
+#: src/ui/widgets/account_settings.rs:571
+#: src/ui/widgets/account_settings.rs:605
+#: src/ui/widgets/account_settings.rs:614
 msgid "Descriptor cannot be empty!"
 msgstr "விவரிப்பான் காலியாக இருக்க முடியாது!"
 
-#: src/ui/widgets/account_settings.rs:575
-#: src/ui/widgets/account_settings.rs:618
+#: src/ui/widgets/account_settings.rs:576
+#: src/ui/widgets/account_settings.rs:619
 msgid "Invalid regex"
 msgstr "தவறான ரீசெக்ச்"
 
-#: src/ui/widgets/home.rs:393
+#: src/ui/widgets/home.rs:395
 msgid "Latest"
 msgstr "அண்மைக் கால"
 
@@ -1904,13 +1904,13 @@ msgid "Failed to get path"
 msgstr "பாதையைப் பெறுவதில் தோல்வி"
 
 #: src/ui/widgets/identify/search_page.rs:127
-#: src/ui/widgets/image_dialog/search_page.rs:145
-#: src/ui/widgets/metadata_dialog.rs:286 src/ui/widgets/tu_item/action.rs:485
+#: src/ui/widgets/image_dialog/search_page.rs:148
+#: src/ui/widgets/metadata_dialog.rs:286 src/ui/widgets/tu_item/action.rs:495
 msgid "Are you sure you wish to continue?"
 msgstr "நீங்கள் தொடர விரும்புகிறீர்களா?"
 
 #: src/ui/widgets/identify/search_page.rs:131
-#: src/ui/widgets/image_dialog/search_page.rs:149
+#: src/ui/widgets/image_dialog/search_page.rs:152
 #: src/ui/widgets/metadata_dialog.rs:290
 msgid "Ok"
 msgstr "சரி"
@@ -1919,7 +1919,7 @@ msgstr "சரி"
 msgid "Replace existing images"
 msgstr "இருக்கும் படங்களை மாற்றவும்"
 
-#: src/ui/widgets/image_dialog/image_adw_dialog.rs:125
+#: src/ui/widgets/image_dialog/image_adw_dialog.rs:130
 #, fuzzy
 #| msgid "View Image"
 msgid "View Images"
@@ -1933,126 +1933,126 @@ msgstr "படம் சேமிக்கப்பட்டது"
 msgid "Failed to load image"
 msgstr "படத்தை ஏற்றுவதில் தோல்வி"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:156
+#: src/ui/widgets/image_dialog/image_infocard.rs:159
 msgid "No image to view"
 msgstr "பார்க்க படம் இல்லை"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:172
+#: src/ui/widgets/image_dialog/image_infocard.rs:175
 msgid "No image to copy"
 msgstr "நகலெடுக்க படம் இல்லை"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:176
+#: src/ui/widgets/image_dialog/image_infocard.rs:179
 #: src/ui/widgets/media_viewer.rs:349
 msgid "Image copied to clipboard"
 msgstr "படம் இடைநிலைப்பலகைக்கு நகலெடுக்கப்பட்டது"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:209
+#: src/ui/widgets/image_dialog/image_infocard.rs:218
 msgid "Image deleted"
 msgstr "படம் நீக்கப்பட்டது"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:214
+#: src/ui/widgets/image_dialog/image_infocard.rs:223
 msgid "Error deleting image"
 msgstr "படத்தை நீக்குவதில் பிழை"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:245
+#: src/ui/widgets/image_dialog/image_infocard.rs:254
 #, fuzzy
 #| msgid "Error deleting image"
 msgid "Error loading image"
 msgstr "படத்தை நீக்குவதில் பிழை"
 
-#: src/ui/widgets/image_dialog/search_page.rs:143
+#: src/ui/widgets/image_dialog/search_page.rs:146
 msgid "Replace Image"
 msgstr "படத்தை மாற்றவும்"
 
-#: src/ui/widgets/item_actionbox.rs:116 src/ui/widgets/tu_item/action.rs:98
+#: src/ui/widgets/item_actionbox.rs:121 src/ui/widgets/tu_item/action.rs:98
 msgid "Success"
 msgstr "செய்"
 
-#: src/ui/widgets/item.rs:343
+#: src/ui/widgets/item.rs:356
 #, fuzzy
 #| msgid "No file selected"
 msgid "No episode selected"
 msgstr "எந்த கோப்பும் தேர்ந்தெடுக்கப்படவில்லை"
 
-#: src/ui/widgets/item.rs:344
+#: src/ui/widgets/item.rs:357
 #, fuzzy
 #| msgid "Select new mpv config folder"
 msgid "Select an episode"
 msgstr "புதிய MPV கட்டமைப்பு கோப்புறையைத் தேர்ந்தெடுக்கவும்"
 
-#: src/ui/widgets/item.rs:689 src/ui/widgets/list.rs:130
+#: src/ui/widgets/item.rs:700 src/ui/widgets/list.rs:129
 msgid "Resume"
 msgstr "மீண்டும் தொடங்குங்கள்"
 
-#: src/ui/widgets/item.rs:1081
+#: src/ui/widgets/item.rs:1099
 msgid "Codec"
 msgstr "புரிப்பு"
 
-#: src/ui/widgets/item.rs:1084
+#: src/ui/widgets/item.rs:1102
 msgid "Language"
 msgstr "மொழி"
 
-#: src/ui/widgets/item.rs:1096
+#: src/ui/widgets/item.rs:1114
 msgid "BitDepth"
 msgstr "பிட்டெப்ட்"
 
-#: src/ui/widgets/item.rs:1100
+#: src/ui/widgets/item.rs:1118
 msgid "SampleRate"
 msgstr "மாதிரி"
 
-#: src/ui/widgets/item.rs:1104
+#: src/ui/widgets/item.rs:1122
 msgid "Height"
 msgstr "உயரம்"
 
-#: src/ui/widgets/item.rs:1107
+#: src/ui/widgets/item.rs:1125
 msgid "Width"
 msgstr "அகலம்"
 
-#: src/ui/widgets/item.rs:1110
+#: src/ui/widgets/item.rs:1128
 msgid "ColorSpace"
 msgstr "வண்ணங்கள்"
 
-#: src/ui/widgets/item.rs:1114
+#: src/ui/widgets/item.rs:1132
 msgid "DisplayTitle"
 msgstr "டிச்ப்ளே டிடில்"
 
-#: src/ui/widgets/item.rs:1118
+#: src/ui/widgets/item.rs:1136
 msgid "Channel"
 msgstr "வாய்க்கால்"
 
-#: src/ui/widgets/item.rs:1122
+#: src/ui/widgets/item.rs:1140
 msgid "ChannelLayout"
 msgstr "சேன்லேஅவுட்"
 
-#: src/ui/widgets/item.rs:1127
+#: src/ui/widgets/item.rs:1145
 msgid "AverageFrameRate"
 msgstr "சராசரி ஃபிரமரேட்"
 
-#: src/ui/widgets/item.rs:1131
+#: src/ui/widgets/item.rs:1149
 msgid "PixelFormat"
 msgstr "பிக்சல்ஃபார்மட்"
 
-#: src/ui/widgets/item.rs:1243
+#: src/ui/widgets/item.rs:1258
 msgid "No video source found"
 msgstr "வீடியோ மூலமும் கிடைக்கவில்லை"
 
-#: src/ui/widgets/item.rs:1316
+#: src/ui/widgets/item.rs:1331
 msgid "Season not found. Is this a continue watching list?"
 msgstr "சீசன் கிடைக்கவில்லை. இது தொடர்ந்து பார்க்கும் பட்டியலா?"
 
-#: src/ui/widgets/liked.rs:158
+#: src/ui/widgets/liked.rs:155
 msgid "Favourite"
 msgstr "பிடித்த"
 
-#: src/ui/widgets/list.rs:122
+#: src/ui/widgets/list.rs:121
 msgid "Channels"
 msgstr "சேனல்கள்"
 
-#: src/ui/widgets/list.rs:129
+#: src/ui/widgets/list.rs:128
 msgid "All"
 msgstr "அனைத்தும்"
 
-#: src/ui/widgets/list.rs:135
+#: src/ui/widgets/list.rs:134
 msgid "Folder"
 msgstr "கோப்புறை"
 
@@ -2060,11 +2060,11 @@ msgstr "கோப்புறை"
 msgid "Special"
 msgstr "சிறப்பு"
 
-#: src/ui/widgets/music_album.rs:245
+#: src/ui/widgets/music_album.rs:241
 msgid "Songs"
 msgstr "பாடல்கள்"
 
-#: src/ui/widgets/music_album.rs:347
+#: src/ui/widgets/music_album.rs:343
 msgid "More From"
 msgstr "மேலும்"
 
@@ -2072,7 +2072,7 @@ msgstr "மேலும்"
 msgid "Scanning..."
 msgstr "ச்கேனிங் ..."
 
-#: src/ui/widgets/search.rs:202
+#: src/ui/widgets/search.rs:198
 #, fuzzy
 #| msgid "Overview"
 msgid "No overview"
@@ -2132,7 +2132,7 @@ msgstr "முடிவு: "
 msgid "Task started"
 msgstr "பணி தொடங்கியது"
 
-#: src/ui/widgets/single_grid.rs:502
+#: src/ui/widgets/single_grid.rs:486
 msgid "Items"
 msgstr "உருப்படிகள்"
 
@@ -2144,11 +2144,11 @@ msgstr "பிடித்தவைகளிலிருந்து அகற�
 msgid "Add to favorites"
 msgstr "பிடித்தவைகளில் சேர்க்கவும்"
 
-#: src/ui/widgets/tu_item/action.rs:479
+#: src/ui/widgets/tu_item/action.rs:489
 msgid "Delete Item"
 msgstr "உருப்படியை நீக்கு"
 
-#: src/ui/widgets/tu_item/action.rs:483
+#: src/ui/widgets/tu_item/action.rs:493
 msgid ""
 "Deleting this item will delete it from both the file system and your media "
 "library.\n"
@@ -2158,24 +2158,24 @@ msgstr ""
 "நீக்கிவிடும்.\n"
 " பின்வரும் கோப்புகள் மற்றும் கோப்புறைகள் நீக்கப்படும்:"
 
-#: src/ui/widgets/tu_item/action.rs:546
+#: src/ui/widgets/tu_item/action.rs:556
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "எல்லா மெட்டாடேட்டாவையும் மீட்டமைக்க விரும்புகிறீர்களா?"
 
-#: src/ui/widgets/window.rs:796
+#: src/ui/widgets/window.rs:794
 msgid "Server Panel"
 msgstr "சேவையக குழு"
 
-#: src/ui/widgets/window.rs:962
+#: src/ui/widgets/window.rs:966
 msgid "Fatal Error"
 msgstr "அபாயகரமான பிழை"
 
-#: src/ui/widgets/window.rs:965
+#: src/ui/widgets/window.rs:969
 msgid "Copy Error & Close"
 msgstr "பிழை மற்றும் மூடு"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:994
+#: src/ui/widgets/window.rs:998
 msgid "translator-credits"
 msgstr "மொழிபெயர்ப்பாளர்-வரவு"
 

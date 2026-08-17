@@ -183,20 +183,20 @@ msgstr "Media"
 msgid "Music Player"
 msgstr ""
 
-#: resources/ui/account_settings.ui:355 resources/ui/player_toolbar.ui:197
+#: resources/ui/account_settings.ui:355 resources/ui/player_toolbar.ui:223
 msgid "Repeat Mode"
 msgstr ""
 
-#: resources/ui/account_settings.ui:359 resources/ui/player_toolbar.ui:231
+#: resources/ui/account_settings.ui:359 resources/ui/player_toolbar.ui:257
 msgid "Repeat One"
 msgstr ""
 
-#: resources/ui/account_settings.ui:360 resources/ui/player_toolbar.ui:235
+#: resources/ui/account_settings.ui:360 resources/ui/player_toolbar.ui:261
 msgid "Repeat All"
 msgstr ""
 
 #: resources/ui/account_settings.ui:361 resources/ui/account_settings.ui:436
-#: resources/ui/player_toolbar.ui:239
+#: resources/ui/player_toolbar.ui:265
 msgid "None"
 msgstr ""
 
@@ -254,9 +254,9 @@ msgstr ""
 
 #: resources/ui/account_settings.ui:564 resources/ui/account_settings.ui:674
 #: src/ui/widgets/identify/search_page.rs:130
-#: src/ui/widgets/image_dialog/search_page.rs:148
-#: src/ui/widgets/metadata_dialog.rs:289 src/ui/widgets/tu_item/action.rs:489
-#: src/ui/widgets/tu_item/action.rs:549
+#: src/ui/widgets/image_dialog/search_page.rs:151
+#: src/ui/widgets/metadata_dialog.rs:289 src/ui/widgets/tu_item/action.rs:499
+#: src/ui/widgets/tu_item/action.rs:559
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -344,8 +344,8 @@ msgstr "Wachtwoord"
 
 #: resources/ui/album_widget.ui:94 resources/ui/item.ui:184
 #: resources/ui/mpv_menu_actions.ui:27 resources/ui/other.ui:95
-#: resources/ui/player_toolbar.ui:90 src/ui/mpv/page.rs:409
-#: src/ui/mpv/page.rs:411 src/ui/widgets/item.rs:693
+#: resources/ui/player_toolbar.ui:116 src/ui/mpv/page.rs:414
+#: src/ui/mpv/page.rs:416 src/ui/widgets/item.rs:704
 msgid "Play"
 msgstr "Afspelen"
 
@@ -483,7 +483,7 @@ msgid "Search Danmaku"
 msgstr "Zoeken"
 
 #: resources/ui/danmaku_search_dialog.ui:32 resources/ui/metadata_dialog.ui:91
-#: resources/ui/single_grid.ui:105 src/ui/widgets/item.rs:1087
+#: resources/ui/single_grid.ui:105 src/ui/widgets/item.rs:1105
 msgid "Title"
 msgstr "Titel"
 
@@ -545,7 +545,7 @@ msgstr "Film"
 #: resources/ui/danmaku_search_dialog.ui:70 resources/ui/identify_dialog.ui:95
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
 #: resources/ui/window.ui:21 resources/ui/window.ui:261
-#: src/ui/widgets/window.rs:310
+#: src/ui/widgets/window.rs:307
 msgid "Search"
 msgstr "Zoeken"
 
@@ -588,13 +588,13 @@ msgstr "Niet Afgespeeld"
 msgid "Continue Play"
 msgstr ""
 
-#: resources/ui/filter.ui:78 resources/ui/item.ui:482 resources/ui/other.ui:173
-#: src/ui/widgets/list.rs:133
+#: resources/ui/filter.ui:78 resources/ui/item.ui:483 resources/ui/other.ui:174
+#: src/ui/widgets/list.rs:132
 msgid "Genres"
 msgstr "Genres"
 
-#: resources/ui/filter.ui:85 resources/ui/item.ui:487 resources/ui/other.ui:168
-#: src/ui/widgets/list.rs:132
+#: resources/ui/filter.ui:85 resources/ui/item.ui:488 resources/ui/other.ui:169
+#: src/ui/widgets/list.rs:131
 msgid "Tags"
 msgstr "Tags"
 
@@ -606,8 +606,8 @@ msgstr "Jaren"
 msgid "Official Ratings"
 msgstr ""
 
-#: resources/ui/filter.ui:106 resources/ui/item.ui:477
-#: resources/ui/other.ui:163
+#: resources/ui/filter.ui:106 resources/ui/item.ui:478
+#: resources/ui/other.ui:164
 msgid "Studios"
 msgstr "Studio's"
 
@@ -645,11 +645,11 @@ msgid "Library"
 msgstr "Bibliotheek"
 
 #. if merged, next up will contain resume items, so change title to continue watching
-#: resources/ui/home.ui:21 resources/ui/item.ui:298 src/ui/widgets/home.rs:228
+#: resources/ui/home.ui:21 resources/ui/item.ui:298 src/ui/widgets/home.rs:226
 msgid "Continue Watching"
 msgstr "Doorgaan met Kijken"
 
-#: resources/ui/home.ui:29 src/ui/widgets/home.rs:230
+#: resources/ui/home.ui:29 src/ui/widgets/home.rs:228
 msgid "Next Up"
 msgstr "Volgende"
 
@@ -741,7 +741,7 @@ msgid "Edit"
 msgstr "Aanpassen"
 
 #: resources/ui/image_info_card.ui:139 resources/ui/pop-menu.ui:93
-#: resources/ui/server_action_row.ui:52 src/ui/widgets/tu_item/action.rs:490
+#: resources/ui/server_action_row.ui:52 src/ui/widgets/tu_item/action.rs:500
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -810,15 +810,15 @@ msgstr "Seizoenen"
 msgid "Actors"
 msgstr "Acteurs"
 
-#: resources/ui/item.ui:467
+#: resources/ui/item.ui:468
 msgid "Recommend"
 msgstr "Aanbevelen"
 
-#: resources/ui/item.ui:472 resources/ui/other.ui:178
+#: resources/ui/item.ui:473 resources/ui/other.ui:179
 msgid "Links"
 msgstr "Links"
 
-#: resources/ui/item.ui:505
+#: resources/ui/item.ui:506
 msgid "MediaInfo"
 msgstr "Mediainformatie"
 
@@ -1210,7 +1210,7 @@ msgstr ""
 msgid "Media info (MPV)"
 msgstr ""
 
-#: resources/ui/mpvpage.ui:279 src/ui/mpv/page.rs:414 src/ui/mpv/page.rs:416
+#: resources/ui/mpvpage.ui:279 src/ui/mpv/page.rs:419 src/ui/mpv/page.rs:421
 msgid "Pause"
 msgstr "Pauzeren"
 
@@ -1390,7 +1390,7 @@ msgstr "Afsluiten"
 msgid "Quit and Save Position"
 msgstr "Afsluiten en Plek Onthouden"
 
-#: resources/ui/other.ui:113
+#: resources/ui/other.ui:113 src/ui/widgets/tu_overview_item.rs:239
 msgid "No Inscriptions"
 msgstr ""
 
@@ -1402,15 +1402,15 @@ msgstr ""
 msgid "Episode"
 msgstr "Aflevering"
 
-#: resources/ui/player_toolbar.ui:78
+#: resources/ui/player_toolbar.ui:104
 msgid "Previous"
 msgstr "Vorige"
 
-#: resources/ui/player_toolbar.ui:108
+#: resources/ui/player_toolbar.ui:134
 msgid "Next"
 msgstr "Volgende"
 
-#: resources/ui/player_toolbar.ui:180
+#: resources/ui/player_toolbar.ui:206
 msgid "Stop And Hide PlayerBar"
 msgstr ""
 
@@ -1426,8 +1426,8 @@ msgstr ""
 msgid "Unlike"
 msgstr ""
 
-#: resources/ui/pop-menu.ui:63 src/ui/widgets/tu_item/action.rs:544
-#: src/ui/widgets/tu_item/action.rs:545 src/ui/widgets/tu_item/action.rs:550
+#: resources/ui/pop-menu.ui:63 src/ui/widgets/tu_item/action.rs:554
+#: src/ui/widgets/tu_item/action.rs:555 src/ui/widgets/tu_item/action.rs:560
 msgid "Remove Identification"
 msgstr "Identificatie Verwijderen"
 
@@ -1455,7 +1455,7 @@ msgstr "Alle Afbeeldingen Vervangen"
 msgid "Refresh"
 msgstr "Verversen"
 
-#: resources/ui/search.ui:60 src/ui/widgets/list.rs:131
+#: resources/ui/search.ui:60 src/ui/widgets/list.rs:130
 msgid "BoxSet"
 msgstr ""
 
@@ -1527,7 +1527,7 @@ msgstr "Aflopend"
 msgid "Sort By"
 msgstr "Sorteren Op"
 
-#: resources/ui/single_grid.ui:106 src/ui/widgets/item.rs:1091
+#: resources/ui/single_grid.ui:106 src/ui/widgets/item.rs:1109
 msgid "Bitrate"
 msgstr "Bitrate"
 
@@ -1619,12 +1619,12 @@ msgstr "Uitloggen"
 msgid "Contents"
 msgstr "Inhoud"
 
-#: resources/ui/window.ui:249 src/ui/widgets/window.rs:286
+#: resources/ui/window.ui:249 src/ui/widgets/window.rs:283
 msgid "Home"
 msgstr "Start"
 
-#: resources/ui/window.ui:255 src/ui/widgets/list.rs:134
-#: src/ui/widgets/window.rs:298
+#: resources/ui/window.ui:255 src/ui/widgets/list.rs:133
+#: src/ui/widgets/window.rs:295
 msgid "Liked"
 msgstr "Favorieten"
 
@@ -1681,7 +1681,7 @@ msgid "No danmaku found"
 msgstr ""
 
 #: src/ui/mpv/danmaku_popover.rs:50
-msgid "This feature needs a official build"
+msgid "This feature requires an official build"
 msgstr ""
 
 #: src/ui/mpv/danmaku_popover.rs:51
@@ -1722,19 +1722,19 @@ msgstr "Zoeken"
 msgid "Invalid episode ID"
 msgstr "Ongeldige regex"
 
-#: src/ui/mpv/page.rs:1059
+#: src/ui/mpv/page.rs:1079
 msgid "Skip Intro"
 msgstr "Intro Overslaan"
 
-#: src/ui/mpv/page.rs:1060
+#: src/ui/mpv/page.rs:1080
 msgid "Skip Outro"
 msgstr "Outro Overslaan"
 
-#: src/ui/mpv/page.rs:1214
+#: src/ui/mpv/page.rs:1234
 msgid "No more video found"
 msgstr "Geen video's meer gevonden"
 
-#: src/ui/mpv/page.rs:1324
+#: src/ui/mpv/page.rs:1344
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -1742,17 +1742,17 @@ msgstr ""
 "MPV is afgesloten, Applicatie wordt nu beëindigd.\n"
 "Tsukimi kan MPV niet herstarten."
 
-#: src/ui/provider/tu_item.rs:632
+#: src/ui/provider/tu_item.rs:638
 msgid "No next up video found"
 msgstr "Geen volgende video gevonden"
 
-#: src/ui/provider/tu_item.rs:661 src/ui/widgets/tu_overview_item.rs:250
+#: src/ui/provider/tu_item.rs:667 src/ui/widgets/tu_overview_item.rs:276
 msgid "Present"
 msgstr "Huidig"
 
-#: src/ui/provider/tu_item.rs:669 src/ui/provider/tu_item.rs:687
-#: src/ui/provider/tu_item.rs:710 src/ui/provider/tu_item.rs:733
-#: src/ui/provider/tu_item.rs:736
+#: src/ui/provider/tu_item.rs:675 src/ui/provider/tu_item.rs:693
+#: src/ui/provider/tu_item.rs:716 src/ui/provider/tu_item.rs:739
+#: src/ui/provider/tu_item.rs:742
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -1760,51 +1760,51 @@ msgstr "Onbekend"
 msgid "Fields must be filled in"
 msgstr "Velden zijn verplicht"
 
-#: src/ui/widgets/account_add.rs:206
+#: src/ui/widgets/account_add.rs:195
 msgid "Server edited successfully"
 msgstr "Server aangepast"
 
-#: src/ui/widgets/account_add.rs:211
+#: src/ui/widgets/account_add.rs:200
 msgid "Server added successfully"
 msgstr "Server toegevoegd"
 
-#: src/ui/widgets/account_settings.rs:235
+#: src/ui/widgets/account_settings.rs:236
 msgid "Password cannot be empty!"
 msgstr "Wachtwoord mag niet leeg zijn!"
 
-#: src/ui/widgets/account_settings.rs:239
+#: src/ui/widgets/account_settings.rs:240
 msgid "Passwords do not match!"
 msgstr "Wachtwoorden komen niet overeen!"
 
-#: src/ui/widgets/account_settings.rs:246
+#: src/ui/widgets/account_settings.rs:247
 msgid "Password changed successfully! Please login again."
 msgstr "Wachtwoord veranderd! Log alsjeblieft opnieuw in."
 
-#: src/ui/widgets/account_settings.rs:250
+#: src/ui/widgets/account_settings.rs:251
 msgid "Failed to change password"
 msgstr "Wachtwoord kon niet gewijzigd worden"
 
-#: src/ui/widgets/account_settings.rs:284
+#: src/ui/widgets/account_settings.rs:285
 msgid "Cache Cleared"
 msgstr "Cache Gewist"
 
-#: src/ui/widgets/account_settings.rs:305
+#: src/ui/widgets/account_settings.rs:306
 msgid "No file selected"
 msgstr "Geen bestand geselecteerd"
 
-#: src/ui/widgets/account_settings.rs:561
-#: src/ui/widgets/account_settings.rs:570
-#: src/ui/widgets/account_settings.rs:604
-#: src/ui/widgets/account_settings.rs:613
+#: src/ui/widgets/account_settings.rs:562
+#: src/ui/widgets/account_settings.rs:571
+#: src/ui/widgets/account_settings.rs:605
+#: src/ui/widgets/account_settings.rs:614
 msgid "Descriptor cannot be empty!"
 msgstr "Descriptor kan niet leeg zijn!"
 
-#: src/ui/widgets/account_settings.rs:575
-#: src/ui/widgets/account_settings.rs:618
+#: src/ui/widgets/account_settings.rs:576
+#: src/ui/widgets/account_settings.rs:619
 msgid "Invalid regex"
 msgstr "Ongeldige regex"
 
-#: src/ui/widgets/home.rs:393
+#: src/ui/widgets/home.rs:395
 msgid "Latest"
 msgstr "Nieuwste"
 
@@ -1813,13 +1813,13 @@ msgid "Failed to get path"
 msgstr "Kon het pad niet vinden"
 
 #: src/ui/widgets/identify/search_page.rs:127
-#: src/ui/widgets/image_dialog/search_page.rs:145
-#: src/ui/widgets/metadata_dialog.rs:286 src/ui/widgets/tu_item/action.rs:485
+#: src/ui/widgets/image_dialog/search_page.rs:148
+#: src/ui/widgets/metadata_dialog.rs:286 src/ui/widgets/tu_item/action.rs:495
 msgid "Are you sure you wish to continue?"
 msgstr "Weet je zeker dat je door wilt gaan?"
 
 #: src/ui/widgets/identify/search_page.rs:131
-#: src/ui/widgets/image_dialog/search_page.rs:149
+#: src/ui/widgets/image_dialog/search_page.rs:152
 #: src/ui/widgets/metadata_dialog.rs:290
 msgid "Ok"
 msgstr "Ok"
@@ -1828,7 +1828,7 @@ msgstr "Ok"
 msgid "Replace existing images"
 msgstr "Bestaande afbeeldingen vervangen"
 
-#: src/ui/widgets/image_dialog/image_adw_dialog.rs:125
+#: src/ui/widgets/image_dialog/image_adw_dialog.rs:130
 msgid "View Images"
 msgstr "Afbeeldingen Bekijken"
 
@@ -1840,120 +1840,120 @@ msgstr "Afbeelding opgeslagen"
 msgid "Failed to load image"
 msgstr "Kon afbeelding niet laden"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:156
+#: src/ui/widgets/image_dialog/image_infocard.rs:159
 msgid "No image to view"
 msgstr "Geen afbeelding om te bekijken"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:172
+#: src/ui/widgets/image_dialog/image_infocard.rs:175
 msgid "No image to copy"
 msgstr "Geen afbeelding om te kopiëren"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:176
+#: src/ui/widgets/image_dialog/image_infocard.rs:179
 #: src/ui/widgets/media_viewer.rs:349
 msgid "Image copied to clipboard"
 msgstr "Afbeelding naar klembord gekopieerd"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:209
+#: src/ui/widgets/image_dialog/image_infocard.rs:218
 msgid "Image deleted"
 msgstr "Afbeelding verwijderd"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:214
+#: src/ui/widgets/image_dialog/image_infocard.rs:223
 msgid "Error deleting image"
 msgstr "Fout bij het verwijderen van de afbeelding"
 
-#: src/ui/widgets/image_dialog/image_infocard.rs:245
+#: src/ui/widgets/image_dialog/image_infocard.rs:254
 msgid "Error loading image"
 msgstr "Fout bij het laden van de afbeelding"
 
-#: src/ui/widgets/image_dialog/search_page.rs:143
+#: src/ui/widgets/image_dialog/search_page.rs:146
 msgid "Replace Image"
 msgstr "Afbeelding Verwijderen"
 
-#: src/ui/widgets/item_actionbox.rs:116 src/ui/widgets/tu_item/action.rs:98
+#: src/ui/widgets/item_actionbox.rs:121 src/ui/widgets/tu_item/action.rs:98
 msgid "Success"
 msgstr "Succes"
 
-#: src/ui/widgets/item.rs:343
+#: src/ui/widgets/item.rs:356
 msgid "No episode selected"
 msgstr "Geen aflevering geselecteerd"
 
-#: src/ui/widgets/item.rs:344
+#: src/ui/widgets/item.rs:357
 msgid "Select an episode"
 msgstr "Aflevering selecteren"
 
-#: src/ui/widgets/item.rs:689 src/ui/widgets/list.rs:130
+#: src/ui/widgets/item.rs:700 src/ui/widgets/list.rs:129
 msgid "Resume"
 msgstr "Hervatten"
 
-#: src/ui/widgets/item.rs:1081
+#: src/ui/widgets/item.rs:1099
 msgid "Codec"
 msgstr "Codec"
 
-#: src/ui/widgets/item.rs:1084
+#: src/ui/widgets/item.rs:1102
 msgid "Language"
 msgstr "Taal"
 
-#: src/ui/widgets/item.rs:1096
+#: src/ui/widgets/item.rs:1114
 msgid "BitDepth"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1100
+#: src/ui/widgets/item.rs:1118
 msgid "SampleRate"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1104
+#: src/ui/widgets/item.rs:1122
 msgid "Height"
 msgstr "Hoogte"
 
-#: src/ui/widgets/item.rs:1107
+#: src/ui/widgets/item.rs:1125
 msgid "Width"
 msgstr "Breedte"
 
-#: src/ui/widgets/item.rs:1110
+#: src/ui/widgets/item.rs:1128
 msgid "ColorSpace"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1114
+#: src/ui/widgets/item.rs:1132
 msgid "DisplayTitle"
 msgstr "Weergavetitel"
 
-#: src/ui/widgets/item.rs:1118
+#: src/ui/widgets/item.rs:1136
 msgid "Channel"
 msgstr "Kanaal"
 
-#: src/ui/widgets/item.rs:1122
+#: src/ui/widgets/item.rs:1140
 msgid "ChannelLayout"
 msgstr "Kanaalindeling"
 
-#: src/ui/widgets/item.rs:1127
+#: src/ui/widgets/item.rs:1145
 msgid "AverageFrameRate"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1131
+#: src/ui/widgets/item.rs:1149
 msgid "PixelFormat"
 msgstr ""
 
-#: src/ui/widgets/item.rs:1243
+#: src/ui/widgets/item.rs:1258
 msgid "No video source found"
 msgstr "Geen videobron gevonden"
 
-#: src/ui/widgets/item.rs:1316
+#: src/ui/widgets/item.rs:1331
 msgid "Season not found. Is this a continue watching list?"
 msgstr "Seizeoen niet gevonden. Is dit een verder kijken lijst?"
 
-#: src/ui/widgets/liked.rs:158
+#: src/ui/widgets/liked.rs:155
 msgid "Favourite"
 msgstr "Favoriet"
 
-#: src/ui/widgets/list.rs:122
+#: src/ui/widgets/list.rs:121
 msgid "Channels"
 msgstr "Kanalen"
 
-#: src/ui/widgets/list.rs:129
+#: src/ui/widgets/list.rs:128
 msgid "All"
 msgstr "Alles"
 
-#: src/ui/widgets/list.rs:135
+#: src/ui/widgets/list.rs:134
 msgid "Folder"
 msgstr "Map"
 
@@ -1961,11 +1961,11 @@ msgstr "Map"
 msgid "Special"
 msgstr "Special"
 
-#: src/ui/widgets/music_album.rs:245
+#: src/ui/widgets/music_album.rs:241
 msgid "Songs"
 msgstr "Liedjes"
 
-#: src/ui/widgets/music_album.rs:347
+#: src/ui/widgets/music_album.rs:343
 msgid "More From"
 msgstr "Meer Van"
 
@@ -1973,7 +1973,7 @@ msgstr "Meer Van"
 msgid "Scanning..."
 msgstr "Scannen..."
 
-#: src/ui/widgets/search.rs:202
+#: src/ui/widgets/search.rs:198
 msgid "No overview"
 msgstr "Geen overzicht"
 
@@ -2029,7 +2029,7 @@ msgstr "Resultaat:- "
 msgid "Task started"
 msgstr "Taak gestart"
 
-#: src/ui/widgets/single_grid.rs:502
+#: src/ui/widgets/single_grid.rs:486
 msgid "Items"
 msgstr "Items"
 
@@ -2041,11 +2041,11 @@ msgstr "Uit favorieten verwijderen"
 msgid "Add to favorites"
 msgstr "Aan favorieten toevoegen"
 
-#: src/ui/widgets/tu_item/action.rs:479
+#: src/ui/widgets/tu_item/action.rs:489
 msgid "Delete Item"
 msgstr "Item Verwijderen"
 
-#: src/ui/widgets/tu_item/action.rs:483
+#: src/ui/widgets/tu_item/action.rs:493
 msgid ""
 "Deleting this item will delete it from both the file system and your media "
 "library.\n"
@@ -2055,24 +2055,24 @@ msgstr ""
 "de mediabibliotheek verwijderd.\n"
 "De volgende bestanden en mappen zouden verwijderd worden:"
 
-#: src/ui/widgets/tu_item/action.rs:546
+#: src/ui/widgets/tu_item/action.rs:556
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "Weet je zeker dat je alle metadata wilt resetten?"
 
-#: src/ui/widgets/window.rs:796
+#: src/ui/widgets/window.rs:794
 msgid "Server Panel"
 msgstr "Serverpaneel"
 
-#: src/ui/widgets/window.rs:962
+#: src/ui/widgets/window.rs:966
 msgid "Fatal Error"
 msgstr "Onherstelbare Fout"
 
-#: src/ui/widgets/window.rs:965
+#: src/ui/widgets/window.rs:969
 msgid "Copy Error & Close"
 msgstr "Foutmelding kopiëren & sluiten"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: src/ui/widgets/window.rs:994
+#: src/ui/widgets/window.rs:998
 msgid "translator-credits"
 msgstr ""
 
