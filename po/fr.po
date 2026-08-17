@@ -9,17 +9,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-20 20:35+0800\n"
-"PO-Revision-Date: 2026-07-16 13:01+0000\n"
-"Last-Translator: MarioSwitch "
-"<58565980+MarioSwitch@users.noreply.github.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
-">\n"
+"PO-Revision-Date: 2026-08-10 11:51+0000\n"
+"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>"
+"\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.8.dev0\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: resources/ui/account_settings.ui:4
 msgid "Settings"
@@ -217,10 +217,8 @@ msgid "Requires restart"
 msgstr "Nécessite un redémarrage"
 
 #: resources/ui/account_settings.ui:376
-#, fuzzy
-#| msgid "Contents"
 msgid "GPU Context"
-msgstr "Contenu"
+msgstr "Contexte de la carte graphique"
 
 #: resources/ui/account_settings.ui:379 resources/ui/mpv_control_sidebar.ui:501
 msgid "Auto"
@@ -366,34 +364,28 @@ msgid "Danmaku"
 msgstr "Sous-titres mouvants"
 
 #: resources/ui/danmaku_popover.ui:33
-#, fuzzy
-#| msgid "Danmaku speed"
 msgid "Danmaku disabled"
-msgstr "Vitesse des sous-titres mouvants"
+msgstr "Sous-titres mouvants désactivés"
 
 #: resources/ui/danmaku_popover.ui:73
 msgid "Search Manually"
-msgstr ""
+msgstr "Rechercher manuellement"
 
 #: resources/ui/danmaku_popover.ui:91 resources/ui/danmaku_popover.ui:110
 msgid "Danmaku Settings"
-msgstr "Paramètres Danmaku"
+msgstr "Paramètres des sous-titres mouvants"
 
 #: resources/ui/danmaku_popover.ui:139 resources/ui/mpv_control_sidebar.ui:447
 msgid "Speed"
 msgstr "Vitesse"
 
 #: resources/ui/danmaku_popover.ui:154
-#, fuzzy
-#| msgid "Font size"
 msgid "Font Size"
 msgstr "Taille de police"
 
 #: resources/ui/danmaku_popover.ui:169
-#, fuzzy
-#| msgid "Font size"
 msgid "Font Weight"
-msgstr "Taille de police"
+msgstr "Épaisseur de police"
 
 #: resources/ui/danmaku_popover.ui:174
 msgid "Thin"
@@ -404,16 +396,12 @@ msgid "Ultralight"
 msgstr ""
 
 #: resources/ui/danmaku_popover.ui:176
-#, fuzzy
-#| msgid "Height"
 msgid "Light"
-msgstr "Hauteur"
+msgstr ""
 
 #: resources/ui/danmaku_popover.ui:177
-#, fuzzy
-#| msgid "Height"
 msgid "Semilight"
-msgstr "Hauteur"
+msgstr ""
 
 #: resources/ui/danmaku_popover.ui:178
 msgid "Book"
@@ -424,10 +412,8 @@ msgid "Normal"
 msgstr ""
 
 #: resources/ui/danmaku_popover.ui:180
-#, fuzzy
-#| msgid "Media"
 msgid "Medium"
-msgstr "Média"
+msgstr ""
 
 #: resources/ui/danmaku_popover.ui:181
 msgid "Semibold"
@@ -450,42 +436,36 @@ msgid "Ultraheavy"
 msgstr ""
 
 #: resources/ui/danmaku_popover.ui:193
-#, fuzzy
-#| msgid "Danmaku Settings"
 msgid "Danmaku Intensity"
-msgstr "Paramètres Danmaku"
+msgstr "Intensité des sous-titres mouvants"
 
 #: resources/ui/danmaku_popover.ui:198
 msgid "Quarter"
-msgstr ""
+msgstr "Quart"
 
 #: resources/ui/danmaku_popover.ui:199
 msgid "Half"
-msgstr ""
+msgstr "Moitié"
 
 #: resources/ui/danmaku_popover.ui:201
 msgid "Allow Overlay"
-msgstr ""
+msgstr "Autoriser la surcouche"
 
 #: resources/ui/danmaku_popover.ui:209
 msgid "Spacing"
-msgstr ""
+msgstr "Espacement"
 
 #: resources/ui/danmaku_popover.ui:210
-#, fuzzy
-#| msgid "Font size"
 msgid "N x Font Size"
-msgstr "Taille de police"
+msgstr "Taille de police x N"
 
 #: resources/ui/danmaku_popover.ui:225
-#, fuzzy
-#| msgid "Border Size"
 msgid "Stroke Size"
-msgstr "Taille de la bordure"
+msgstr "Taille de la barre"
 
 #: resources/ui/danmaku_popover.ui:226 resources/ui/danmaku_popover.ui:242
 msgid "px"
-msgstr ""
+msgstr "px"
 
 #: resources/ui/danmaku_popover.ui:241 resources/ui/mpv_control_sidebar.ui:326
 msgid "Shadow Offset"
@@ -498,10 +478,8 @@ msgstr "Retour"
 
 #: resources/ui/danmaku_search_dialog.ui:7
 #: resources/ui/danmaku_search_dialog.ui:15
-#, fuzzy
-#| msgid "Danmaku"
 msgid "Search Danmaku"
-msgstr "Sous-titres mouvants"
+msgstr "Rechercher des sous-titres mouvants"
 
 #: resources/ui/danmaku_search_dialog.ui:32 resources/ui/metadata_dialog.ui:91
 #: resources/ui/single_grid.ui:105 src/ui/widgets/item.rs:1087
@@ -509,26 +487,20 @@ msgid "Title"
 msgstr "Titre"
 
 #: resources/ui/danmaku_search_dialog.ui:38
-#, fuzzy
-#| msgid "Video Types"
 msgid "Anime Type"
-msgstr "Types de vidéo"
+msgstr "Type d'anime"
 
 #: resources/ui/danmaku_search_dialog.ui:42
-#, fuzzy
-#| msgid "Series"
 msgid "TV Series"
-msgstr "Série"
+msgstr "Série TV"
 
 #: resources/ui/danmaku_search_dialog.ui:43
-#, fuzzy
-#| msgid "Special"
 msgid "TV Special"
-msgstr "Spécial"
+msgstr "Spécial TV"
 
 #: resources/ui/danmaku_search_dialog.ui:44
 msgid "OVA"
-msgstr ""
+msgstr "OVA"
 
 #: resources/ui/danmaku_search_dialog.ui:45 resources/ui/other.ui:134
 #: resources/ui/search.ui:54
@@ -536,38 +508,32 @@ msgid "Movie"
 msgstr "Film"
 
 #: resources/ui/danmaku_search_dialog.ui:46
-#, fuzzy
-#| msgid "Video"
 msgid "Music Video"
-msgstr "Vidéo"
+msgstr "Vidéo musicale"
 
 #: resources/ui/danmaku_search_dialog.ui:47
 msgid "Web"
-msgstr ""
+msgstr "Web"
 
 #: resources/ui/danmaku_search_dialog.ui:48
-#, fuzzy
-#| msgid "Others"
 msgid "Other"
-msgstr "Autres"
+msgstr "Autre"
 
 #: resources/ui/danmaku_search_dialog.ui:49
 msgid "Japanese Movie"
-msgstr ""
+msgstr "Film japonais"
 
 #: resources/ui/danmaku_search_dialog.ui:50
 msgid "Japanese Drama"
-msgstr ""
+msgstr "Drame japonais"
 
 #: resources/ui/danmaku_search_dialog.ui:51
 msgid "TMDB TV"
-msgstr ""
+msgstr "TMDB TV"
 
 #: resources/ui/danmaku_search_dialog.ui:52
-#, fuzzy
-#| msgid "Movie"
 msgid "TMDB Movie"
-msgstr "Film"
+msgstr "Film TMDB"
 
 #: resources/ui/danmaku_search_dialog.ui:70 resources/ui/identify_dialog.ui:95
 #: resources/ui/image_info_card.ui:127 resources/ui/search.ui:23
@@ -577,10 +543,8 @@ msgid "Search"
 msgstr "Rechercher"
 
 #: resources/ui/danmaku_search_dialog.ui:113
-#, fuzzy
-#| msgid "Episode"
 msgid "Episodes"
-msgstr "Épisode"
+msgstr "Épisodes"
 
 #: resources/ui/disc_box.ui:9 src/ui/widgets/disc_box.rs:99
 msgid "Disc"
@@ -1696,40 +1660,32 @@ msgid "Deband settings cleared."
 msgstr "Paramètres de retrait des bandes de couleurs réinitialisés."
 
 #: src/ui/mpv/danmaku_popover.rs:37
-#, fuzzy
-#| msgid "No danmakus loaded"
 msgid "{count} Danmaku Loaded"
-msgstr "Aucun sous-titre mouvant chargé"
+msgstr "{count} sous-titre(s) mouvant(s) chargé(s)"
 
 #: src/ui/mpv/danmaku_popover.rs:45
-#, fuzzy
-#| msgid "Search"
 msgid "Searching"
-msgstr "Rechercher"
+msgstr "Recherche"
 
 #: src/ui/mpv/danmaku_popover.rs:46
-#, fuzzy
-#| msgid "Loading..."
 msgid "Loading"
-msgstr "Chargement..."
+msgstr "Chargement"
 
 #: src/ui/mpv/danmaku_popover.rs:49
-#, fuzzy
-#| msgid "No danmakus loaded"
 msgid "No danmaku found"
-msgstr "Aucun sous-titre mouvant chargé"
+msgstr "Aucun sous-titre mouvant trouvé"
 
 #: src/ui/mpv/danmaku_popover.rs:50
 msgid "This feature needs a official build"
-msgstr ""
+msgstr "Cette fonctionnalité nécessite un build officiel"
 
 #: src/ui/mpv/danmaku_popover.rs:51
 msgid "Disabled"
-msgstr ""
+msgstr "Désactivé"
 
 #: src/ui/mpv/danmaku_popover.rs:52
 msgid "Maybe there is something wrong"
-msgstr ""
+msgstr "Peut-être que quelque chose ne va pas"
 
 #: src/ui/mpv/danmaku_popover.rs:58
 msgid "From play (Auto Matched)"
@@ -1741,25 +1697,19 @@ msgstr ""
 
 #: src/ui/mpv/danmaku_search_dialog.rs:185
 msgid "Enter at least two characters"
-msgstr ""
+msgstr "Entrez au moins deux caractères"
 
 #: src/ui/mpv/danmaku_search_dialog.rs:207
-#, fuzzy
-#| msgid "No transcoding url found"
 msgid "No matching anime found"
-msgstr "Aucun URL de transcodage trouvé"
+msgstr "Aucun anime correspondant trouvé"
 
 #: src/ui/mpv/danmaku_search_dialog.rs:211
-#, fuzzy
-#| msgid "Search"
 msgid "Search failed"
-msgstr "Rechercher"
+msgstr "Échec de la recherche"
 
 #: src/ui/mpv/danmaku_search_dialog.rs:242
-#, fuzzy
-#| msgid "Invalid regex"
 msgid "Invalid episode ID"
-msgstr "Expression régulière invalide"
+msgstr "ID d'épisode invalide"
 
 #: src/ui/mpv/page.rs:1059
 msgid "Skip Intro"
