@@ -334,7 +334,6 @@ where
         }
 
         let picture_loader = PictureLoader::new_for_source(source);
-        picture_loader.add_css_class("inbox");
         overlay.set_child(Some(&picture_loader));
     }
 }

@@ -106,12 +106,6 @@ button.pill.ultrasmall {
   font-weight: bold;
 }
 
-.home-carousel {
-  border-radius: 10px;
-  margin: 0px;
-  box-shadow: none;
-}
-
 .boxshadow {
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
@@ -376,22 +370,24 @@ progressbar.accent > trough > progress {
   }
 }
 
-.picture-loader.inbox {
-    box-shadow: none;
-}
 
 .picture-loader {
     background-color: transparent;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
+}
+
+.tu-list-item-cover,
+.tu-list-item-card {
+    background-color: transparent;
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.tu-list-item-cover.inbox {
+    box-shadow: none;
 }
 
 .cover-progress-frame {
-    border-radius: 10px;
-}
-
-.tulistitem {
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
 }
 

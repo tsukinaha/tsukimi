@@ -47,7 +47,9 @@ impl DanmakuPopoverStatus {
             DanmakuPopoverStatus::Loaded(_, item_name)
             | DanmakuPopoverStatus::ManualLoaded(_, item_name) => item_name.clone(),
             DanmakuPopoverStatus::NoMatching => gettext("No danmaku found"),
-            DanmakuPopoverStatus::SecretNotExist => gettext("This feature needs a official build"),
+            DanmakuPopoverStatus::SecretNotExist => {
+                gettext("This feature requires an official build")
+            }
             DanmakuPopoverStatus::Disabled => gettext("Disabled"),
             DanmakuPopoverStatus::Unavailable => gettext("Maybe there is something wrong"),
         }
