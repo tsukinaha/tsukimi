@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-15 18:26+0200\n"
+"Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
+"POT-Creation-Date: 2026-08-18 05:33+0200\n"
 "PO-Revision-Date: 2026-07-15 23:01+0000\n"
 "Last-Translator: Ornifex <persoon@outlook.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/tsukimi/main/nl/>\n"
@@ -13,6 +13,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Weblate 2026.8.dev0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: crates/tsukimi/resources/ui/account.ui:6
+#: crates/tsukimi/resources/ui/account.ui:14
+msgid "Add a New Server"
+msgstr "Nieuwe Server Toevoegen"
+
+#: crates/tsukimi/resources/ui/account.ui:45
+msgid "Enter the server details below."
+msgstr "Voer hieronder de servergegevens in."
+
+#: crates/tsukimi/resources/ui/account.ui:48
+#: crates/tsukimi/resources/ui/identify_dialog.ui:75
+#: crates/tsukimi/resources/ui/other.ui:73
+msgid "Name"
+msgstr "Naam"
+
+#: crates/tsukimi/resources/ui/account.ui:66
+msgid "Server Address"
+msgstr "Serveradres"
+
+#: crates/tsukimi/resources/ui/account.ui:85
+msgid "Port"
+msgstr "Poort"
+
+#: crates/tsukimi/resources/ui/account.ui:92
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: crates/tsukimi/resources/ui/account.ui:97
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: crates/tsukimi/resources/ui/account.ui:108
+#: crates/tsukimi/resources/ui/account_settings.ui:524
+msgid "Add"
+msgstr "Toevoegen"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:4
 msgid "Settings"
@@ -172,11 +208,6 @@ msgstr ""
 msgid "Account"
 msgstr "Account"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:316
-#: crates/tsukimi/resources/ui/account_settings.ui:333
-msgid "Change Password"
-msgstr "Wachtwoord Veranderen"
-
 #: crates/tsukimi/resources/ui/account_settings.ui:319
 msgid "New Password"
 msgstr "Nieuw Wachtwoord"
@@ -184,6 +215,10 @@ msgstr "Nieuw Wachtwoord"
 #: crates/tsukimi/resources/ui/account_settings.ui:324
 msgid "Confirm Password"
 msgstr "Wachtwoord Bevestigen"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "Wachtwoord Veranderen"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:347
 msgid "Media"
@@ -266,11 +301,6 @@ msgstr ""
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:524
-#: crates/tsukimi/resources/ui/account.ui:108
-msgid "Add"
-msgstr "Toevoegen"
-
 #: crates/tsukimi/resources/ui/account_settings.ui:549
 #: crates/tsukimi/resources/ui/account_settings.ui:659
 msgid "This will use exact matching to obtain a list"
@@ -327,37 +357,6 @@ msgstr "Map veranderen"
 #: crates/tsukimi/resources/ui/account_settings.ui:729
 msgid "Select new mpv config folder"
 msgstr ""
-
-#: crates/tsukimi/resources/ui/account.ui:6
-#: crates/tsukimi/resources/ui/account.ui:14
-msgid "Add a New Server"
-msgstr "Nieuwe Server Toevoegen"
-
-#: crates/tsukimi/resources/ui/account.ui:45
-msgid "Enter the server details below."
-msgstr "Voer hieronder de servergegevens in."
-
-#: crates/tsukimi/resources/ui/account.ui:48
-#: crates/tsukimi/resources/ui/identify_dialog.ui:75
-#: crates/tsukimi/resources/ui/other.ui:73
-msgid "Name"
-msgstr "Naam"
-
-#: crates/tsukimi/resources/ui/account.ui:66
-msgid "Server Address"
-msgstr "Serveradres"
-
-#: crates/tsukimi/resources/ui/account.ui:85
-msgid "Port"
-msgstr "Poort"
-
-#: crates/tsukimi/resources/ui/account.ui:92
-msgid "Username"
-msgstr "Gebruikersnaam"
-
-#: crates/tsukimi/resources/ui/account.ui:97
-msgid "Password"
-msgstr "Wachtwoord"
 
 #: crates/tsukimi/resources/ui/album_widget.ui:94
 #: crates/tsukimi/resources/ui/item.ui:184
@@ -682,17 +681,19 @@ msgstr "Bibliotheek"
 #: crates/tsukimi/resources/ui/home.ui:21
 #: crates/tsukimi/resources/ui/item.ui:298
 #: crates/tsukimi/src/ui/widgets/home.rs:226
+#: crates/tsukimi/src/ui/widgets/home.rs:304
 msgid "Continue Watching"
 msgstr "Doorgaan met Kijken"
 
 #: crates/tsukimi/resources/ui/home.ui:29
 #: crates/tsukimi/src/ui/widgets/home.rs:228
+#: crates/tsukimi/src/ui/widgets/home.rs:314
 msgid "Next Up"
 msgstr "Volgende"
 
-#: crates/tsukimi/resources/ui/identify_dialog_search_page.ui:4
 #: crates/tsukimi/resources/ui/identify_dialog.ui:6
 #: crates/tsukimi/resources/ui/identify_dialog.ui:14
+#: crates/tsukimi/resources/ui/identify_dialog_search_page.ui:4
 #: crates/tsukimi/resources/ui/pop-menu.ui:57
 #: crates/tsukimi/src/ui/widgets/identify/search_page.rs:125
 msgid "Identify"
@@ -812,24 +813,6 @@ msgstr ""
 msgid "BackDrops"
 msgstr "Achtergronden"
 
-#: crates/tsukimi/resources/ui/item_actions.ui:40
-#: crates/tsukimi/resources/ui/pop-menu.ui:29
-msgid "Mark as Played"
-msgstr ""
-
-#: crates/tsukimi/resources/ui/item_actions.ui:46
-#: crates/tsukimi/resources/ui/pop-menu.ui:35
-msgid "Mark as Unplayed"
-msgstr ""
-
-#: crates/tsukimi/resources/ui/item_actions.ui:53
-#: crates/tsukimi/resources/ui/metadata_dialog.ui:18
-#: crates/tsukimi/resources/ui/metadata_dialog.ui:26
-#: crates/tsukimi/resources/ui/pop-menu.ui:43
-#: crates/tsukimi/resources/ui/song_widget.ui:156
-msgid "Edit Metadata"
-msgstr "Metadata Aanpassen"
-
 #: crates/tsukimi/resources/ui/item.ui:218
 msgid "Video: "
 msgstr "Video:- "
@@ -877,6 +860,24 @@ msgstr "Links"
 #: crates/tsukimi/resources/ui/item.ui:506
 msgid "MediaInfo"
 msgstr "Mediainformatie"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:40
+#: crates/tsukimi/resources/ui/pop-menu.ui:29
+msgid "Mark as Played"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/item_actions.ui:46
+#: crates/tsukimi/resources/ui/pop-menu.ui:35
+msgid "Mark as Unplayed"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/item_actions.ui:53
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:18
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:26
+#: crates/tsukimi/resources/ui/pop-menu.ui:43
+#: crates/tsukimi/resources/ui/song_widget.ui:156
+msgid "Edit Metadata"
+msgstr "Metadata Aanpassen"
 
 #: crates/tsukimi/resources/ui/liked.ui:70
 msgid "Your favorite items will be placed here"
@@ -1228,16 +1229,6 @@ msgstr "nee (standaardinstelling)"
 msgid "Not all settings will be saved"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:12
-#: crates/tsukimi/resources/ui/mpvpage.ui:255
-msgid "Backward"
-msgstr "Achterwaarts"
-
-#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:42
-#: crates/tsukimi/resources/ui/mpvpage.ui:298
-msgid "Forward"
-msgstr "Voorwaarts"
-
 #: crates/tsukimi/resources/ui/mpv_menu.ui:11
 msgid "_Next"
 msgstr ""
@@ -1276,26 +1267,15 @@ msgstr ""
 msgid "_Keyboard shortcuts"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/mpvpage.ui:108
-msgid "Stop and quit"
-msgstr "Stoppen en afsluiten"
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:12
+#: crates/tsukimi/resources/ui/mpvpage.ui:255
+msgid "Backward"
+msgstr "Achterwaarts"
 
-#: crates/tsukimi/resources/ui/mpvpage.ui:165
-msgid "Shortcuts"
-msgstr ""
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:193
-msgid "Media info (MPV)"
-msgstr ""
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:279
-#: crates/tsukimi/src/ui/mpv/page.rs:419 crates/tsukimi/src/ui/mpv/page.rs:421
-msgid "Pause"
-msgstr "Pauzeren"
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:383
-msgid "Adjust Volume"
-msgstr "Volume Aanpassen"
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:42
+#: crates/tsukimi/resources/ui/mpvpage.ui:298
+msgid "Forward"
+msgstr "Voorwaarts"
 
 #: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:9
 msgid "Pause / Resume"
@@ -1468,6 +1448,27 @@ msgstr "Afsluiten"
 #: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:261
 msgid "Quit and Save Position"
 msgstr "Afsluiten en Plek Onthouden"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:108
+msgid "Stop and quit"
+msgstr "Stoppen en afsluiten"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:165
+msgid "Shortcuts"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:193
+msgid "Media info (MPV)"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:279
+#: crates/tsukimi/src/ui/mpv/page.rs:419 crates/tsukimi/src/ui/mpv/page.rs:421
+msgid "Pause"
+msgstr "Pauzeren"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:383
+msgid "Adjust Volume"
+msgstr "Volume Aanpassen"
 
 #: crates/tsukimi/resources/ui/other.ui:113
 #: crates/tsukimi/src/ui/widgets/tu_overview_item.rs:239
@@ -1663,21 +1664,6 @@ msgstr "Achtergrond"
 msgid "Banner"
 msgstr "Banner"
 
-#: crates/tsukimi/resources/ui/theme_switcher.ui:25
-#: crates/tsukimi/resources/ui/theme_switcher.ui:27
-msgid "Follow system style"
-msgstr "Systeem"
-
-#: crates/tsukimi/resources/ui/theme_switcher.ui:43
-#: crates/tsukimi/resources/ui/theme_switcher.ui:45
-msgid "Light style"
-msgstr "Licht"
-
-#: crates/tsukimi/resources/ui/theme_switcher.ui:61
-#: crates/tsukimi/resources/ui/theme_switcher.ui:63
-msgid "Dark style"
-msgstr "Donker"
-
 #: crates/tsukimi/resources/ui/window.ui:11
 msgid "Sign out"
 msgstr "Afmelden"
@@ -1756,7 +1742,6 @@ msgid "Deband settings cleared."
 msgstr "Deband-instellingen gewist."
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:37
-#, rust-format
 msgid "{count} Danmaku Loaded"
 msgstr ""
 
@@ -1771,6 +1756,7 @@ msgid "Loading"
 msgstr "Laden..."
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:49
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:276
 msgid "No danmaku found"
 msgstr ""
 
@@ -1787,11 +1773,11 @@ msgid "Maybe there is something wrong"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:60
-msgid "From play (Auto Matched)"
+msgid "From 弹弹play开放弹幕网络 (Auto Matched)"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:62
-msgid "From play (Manually Matched)"
+msgid "From 弹弹play开放弹幕网络 (Manually Matched)"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:185
@@ -1813,6 +1799,34 @@ msgstr "Zoeken"
 msgid "Invalid episode ID"
 msgstr "Ongeldige regex"
 
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:278
+#, fuzzy
+#| msgid "Failed to load image"
+msgid "Failed to load danmaku"
+msgstr "Kon afbeelding niet laden"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:339
+#, fuzzy
+#| msgid "No more video found"
+msgid "No episodes found"
+msgstr "Geen video's meer gevonden"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:343
+#, fuzzy
+#| msgid "Failed to load image"
+msgid "Failed to load episodes"
+msgstr "Kon afbeelding niet laden"
+
+#: crates/tsukimi/src/ui/mpv/page.rs:883
+msgid "Initializing..."
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/page.rs:930 crates/tsukimi/src/ui/mpv/page.rs:999
+#, fuzzy
+#| msgid "No video source found"
+msgid "No media source found"
+msgstr "Geen videobron gevonden"
+
 #: crates/tsukimi/src/ui/mpv/page.rs:1079
 msgid "Skip Intro"
 msgstr "Intro Overslaan"
@@ -1832,6 +1846,17 @@ msgid ""
 msgstr ""
 "MPV is afgesloten, Applicatie wordt nu beëindigd.\n"
 "Tsukimi kan MPV niet herstarten."
+
+#: crates/tsukimi/src/ui/provider/actions.rs:56
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:162
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:181
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:121
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:187
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:220
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:313
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:98
+msgid "Success"
+msgstr "Succes"
 
 #: crates/tsukimi/src/ui/provider/tu_item.rs:638
 msgid "No next up video found"
@@ -1964,11 +1989,6 @@ msgstr "Fout bij het laden van de afbeelding"
 msgid "Replace Image"
 msgstr "Afbeelding Verwijderen"
 
-#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:121
-#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:98
-msgid "Success"
-msgstr "Succes"
-
 #: crates/tsukimi/src/ui/widgets/item.rs:356
 msgid "No episode selected"
 msgstr "Geen aflevering geselecteerd"
@@ -2067,6 +2087,7 @@ msgid "More From"
 msgstr "Meer Van"
 
 #: crates/tsukimi/src/ui/widgets/refresh_dialog.rs:94
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:278
 msgid "Scanning..."
 msgstr "Scannen..."
 
@@ -2152,6 +2173,13 @@ msgstr ""
 "de mediabibliotheek verwijderd.\n"
 "De volgende bestanden en mappen zouden verwijderd worden:"
 
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:522
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:582
+#, fuzzy
+#| msgid "Image deleted"
+msgid "Item deleted"
+msgstr "Afbeelding verwijderd"
+
 #: crates/tsukimi/src/ui/widgets/tu_item/action.rs:556
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "Weet je zeker dat je alle metadata wilt resetten?"
@@ -2172,6 +2200,15 @@ msgstr "Foutmelding kopiëren & sluiten"
 #: crates/tsukimi/src/ui/widgets/window.rs:998
 msgid "translator-credits"
 msgstr ""
+
+#~ msgid "Follow system style"
+#~ msgstr "Systeem"
+
+#~ msgid "Light style"
+#~ msgstr "Licht"
+
+#~ msgid "Dark style"
+#~ msgstr "Donker"
 
 #, fuzzy
 #~| msgid "Contents"

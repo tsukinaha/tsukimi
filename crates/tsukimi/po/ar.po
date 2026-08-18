@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 20:35+0800\n"
+"Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
+"POT-Creation-Date: 2026-08-18 05:33+0200\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
 "Last-Translator: Inaha <sakuovds@gmail.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/tsukimi/main/ar/"
@@ -21,6 +21,42 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
 "X-Generator: Weblate 2026.6\n"
+
+#: crates/tsukimi/resources/ui/account.ui:6
+#: crates/tsukimi/resources/ui/account.ui:14
+msgid "Add a New Server"
+msgstr "إضافة خادم جديد"
+
+#: crates/tsukimi/resources/ui/account.ui:45
+msgid "Enter the server details below."
+msgstr "أدخل تفاصيل الخادم أدناه."
+
+#: crates/tsukimi/resources/ui/account.ui:48
+#: crates/tsukimi/resources/ui/identify_dialog.ui:75
+#: crates/tsukimi/resources/ui/other.ui:73
+msgid "Name"
+msgstr "الاسم"
+
+#: crates/tsukimi/resources/ui/account.ui:66
+msgid "Server Address"
+msgstr "عنوان الخادم"
+
+#: crates/tsukimi/resources/ui/account.ui:85
+msgid "Port"
+msgstr "المنفذ"
+
+#: crates/tsukimi/resources/ui/account.ui:92
+msgid "Username"
+msgstr "اسم المستخدم"
+
+#: crates/tsukimi/resources/ui/account.ui:97
+msgid "Password"
+msgstr "كلمة المرور"
+
+#: crates/tsukimi/resources/ui/account.ui:108
+#: crates/tsukimi/resources/ui/account_settings.ui:524
+msgid "Add"
+msgstr "إضافة"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:4
 msgid "Settings"
@@ -186,11 +222,6 @@ msgstr "نسخة الفيديو المفضلة"
 msgid "Account"
 msgstr "الحساب"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:316
-#: crates/tsukimi/resources/ui/account_settings.ui:333
-msgid "Change Password"
-msgstr "تغيير كلمة المرور"
-
 #: crates/tsukimi/resources/ui/account_settings.ui:319
 msgid "New Password"
 msgstr "كلمة المرور الجديدة"
@@ -198,6 +229,10 @@ msgstr "كلمة المرور الجديدة"
 #: crates/tsukimi/resources/ui/account_settings.ui:324
 msgid "Confirm Password"
 msgstr "تأكيد كلمة المرور"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "تغيير كلمة المرور"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:347
 msgid "Media"
@@ -282,11 +317,6 @@ msgstr "إضافة وصف (Add a descriptor)"
 msgid "Cancel"
 msgstr "إلغاء"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:524
-#: crates/tsukimi/resources/ui/account.ui:108
-msgid "Add"
-msgstr "إضافة"
-
 #: crates/tsukimi/resources/ui/account_settings.ui:549
 #: crates/tsukimi/resources/ui/account_settings.ui:659
 msgid "This will use exact matching to obtain a list"
@@ -343,37 +373,6 @@ msgstr "تغيير المجلد"
 #: crates/tsukimi/resources/ui/account_settings.ui:729
 msgid "Select new mpv config folder"
 msgstr "حدد مجلد تهيئة MPV جديد"
-
-#: crates/tsukimi/resources/ui/account.ui:6
-#: crates/tsukimi/resources/ui/account.ui:14
-msgid "Add a New Server"
-msgstr "إضافة خادم جديد"
-
-#: crates/tsukimi/resources/ui/account.ui:45
-msgid "Enter the server details below."
-msgstr "أدخل تفاصيل الخادم أدناه."
-
-#: crates/tsukimi/resources/ui/account.ui:48
-#: crates/tsukimi/resources/ui/identify_dialog.ui:75
-#: crates/tsukimi/resources/ui/other.ui:73
-msgid "Name"
-msgstr "الاسم"
-
-#: crates/tsukimi/resources/ui/account.ui:66
-msgid "Server Address"
-msgstr "عنوان الخادم"
-
-#: crates/tsukimi/resources/ui/account.ui:85
-msgid "Port"
-msgstr "المنفذ"
-
-#: crates/tsukimi/resources/ui/account.ui:92
-msgid "Username"
-msgstr "اسم المستخدم"
-
-#: crates/tsukimi/resources/ui/account.ui:97
-msgid "Password"
-msgstr "كلمة المرور"
 
 #: crates/tsukimi/resources/ui/album_widget.ui:94
 #: crates/tsukimi/resources/ui/item.ui:184
@@ -706,18 +705,20 @@ msgstr "المكتبة"
 #: crates/tsukimi/resources/ui/home.ui:21
 #: crates/tsukimi/resources/ui/item.ui:298
 #: crates/tsukimi/src/ui/widgets/home.rs:226
+#: crates/tsukimi/src/ui/widgets/home.rs:304
 msgid "Continue Watching"
 msgstr "متابعة المشاهدة"
 
 #: crates/tsukimi/resources/ui/home.ui:29
 #: crates/tsukimi/src/ui/widgets/home.rs:228
+#: crates/tsukimi/src/ui/widgets/home.rs:314
 #, fuzzy
 msgid "Next Up"
 msgstr "التالي"
 
-#: crates/tsukimi/resources/ui/identify_dialog_search_page.ui:4
 #: crates/tsukimi/resources/ui/identify_dialog.ui:6
 #: crates/tsukimi/resources/ui/identify_dialog.ui:14
+#: crates/tsukimi/resources/ui/identify_dialog_search_page.ui:4
 #: crates/tsukimi/resources/ui/pop-menu.ui:57
 #: crates/tsukimi/src/ui/widgets/identify/search_page.rs:125
 msgid "Identify"
@@ -838,24 +839,6 @@ msgstr "هذه الصفحة للقراءة فقط، لأنك لا تملك إذ�
 msgid "BackDrops"
 msgstr "الخلفيات"
 
-#: crates/tsukimi/resources/ui/item_actions.ui:40
-#: crates/tsukimi/resources/ui/pop-menu.ui:29
-msgid "Mark as Played"
-msgstr "وضع علامة كمُشاهَد"
-
-#: crates/tsukimi/resources/ui/item_actions.ui:46
-#: crates/tsukimi/resources/ui/pop-menu.ui:35
-msgid "Mark as Unplayed"
-msgstr "وضع علامة كغير مُشاهَد"
-
-#: crates/tsukimi/resources/ui/item_actions.ui:53
-#: crates/tsukimi/resources/ui/metadata_dialog.ui:18
-#: crates/tsukimi/resources/ui/metadata_dialog.ui:26
-#: crates/tsukimi/resources/ui/pop-menu.ui:43
-#: crates/tsukimi/resources/ui/song_widget.ui:156
-msgid "Edit Metadata"
-msgstr "تحرير البيانات الوصفية"
-
 #: crates/tsukimi/resources/ui/item.ui:218
 msgid "Video: "
 msgstr "الفيديو: "
@@ -903,6 +886,24 @@ msgstr "الروابط"
 #: crates/tsukimi/resources/ui/item.ui:506
 msgid "MediaInfo"
 msgstr "معلومات الوسائط"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:40
+#: crates/tsukimi/resources/ui/pop-menu.ui:29
+msgid "Mark as Played"
+msgstr "وضع علامة كمُشاهَد"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:46
+#: crates/tsukimi/resources/ui/pop-menu.ui:35
+msgid "Mark as Unplayed"
+msgstr "وضع علامة كغير مُشاهَد"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:53
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:18
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:26
+#: crates/tsukimi/resources/ui/pop-menu.ui:43
+#: crates/tsukimi/resources/ui/song_widget.ui:156
+msgid "Edit Metadata"
+msgstr "تحرير البيانات الوصفية"
 
 #: crates/tsukimi/resources/ui/liked.ui:70
 msgid "Your favorite items will be placed here"
@@ -1254,16 +1255,6 @@ msgstr "لا (افتراضي)"
 msgid "Not all settings will be saved"
 msgstr "لن يتم حفظ جميع الإعدادات"
 
-#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:12
-#: crates/tsukimi/resources/ui/mpvpage.ui:255
-msgid "Backward"
-msgstr "الرجوع للخلف"
-
-#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:42
-#: crates/tsukimi/resources/ui/mpvpage.ui:298
-msgid "Forward"
-msgstr "التقديم للأمام"
-
 #: crates/tsukimi/resources/ui/mpv_menu.ui:11
 msgid "_Next"
 msgstr "_التالي"
@@ -1302,27 +1293,15 @@ msgstr "معلومات الوسائط"
 msgid "_Keyboard shortcuts"
 msgstr "_اختصارات لوحة المفاتيح"
 
-#: crates/tsukimi/resources/ui/mpvpage.ui:108
-msgid "Stop and quit"
-msgstr "إيقاف والخروج"
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:12
+#: crates/tsukimi/resources/ui/mpvpage.ui:255
+msgid "Backward"
+msgstr "الرجوع للخلف"
 
-#: crates/tsukimi/resources/ui/mpvpage.ui:165
-msgid "Shortcuts"
-msgstr ""
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:193
-msgid "Media info (MPV)"
-msgstr "معلومات الوسائط (MPV)"
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:279
-#: crates/tsukimi/src/ui/mpv/page.rs:419 crates/tsukimi/src/ui/mpv/page.rs:421
-msgid "Pause"
-msgstr "إيقاف مؤقت"
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:383
-#, fuzzy
-msgid "Adjust Volume"
-msgstr "مستوى الصوت الافتراضي"
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:42
+#: crates/tsukimi/resources/ui/mpvpage.ui:298
+msgid "Forward"
+msgstr "التقديم للأمام"
 
 #: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:9
 #, fuzzy
@@ -1520,6 +1499,28 @@ msgstr ""
 msgid "Quit and Save Position"
 msgstr ""
 
+#: crates/tsukimi/resources/ui/mpvpage.ui:108
+msgid "Stop and quit"
+msgstr "إيقاف والخروج"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:165
+msgid "Shortcuts"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:193
+msgid "Media info (MPV)"
+msgstr "معلومات الوسائط (MPV)"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:279
+#: crates/tsukimi/src/ui/mpv/page.rs:419 crates/tsukimi/src/ui/mpv/page.rs:421
+msgid "Pause"
+msgstr "إيقاف مؤقت"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:383
+#, fuzzy
+msgid "Adjust Volume"
+msgstr "مستوى الصوت الافتراضي"
+
 #: crates/tsukimi/resources/ui/other.ui:113
 #: crates/tsukimi/src/ui/widgets/tu_overview_item.rs:239
 msgid "No Inscriptions"
@@ -1714,21 +1715,6 @@ msgstr "الخلفية"
 msgid "Banner"
 msgstr "الشعار"
 
-#: crates/tsukimi/resources/ui/theme_switcher.ui:25
-#: crates/tsukimi/resources/ui/theme_switcher.ui:27
-msgid "Follow system style"
-msgstr "إتبع نمط النظام"
-
-#: crates/tsukimi/resources/ui/theme_switcher.ui:43
-#: crates/tsukimi/resources/ui/theme_switcher.ui:45
-msgid "Light style"
-msgstr "النمط الفاتح"
-
-#: crates/tsukimi/resources/ui/theme_switcher.ui:61
-#: crates/tsukimi/resources/ui/theme_switcher.ui:63
-msgid "Dark style"
-msgstr "النمط الداكن"
-
 #: crates/tsukimi/resources/ui/window.ui:11
 msgid "Sign out"
 msgstr "تسجيل الخروج"
@@ -1807,7 +1793,7 @@ msgid "Deband settings cleared."
 msgstr "تم مسح إعدادات إزالة التدرج."
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:37
-#, fuzzy, rust-format
+#, fuzzy
 msgid "{count} Danmaku Loaded"
 msgstr "لم يتم تحميل أي دانماكو"
 
@@ -1822,6 +1808,7 @@ msgid "Loading"
 msgstr "جارٍ التحميل..."
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:49
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:276
 #, fuzzy
 msgid "No danmaku found"
 msgstr "لم يتم تحميل أي دانماكو"
@@ -1839,11 +1826,11 @@ msgid "Maybe there is something wrong"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:60
-msgid "From play (Auto Matched)"
+msgid "From 弹弹play开放弹幕网络 (Auto Matched)"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:62
-msgid "From play (Manually Matched)"
+msgid "From 弹弹play开放弹幕网络 (Manually Matched)"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:185
@@ -1865,6 +1852,34 @@ msgstr "بحث"
 msgid "Invalid episode ID"
 msgstr "تعبير عادي غير صالح (Invalid regex)"
 
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:278
+#, fuzzy
+#| msgid "Failed to load image"
+msgid "Failed to load danmaku"
+msgstr "فشل في تحميل الصورة"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:339
+#, fuzzy
+#| msgid "No media sources found"
+msgid "No episodes found"
+msgstr "لم يتم العثور على مصادر وسائط"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:343
+#, fuzzy
+#| msgid "Failed to load image"
+msgid "Failed to load episodes"
+msgstr "فشل في تحميل الصورة"
+
+#: crates/tsukimi/src/ui/mpv/page.rs:883
+msgid "Initializing..."
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/page.rs:930 crates/tsukimi/src/ui/mpv/page.rs:999
+#, fuzzy
+#| msgid "No media sources found"
+msgid "No media source found"
+msgstr "لم يتم العثور على مصادر وسائط"
+
 #: crates/tsukimi/src/ui/mpv/page.rs:1079
 msgid "Skip Intro"
 msgstr ""
@@ -1884,6 +1899,17 @@ msgid ""
 msgstr ""
 "تم إيقاف MPV، وسيتم إغلاق التطبيق.\n"
 "تعذّر على Tsukimi إعادة تشغيل MPV."
+
+#: crates/tsukimi/src/ui/provider/actions.rs:56
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:162
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:181
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:121
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:187
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:220
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:313
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:98
+msgid "Success"
+msgstr "تم بنجاح"
 
 #: crates/tsukimi/src/ui/provider/tu_item.rs:638
 msgid "No next up video found"
@@ -2016,11 +2042,6 @@ msgstr "خطأ في تحميل الصورة"
 msgid "Replace Image"
 msgstr "استبدال الصورة"
 
-#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:121
-#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:98
-msgid "Success"
-msgstr "تم بنجاح"
-
 #: crates/tsukimi/src/ui/widgets/item.rs:356
 #, fuzzy
 msgid "No episode selected"
@@ -2121,6 +2142,7 @@ msgid "More From"
 msgstr "المزيد من"
 
 #: crates/tsukimi/src/ui/widgets/refresh_dialog.rs:94
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:278
 msgid "Scanning..."
 msgstr "جارٍ المسح..."
 
@@ -2207,6 +2229,13 @@ msgstr ""
 "بك.\n"
 "سيتم حذف الملفات والمجلدات التالية:"
 
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:522
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:582
+#, fuzzy
+#| msgid "Image deleted"
+msgid "Item deleted"
+msgstr "تم حذف الصورة"
+
 #: crates/tsukimi/src/ui/widgets/tu_item/action.rs:556
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "هل أنت متأكد أنك تريد إعادة تعيين جميع البيانات الوصفية؟"
@@ -2227,6 +2256,15 @@ msgstr "نسخ الخطأ وإغلاق النافذة"
 #: crates/tsukimi/src/ui/widgets/window.rs:998
 msgid "translator-credits"
 msgstr "Abdulrahman <2140398@uj.edu.sa>"
+
+#~ msgid "Follow system style"
+#~ msgstr "إتبع نمط النظام"
+
+#~ msgid "Light style"
+#~ msgstr "النمط الفاتح"
+
+#~ msgid "Dark style"
+#~ msgstr "النمط الداكن"
 
 #, fuzzy
 #~| msgid "Contents"
@@ -2345,9 +2383,6 @@ msgstr "Abdulrahman <2140398@uj.edu.sa>"
 
 #~ msgid "Waiting for mediasource..."
 #~ msgstr "في انتظار مصدر الوسائط..."
-
-#~ msgid "No media sources found"
-#~ msgstr "لم يتم العثور على مصادر وسائط"
 
 #~ msgid "View Metadata"
 #~ msgstr "عرض البيانات الوصفية"
