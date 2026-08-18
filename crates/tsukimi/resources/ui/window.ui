@@ -279,8 +279,8 @@
                               <object class="AdwNavigationPage" id="navipage">
                                 <property name="title" translatable="yes"/>
                                 <property name="child">
-                                  <object class="AdwToolbarView">
-                                    <property name="bottom-bar-style">raised</property>
+                                  <object class="AdwToolbarView" id="main_toolbar_view">
+                                    <property name="extend-content-to-bottom-edge">True</property>
                                     <child type="top">
                                       <object class="AdwHeaderBar">
                                         <property name="show-back-button">False</property>
@@ -313,7 +313,11 @@
                                       </object>
                                     </child>
                                     <child type="bottom">
-                                      <object class="PlayerToolbarBox" id="player_toolbar_box"/>
+                                      <object class="PlayerToolbarBox" id="player_toolbar_box">
+                                        <style>
+                                          <class name="music-player"/>
+                                        </style>
+                                      </object>
                                     </child>
                                     <property name="content">
                                       <object class="GtkOverlay">
@@ -328,6 +332,9 @@
                                         </child>
                                         <child>
                                           <object class="AdwNavigationView" id="mainview">
+                                            <style>
+                                              <class name="player-toolbar-scroll-area"/>
+                                            </style>
                                             <child>
                                               <object class="AdwNavigationPage" id="mainpage">
                                                 <property name="tag">mainpage</property>
