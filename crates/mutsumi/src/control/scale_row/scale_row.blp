@@ -1,0 +1,53 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $ScaleRow: Adw.PreferencesRow {
+    activatable: false;
+    selectable: false;
+
+    child: Box {
+        orientation: vertical;
+        spacing: 10;
+        margin-top: 12;
+        margin-bottom: 12;
+        margin-start: 12;
+        margin-end: 12;
+
+        Box {
+            orientation: horizontal;
+            spacing: 12;
+
+            Label title_label {
+                hexpand: true;
+                halign: fill;
+                xalign: 0;
+                ellipsize: end;
+                label: bind template.title;
+            }
+
+            Label current_label {
+                halign: end;
+                xalign: 1;
+
+                styles [
+                    "dim-label",
+                ]
+            }
+        }
+
+        Scale scale {
+            hexpand: true;
+            halign: fill;
+            draw-value: false;
+            round-digits: 0;
+
+            adjustment: Adjustment adjustment {
+                lower: 0;
+                upper: 0;
+                value: bind template.value bidirectional;
+                step-increment: 1;
+                page-increment: 1;
+            };
+        }
+    };
+}

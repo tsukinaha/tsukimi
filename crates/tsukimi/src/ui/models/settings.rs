@@ -1,0 +1,589 @@
+use std::ops::Deref;
+
+use gtk::{
+    gio,
+    glib::{
+        self,
+        thread_guard::ThreadGuard,
+    },
+    prelude::*,
+};
+
+use crate::{
+    APP_ID,
+    client::Account,
+    ui::provider::descriptor::{
+        Descriptor,
+        VecSerialize,
+    },
+};
+
+pub struct Settings(ThreadGuard<gio::Settings>);
+
+impl Settings {
+    const KEY_IS_OVERLAY: &'static str = "is-overlay";
+    const KEY_ROOT_PIC: &'static str = "root-pic";
+    const KEY_IS_BACKGROUND_ENABLED: &'static str = "is-backgroundenabled";
+    const KEY_THREADS: &'static str = "threads";
+    const KEY_PIC_OPACITY: &'static str = "pic-opacity";
+    const KEY_PIC_BLUR: &'static str = "pic-blur";
+    const KEY_PREFERRED_SERVER: &'static str = "preferred-server";
+    const KEY_IS_AUTO_SELECT_SERVER: &'static str = "is-auto-select-server";
+    const KEY_LIST_SORT_BY: &'static str = "list-sort-by";
+    const KEY_LIST_SORT_ORDER: &'static str = "list-sort-order";
+    const KEY_ACCENT_COLOR_CODE: &'static str = "accent-color-code";
+    const KEY_USE_CUSTOM_ACCENT_COLOR: &'static str = "use-custom-accent-color";
+    const KEY_ITEM_TEXT_DISPLAY: &'static str = "item-text-display";
+    const KEY_ITEM_CARD_STYLE: &'static str = "item-card-style";
+    const KEY_MUSIC_REPEAT_MODE: &'static str = "music-repeat-mode";
+    const KEY_MPV_SEEK_FORWARD_STEP: &'static str = "mpv-seek-forward-step";
+    const KEY_MPV_SEEK_BACKWARD_STEP: &'static str = "mpv-seek-backward-step";
+    const KEY_MPV_CONFIG: &'static str = "mpv-config";
+    const KEY_MPV_CACHE_SIZE: &'static str = "mpv-cache-size";
+    const KEY_MPV_CACHE_TIME: &'static str = "mpv-cache-time";
+    const KEY_MPV_SUBTITLE_BOLD: &'static str = "mpv-subtitle-bold"; // bool
+    const KEY_MPV_SUBTITLE_ITALIC: &'static str = "mpv-subtitle-italic"; // bool
+    const KEY_MPV_SUBTITLE_JUSTIFY: &'static str = "mpv-subtitle-justify"; // i32
+    const KEY_MPV_SUBTITLE_POSITION: &'static str = "mpv-subtitle-position"; // i32
+    const KEY_MPV_SUBTITLE_SIZE: &'static str = "mpv-subtitle-size"; // i32
+    const KEY_MPV_SUBTITLE_SCALE: &'static str = "mpv-subtitle-scale"; // f64
+    const KEY_MPV_SUBTITLE_FONT: &'static str = "mpv-subtitle-font"; // String
+    const KEY_MPV_SUBTITLE_BORDER_STYLE: &'static str = "mpv-subtitle-border-style"; // i32
+    const KEY_MPV_SUBTITLE_BORDER_SIZE: &'static str = "mpv-subtitle-border-size"; // i32
+    const KEY_MPV_SUBTITLE_SHADOW_OFFSET: &'static str = "mpv-subtitle-shadow-offset"; // i32
+    const KEY_MPV_SUBTITLE_STRETCH_IMAGE_SUBS_TO_SCREEN: &'static str =
+        "mpv-subtitle-stretch-image-subs-to-screen"; // bool
+    const KEY_MPV_SUBTITLE_TEXT_COLOR: &'static str = "mpv-subtitle-text-color"; // String
+    const KEY_MPV_SUBTITLE_BORDER_COLOR: &'static str = "mpv-subtitle-border-color"; // String
+    const KEY_MPV_SUBTITLE_BACKGROUND_COLOR: &'static str = "mpv-subtitle-background-color"; // String
+    const KEY_MPV_AUDIO_PREFERRED_LANG: &'static str = "mpv-audio-preferred-lang"; // i32
+    const KEY_MPV_SUBTITLE_PREFERRED_LANG: &'static str = "mpv-subtitle-preferred-lang"; // i32
+    const KEY_MPV_DEFAULT_VOLUME: &'static str = "mpv-default-volume"; // i32
+    const KEY_MPV_SHOW_BUFFER_SPEED: &'static str = "mpv-show-buffer-speed"; // bool
+    const KEY_MPV_ACTION_AFTER_VIDEO_END: &'static str = "mpv-action-after-video-end"; // i32
+    const KEY_MPV_HWDEC: &'static str = "mpv-hwdec"; // i32
+
+    const PREFERRED_VERSION_DESCRIPTORS: &'static str = "video-version-descriptors"; // String
+    const ACCOUNTS: &'static str = "accounts"; // String
+    const KEY_MPV_AUDIO_CHANNEL: &'static str = "mpv-audio-channel"; // i32
+    const KEY_MPV_VIDEO_SCALE: &'static str = "mpv-video-scale"; // i32
+    const KEY_MPV_CONFIG_DIR: &'static str = "mpv-config-path"; // String
+    const KEY_IS_REFRESH: &'static str = "is-refresh"; // bool
+    const KEY_MERGE_RESUME_AND_NEXT_UP: &'static str = "merge-resume-and-next-up"; // bool
+    const KEY_AUTO_SKIP_INTRO_OUTRO: &'static str = "auto-skip-intro-outro"; // bool
+    const KEY_DEVICE_UUID: &'static str = "device-uuid"; // String
+    const KEY_MAIN_THEME: &'static str = "main-theme"; // i32
+    const KEY_WINDOW_WIDTH: &'static str = "window-width"; // i32
+    const KEY_WINDOW_HEIGHT: &'static str = "window-height"; // i32
+    const KEY_IS_MAXIMIZED: &'static str = "is-maximized"; // bool
+    const KEY_IS_FULLSCREEN: &'static str = "is-fullscreen"; // bool
+    const KEY_MPV_DANMAKU_ENABLED: &'static str = "is-danmaku-enabled";
+    const KEY_MPV_DANMAKU_OPACITY: &'static str = "mpv-danmaku-opacity";
+    const KEY_MPV_DANMAKU_SPEED_FACTOR: &'static str = "mpv-danmaku-speed-factor";
+    const KEY_MPV_DANMAKU_FONT_SIZE: &'static str = "mpv-danmaku-font-size";
+    const KEY_MPV_DANMAKU_FONT_WEIGHT: &'static str = "mpv-danmaku-font-weight";
+    const KEY_MPV_DANMAKU_INTENSITY: &'static str = "mpv-danmaku-intensity";
+    const KEY_MPV_DANMAKU_SPACING_FACTOR: &'static str = "mpv-danmaku-spacing-factor";
+    const KEY_MPV_DANMAKU_OUTLINE_SIZE: &'static str = "mpv-danmaku-outline-size";
+    const KEY_MPV_DANMAKU_SHADOW_OFFSET: &'static str = "mpv-danmaku-shadow-offset";
+    const KEY_DANMAKU_CACHE_MAP: &'static str = "danmaku-cache-map";
+
+    fn bind_setting(&self, key: &str, object: &impl IsA<glib::Object>, property: &str) {
+        self.0.get_ref().bind(key, object, property).build();
+    }
+
+    pub fn bind_mpv_danmaku_enabled(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_ENABLED, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_opacity(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_OPACITY, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_speed_factor(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_SPEED_FACTOR, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_font_size(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_FONT_SIZE, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_font_weight(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_FONT_WEIGHT, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_intensity(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_INTENSITY, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_spacing_factor(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_SPACING_FACTOR, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_outline_size(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_OUTLINE_SIZE, object, property);
+    }
+
+    pub fn bind_mpv_danmaku_shadow_offset(&self, object: &impl IsA<glib::Object>, property: &str) {
+        self.bind_setting(Self::KEY_MPV_DANMAKU_SHADOW_OFFSET, object, property);
+    }
+
+    pub fn mpv_danmaku_enabled(&self) -> bool {
+        self.boolean(Self::KEY_MPV_DANMAKU_ENABLED)
+    }
+
+    pub fn danmaku_cache_map(&self) -> String {
+        self.string(Self::KEY_DANMAKU_CACHE_MAP).to_string()
+    }
+
+    pub fn set_danmaku_cache_map(&self, value: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_DANMAKU_CACHE_MAP, value)
+    }
+
+    pub fn is_overlay(&self) -> bool {
+        self.boolean(Self::KEY_IS_OVERLAY)
+    }
+
+    pub fn is_maximized(&self) -> bool {
+        self.boolean(Self::KEY_IS_MAXIMIZED)
+    }
+
+    pub fn set_is_maximized(&self, is_maximized: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_IS_MAXIMIZED, is_maximized)
+    }
+
+    pub fn is_fullscreen(&self) -> bool {
+        self.boolean(Self::KEY_IS_FULLSCREEN)
+    }
+
+    pub fn set_is_fullscreen(&self, is_fullscreen: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_IS_FULLSCREEN, is_fullscreen)
+    }
+
+    pub fn window_dismension(&self) -> (i32, i32) {
+        (
+            self.int(Self::KEY_WINDOW_WIDTH),
+            self.int(Self::KEY_WINDOW_HEIGHT),
+        )
+    }
+
+    pub fn set_window_dismension(&self, width: i32, height: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_WINDOW_WIDTH, width)?;
+        self.set_int(Self::KEY_WINDOW_HEIGHT, height)
+    }
+
+    pub fn main_theme(&self) -> i32 {
+        self.int(Self::KEY_MAIN_THEME)
+    }
+
+    pub fn set_main_theme(&self, main_theme: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MAIN_THEME, main_theme)
+    }
+
+    pub fn device_uuid(&self) -> String {
+        self.string(Self::KEY_DEVICE_UUID).to_string()
+    }
+
+    pub fn set_device_uuid(&self, device_uuid: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_DEVICE_UUID, device_uuid)
+    }
+
+    pub fn is_refresh(&self) -> bool {
+        self.boolean(Self::KEY_IS_REFRESH)
+    }
+
+    pub fn merge_resume_and_next_up(&self) -> bool {
+        self.boolean(Self::KEY_MERGE_RESUME_AND_NEXT_UP)
+    }
+
+    pub fn auto_skip_intro_outro(&self) -> bool {
+        self.boolean(Self::KEY_AUTO_SKIP_INTRO_OUTRO)
+    }
+
+    pub fn item_text_display(&self) -> String {
+        match self.string(Self::KEY_ITEM_TEXT_DISPLAY).as_str() {
+            "full" => "full",
+            _ => "compact",
+        }
+        .to_string()
+    }
+
+    pub fn set_item_text_display(&self, item_text_display: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_ITEM_TEXT_DISPLAY, item_text_display)
+    }
+
+    pub fn item_card_style(&self) -> String {
+        match self.string(Self::KEY_ITEM_CARD_STYLE).as_str() {
+            "separated" => "separated",
+            _ => "integrated",
+        }
+        .to_string()
+    }
+
+    pub fn set_item_card_style(&self, item_card_style: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_ITEM_CARD_STYLE, item_card_style)
+    }
+
+    pub fn item_card_style_is_integrated(&self) -> bool {
+        self.item_card_style() == "integrated"
+    }
+
+    pub fn mpv_config_dir(&self) -> String {
+        self.string(Self::KEY_MPV_CONFIG_DIR).to_string()
+    }
+
+    pub fn mpv_subtitle_bold(&self) -> bool {
+        self.boolean(Self::KEY_MPV_SUBTITLE_BOLD)
+    }
+
+    pub fn mpv_subtitle_italic(&self) -> bool {
+        self.boolean(Self::KEY_MPV_SUBTITLE_ITALIC)
+    }
+
+    pub fn mpv_subtitle_justify(&self) -> i32 {
+        self.int(Self::KEY_MPV_SUBTITLE_JUSTIFY)
+    }
+
+    pub fn mpv_subtitle_position(&self) -> i32 {
+        self.int(Self::KEY_MPV_SUBTITLE_POSITION)
+    }
+
+    pub fn mpv_subtitle_size(&self) -> i32 {
+        self.int(Self::KEY_MPV_SUBTITLE_SIZE)
+    }
+
+    pub fn mpv_subtitle_scale(&self) -> f64 {
+        self.double(Self::KEY_MPV_SUBTITLE_SCALE)
+    }
+
+    pub fn set_mpv_subtitle_font(&self, mpv_subtitle_font: String) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_MPV_SUBTITLE_FONT, &mpv_subtitle_font)
+    }
+
+    pub fn mpv_subtitle_font(&self) -> String {
+        self.string(Self::KEY_MPV_SUBTITLE_FONT).to_string()
+    }
+
+    pub fn mpv_subtitle_border_style(&self) -> i32 {
+        self.int(Self::KEY_MPV_SUBTITLE_BORDER_STYLE)
+    }
+
+    pub fn mpv_subtitle_border_size(&self) -> i32 {
+        self.int(Self::KEY_MPV_SUBTITLE_BORDER_SIZE)
+    }
+
+    pub fn mpv_subtitle_shadow_offset(&self) -> i32 {
+        self.int(Self::KEY_MPV_SUBTITLE_SHADOW_OFFSET)
+    }
+
+    pub fn mpv_subtitle_stretch_image_subs_to_screen(&self) -> bool {
+        self.boolean(Self::KEY_MPV_SUBTITLE_STRETCH_IMAGE_SUBS_TO_SCREEN)
+    }
+
+    pub fn mpv_subtitle_text_color(&self) -> String {
+        self.string(Self::KEY_MPV_SUBTITLE_TEXT_COLOR).to_string()
+    }
+
+    pub fn set_mpv_subtitle_text_color(&self, color: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_MPV_SUBTITLE_TEXT_COLOR, color)
+    }
+
+    pub fn mpv_subtitle_border_color(&self) -> String {
+        self.string(Self::KEY_MPV_SUBTITLE_BORDER_COLOR).to_string()
+    }
+
+    pub fn set_mpv_subtitle_border_color(&self, color: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_MPV_SUBTITLE_BORDER_COLOR, color)
+    }
+
+    pub fn mpv_subtitle_background_color(&self) -> String {
+        self.string(Self::KEY_MPV_SUBTITLE_BACKGROUND_COLOR)
+            .to_string()
+    }
+
+    pub fn set_mpv_subtitle_background_color(&self, color: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_MPV_SUBTITLE_BACKGROUND_COLOR, color)
+    }
+
+    pub fn mpv_video_scale(&self) -> i32 {
+        self.int(Self::KEY_MPV_VIDEO_SCALE)
+    }
+
+    pub fn mpv_audio_channel(&self) -> i32 {
+        self.int(Self::KEY_MPV_AUDIO_CHANNEL)
+    }
+
+    pub fn accounts(&self) -> Vec<Account> {
+        serde_json::from_str(self.string(Self::ACCOUNTS).as_ref()).unwrap_or_default()
+    }
+
+    pub fn add_account(&self, account: Account) -> Result<(), glib::BoolError> {
+        let mut accounts = self.accounts();
+        if accounts.iter().any(|a| a.servername == account.servername) {
+            accounts.retain(|a| a.servername != account.servername);
+        }
+        accounts.push(account);
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
+
+    pub fn remove_account(&self, account: Account) -> Result<(), glib::BoolError> {
+        let mut accounts = self.accounts();
+        accounts.retain(|a| a != &account);
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
+
+    pub fn edit_account(
+        &self, old_account: Account, new_account: Account,
+    ) -> Result<(), glib::BoolError> {
+        let mut accounts = self.accounts();
+        if accounts.contains(&new_account) {
+            return Ok(());
+        }
+        if let Some(index) = accounts.iter().position(|a| a == &old_account) {
+            accounts[index] = new_account;
+        }
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
+
+    pub fn set_accounts(&self, accounts: Vec<Account>) -> Result<(), glib::BoolError> {
+        self.set_string(Self::ACCOUNTS, &accounts.to_string())
+    }
+
+    pub fn preferred_version_descriptors(&self) -> Vec<Descriptor> {
+        serde_json::from_str(self.string(Self::PREFERRED_VERSION_DESCRIPTORS).as_ref())
+            .unwrap_or_default()
+    }
+
+    pub fn add_preferred_version_descriptor(
+        &self, descriptor: Descriptor,
+    ) -> Result<(), glib::BoolError> {
+        let mut descriptors = self.preferred_version_descriptors();
+        if descriptors.contains(&descriptor) {
+            return Ok(());
+        }
+        descriptors.push(descriptor);
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
+    }
+
+    pub fn remove_preferred_version_descriptor(
+        &self, descriptor: Descriptor,
+    ) -> Result<(), glib::BoolError> {
+        let mut descriptors = self.preferred_version_descriptors();
+        descriptors.retain(|d| d != &descriptor);
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
+    }
+
+    pub fn edit_preferred_version_descriptor(
+        &self, old_descriptor: Descriptor, new_descriptor: Descriptor,
+    ) -> Result<(), glib::BoolError> {
+        let mut descriptors = self.preferred_version_descriptors();
+        if descriptors.contains(&new_descriptor) {
+            return Ok(());
+        }
+        if let Some(index) = descriptors.iter().position(|d| d == &old_descriptor) {
+            descriptors[index] = new_descriptor;
+        }
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
+    }
+
+    pub fn set_preferred_version_descriptors(
+        &self, descriptors: Vec<Descriptor>,
+    ) -> Result<(), glib::BoolError> {
+        self.set_string(
+            Self::PREFERRED_VERSION_DESCRIPTORS,
+            &descriptors.to_string(),
+        )
+    }
+
+    pub fn set_mpv_hwdec(&self, mpv_hwdec: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_HWDEC, mpv_hwdec)
+    }
+
+    pub fn mpv_hwdec(&self) -> i32 {
+        self.int(Self::KEY_MPV_HWDEC)
+    }
+
+    pub fn set_list_sort_order(&self, list_sort_order: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_LIST_SORT_ORDER, list_sort_order)
+    }
+
+    pub fn list_sort_order(&self) -> i32 {
+        self.int(Self::KEY_LIST_SORT_ORDER)
+    }
+
+    pub fn mpv_audio_preferred_lang(&self) -> i32 {
+        self.int(Self::KEY_MPV_AUDIO_PREFERRED_LANG)
+    }
+
+    pub fn mpv_subtitle_preferred_lang(&self) -> i32 {
+        self.int(Self::KEY_MPV_SUBTITLE_PREFERRED_LANG)
+    }
+
+    pub fn mpv_subtitle_preferred_lang_str(&self) -> String {
+        match self.mpv_subtitle_preferred_lang() {
+            1 => "eng",
+            2 => "chs",
+            3 => "jpn",
+            4 => "chi",
+            5 => "ara",
+            6 => "nob",
+            7 => "por",
+            8 => "fre",
+            9 => "rus",
+            _ => "",
+        }
+        .to_string()
+    }
+
+    pub fn mpv_default_volume(&self) -> i32 {
+        self.int(Self::KEY_MPV_DEFAULT_VOLUME)
+    }
+
+    pub fn mpv_show_buffer_speed(&self) -> bool {
+        self.boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED)
+    }
+
+    pub fn set_mpv_show_buffer_speed(
+        &self, mpv_show_buffer_speed: bool,
+    ) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_MPV_SHOW_BUFFER_SPEED, mpv_show_buffer_speed)
+    }
+
+    pub fn set_mpv_action_after_video_end(
+        &self, mpv_action_after_video_end: i32,
+    ) -> Result<(), glib::BoolError> {
+        self.set_int(
+            Self::KEY_MPV_ACTION_AFTER_VIDEO_END,
+            mpv_action_after_video_end,
+        )
+    }
+
+    pub fn mpv_action_after_video_end(&self) -> i32 {
+        self.int(Self::KEY_MPV_ACTION_AFTER_VIDEO_END)
+    }
+
+    pub fn mpv_cache_time(&self) -> i32 {
+        self.int(Self::KEY_MPV_CACHE_TIME)
+    }
+
+    pub fn mpv_cache_size(&self) -> i32 {
+        self.int(Self::KEY_MPV_CACHE_SIZE)
+    }
+
+    pub fn mpv_config(&self) -> bool {
+        self.boolean(Self::KEY_MPV_CONFIG)
+    }
+
+    pub fn mpv_seek_forward_step(&self) -> i32 {
+        self.int(Self::KEY_MPV_SEEK_FORWARD_STEP)
+    }
+
+    pub fn mpv_seek_backward_step(&self) -> i32 {
+        self.int(Self::KEY_MPV_SEEK_BACKWARD_STEP)
+    }
+
+    pub fn set_music_repeat_mode(&self, music_repeat_mode: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_MUSIC_REPEAT_MODE, music_repeat_mode)
+    }
+
+    pub fn music_repeat_mode(&self) -> String {
+        self.string(Self::KEY_MUSIC_REPEAT_MODE).to_string()
+    }
+
+    pub fn set_accent_color_code(&self, accent_color_code: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_ACCENT_COLOR_CODE, accent_color_code)
+    }
+
+    pub fn accent_color_code(&self) -> String {
+        self.string(Self::KEY_ACCENT_COLOR_CODE).to_string()
+    }
+
+    pub fn use_custom_accent_color(&self) -> bool {
+        self.boolean(Self::KEY_USE_CUSTOM_ACCENT_COLOR)
+    }
+
+    pub fn set_list_sort_by(&self, list_sort: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_LIST_SORT_BY, list_sort)
+    }
+
+    pub fn list_sort_by(&self) -> i32 {
+        self.int(Self::KEY_LIST_SORT_BY)
+    }
+
+    pub fn set_preferred_server(&self, preferred_server: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_PREFERRED_SERVER, preferred_server)
+    }
+
+    pub fn preferred_server(&self) -> String {
+        self.string(Self::KEY_PREFERRED_SERVER).to_string()
+    }
+
+    pub fn auto_select_server(&self) -> bool {
+        self.boolean(Self::KEY_IS_AUTO_SELECT_SERVER)
+    }
+
+    pub fn set_overlay(&self, overlay: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_IS_OVERLAY, overlay)
+    }
+    pub fn overlay(&self) -> bool {
+        self.boolean(Self::KEY_IS_OVERLAY)
+    }
+
+    pub fn set_root_pic(&self, root_pic: &str) -> Result<(), glib::BoolError> {
+        self.set_string(Self::KEY_ROOT_PIC, root_pic)
+    }
+
+    pub fn root_pic(&self) -> String {
+        self.string(Self::KEY_ROOT_PIC).to_string()
+    }
+
+    pub fn threads(&self) -> i32 {
+        self.int(Self::KEY_THREADS)
+    }
+
+    pub fn set_pic_opacity(&self, pic_opacity: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_PIC_OPACITY, pic_opacity)
+    }
+
+    pub fn pic_opacity(&self) -> i32 {
+        self.int(Self::KEY_PIC_OPACITY)
+    }
+
+    pub fn pic_blur(&self) -> i32 {
+        self.int(Self::KEY_PIC_BLUR)
+    }
+
+    pub fn set_background_enabled(&self, background_enabled: bool) -> Result<(), glib::BoolError> {
+        self.set_boolean(Self::KEY_IS_BACKGROUND_ENABLED, background_enabled)
+    }
+
+    pub fn background_enabled(&self) -> bool {
+        self.boolean(Self::KEY_IS_BACKGROUND_ENABLED)
+    }
+}
+
+impl Default for Settings {
+    fn default() -> Self {
+        Self(ThreadGuard::new(gio::Settings::new(APP_ID)))
+    }
+}
+
+impl Deref for Settings {
+    type Target = gio::Settings;
+
+    fn deref(&self) -> &Self::Target {
+        self.0.get_ref()
+    }
+}
+
+unsafe impl Send for Settings {}
+unsafe impl Sync for Settings {}

@@ -1,0 +1,2332 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# தமிழ்நேரம் <anishprabu.t@gmail.com>, 2025.
+# தமிழ்நேரம் <tamilneram247@gmail.com>, 2025, 2026.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-20 20:35+0800\n"
+"PO-Revision-Date: 2026-06-02 12:24+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Tamil <https://hosted.weblate.org/projects/tsukimi/main/ta/>\n"
+"Language: ta\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2026.6\n"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:4
+msgid "Settings"
+msgstr "அமைப்புகள்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:12
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:228
+msgid "General"
+msgstr "பொது"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:17
+msgid "Preferred Language"
+msgstr "விருப்பமான மொழி"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:18
+msgid "This is globally effective"
+msgstr "இது உலகளவில் பயனுள்ளதாக இருக்கும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:21
+msgid "Preferred Audio Language"
+msgstr "விருப்பமான ஆடியோ மொழி"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:30
+#: crates/tsukimi/resources/ui/account_settings.ui:56
+#: crates/tsukimi/resources/ui/account_settings.ui:212
+msgid "Default"
+msgstr "இயல்புநிலை"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:47
+msgid "Preferred Subtitle Language"
+msgstr "விருப்பமான வசன மொழி"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:75
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:6
+#, fuzzy
+msgid "Playback"
+msgstr "லூப் பிளேபேக்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:78
+msgid "Automatically Skip Intros and Outros"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/account_settings.ui:79
+#: crates/tsukimi/resources/ui/account_settings.ui:176
+msgid "Jellyfin only"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/account_settings.ui:86
+msgid "Appearance"
+msgstr "தோற்றம்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:89
+#, fuzzy
+msgid "Use Custom Accent Color"
+msgstr "உச்சரிப்பு நிறம்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:90
+msgid "Disable to follow the system accent color"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/account_settings.ui:95
+msgid "Accent Color"
+msgstr "உச்சரிப்பு நிறம்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:111
+msgid "Hide Sidebar"
+msgstr "பக்கப்பட்டியை மறைக்கவும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:116
+msgid "Auto Select Last Server"
+msgstr "ஆட்டோ கடைசி சேவையகத்தைத் தேர்ந்தெடுக்கவும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:121
+msgid "Text Display"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/account_settings.ui:127
+msgid "Compact"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/account_settings.ui:133
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:200
+msgid "Full"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/account_settings.ui:143
+#, fuzzy
+msgid "Card Style"
+msgstr "எல்லை நடை"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:149
+#, fuzzy
+msgid "Integrated"
+msgstr "தேதி உருவாக்கப்பட்டது"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:155
+msgid "Separated"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/account_settings.ui:167
+#, fuzzy
+msgid "Home Page"
+msgstr "வீடு"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:170
+msgid "Refresh when returning to home page"
+msgstr "முகப்பு பக்கத்திற்குத் திரும்பும்போது புதுப்பிக்கவும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:175
+#, fuzzy
+msgid "Merge Continue Watching and Next Up"
+msgstr "தொடர்ந்து பார்த்துக் கொள்ளுங்கள்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:183
+msgid "Network"
+msgstr "பிணையம்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:186
+msgid "Threads"
+msgstr "நூல்கள்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:187
+msgid "Excessive thread counts may exhaust the system's connection pool"
+msgstr "அதிகப்படியான நூல் எண்ணிக்கைகள் கணினியின் இணைப்புக் குளத்தை வெளியேற்றக்கூடும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:203
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:398
+msgid "Background"
+msgstr "பின்னணி"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:235
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:124
+msgid "Opacity"
+msgstr "ஒளிபுகாநிலை"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:249
+msgid "Blur"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/account_settings.ui:254
+msgid "Blur Radius"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/account_settings.ui:270
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:84
+msgid "Cache"
+msgstr "கேச்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:273
+msgid "Clear Cache"
+msgstr "தெளிவான தற்காலிக சேமிப்பு"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:288
+msgid "Others"
+msgstr "மற்றவர்கள்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:291
+#: crates/tsukimi/resources/ui/account_settings.ui:430
+msgid "Preferred Video Version"
+msgstr "விருப்பமான வீடியோ பதிப்பு"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:303
+msgid "Account"
+msgstr "கணக்கு"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:316
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "கடவுச்சொல்லை மாற்றவும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:319
+msgid "New Password"
+msgstr "புதிய கடவுச்சொல்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:324
+msgid "Confirm Password"
+msgstr "கடவுச்சொல்லை உறுதிப்படுத்தவும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:347
+msgid "Media"
+msgstr "ஊடகம்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:352
+msgid "Music Player"
+msgstr "மியூசிக் பிளேயர்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:355
+#: crates/tsukimi/resources/ui/player_toolbar.ui:223
+msgid "Repeat Mode"
+msgstr "மீண்டும் பயன்முறை"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:359
+#: crates/tsukimi/resources/ui/player_toolbar.ui:257
+msgid "Repeat One"
+msgstr "ஒன்றை மீண்டும் செய்யவும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:360
+#: crates/tsukimi/resources/ui/player_toolbar.ui:261
+msgid "Repeat All"
+msgstr "அனைத்தையும் மீண்டும் செய்யவும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:361
+#: crates/tsukimi/resources/ui/account_settings.ui:390
+#: crates/tsukimi/resources/ui/player_toolbar.ui:265
+msgid "None"
+msgstr "எதுவுமில்லை"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:371
+msgid "Video Player"
+msgstr "வீடியோ பிளேயர்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:372
+msgid "Requires restart"
+msgstr "மறுதொடக்கம் தேவை"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:376
+msgid "Enable external config"
+msgstr "வெளிப்புற கட்டமைப்பை இயக்கவும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:381
+msgid "Config dir"
+msgstr "கட்டமைப்பு அடைவு"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:408
+msgid "Preferred Version"
+msgstr "விருப்பமான பதிப்பு"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:431
+msgid ""
+"Weight is ordered from high to low, until a specific version is matched, or "
+"the highest matching version is obtained before clearing the match list"
+msgstr ""
+"ஒரு குறிப்பிட்ட பதிப்பு பொருந்தும் வரை, அல்லது மேட்ச் பட்டியலை அழிப்பதற்கு முன்பு அதிக "
+"பொருந்தக்கூடிய பதிப்பு பெறப்படும் வரை எடை அதிகமாக இருந்து குறைந்த வரை ஆர்டர் "
+"செய்யப்படுகிறது"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:446
+msgid "Descriptors"
+msgstr "விவரிப்பவர்கள்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:468
+msgid "It is recommended to set no more than 3 lines"
+msgstr "3 வரிகளுக்கு மேல் அமைக்க பரிந்துரைக்கப்படுகிறது"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:488
+msgid "No Descriptors"
+msgstr "விளக்கங்கள் இல்லை"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:507
+msgid "Add a descriptor"
+msgstr "ஒரு விவரிப்பாளரைச் சேர்க்கவும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:518
+#: crates/tsukimi/resources/ui/account_settings.ui:628
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:130
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:151
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:289
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:499
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:559
+msgid "Cancel"
+msgstr "ரத்துசெய்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:524
+#: crates/tsukimi/resources/ui/account.ui:108
+msgid "Add"
+msgstr "கூட்டு"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:549
+#: crates/tsukimi/resources/ui/account_settings.ui:659
+msgid "This will use exact matching to obtain a list"
+msgstr "பட்டியலைப் பெற இது சரியான பொருத்தத்தைப் பயன்படுத்தும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:552
+#: crates/tsukimi/resources/ui/account_settings.ui:662
+msgid "Descriptor Type"
+msgstr "விவரிப்பான் வகை"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:557
+#: crates/tsukimi/resources/ui/account_settings.ui:667
+msgid "String"
+msgstr "சரம்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:558
+#: crates/tsukimi/resources/ui/account_settings.ui:668
+msgid "Regular Expression"
+msgstr "வழக்கமான வெளிப்பாடு"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:570
+#: crates/tsukimi/resources/ui/account_settings.ui:680
+msgid "Descriptor"
+msgstr "விவரிப்பான்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:575
+#: crates/tsukimi/resources/ui/account_settings.ui:685
+msgid "Descriptor should not be too long"
+msgstr "விவரிப்பான் மிக நீளமாக இருக்கக்கூடாது"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:586
+#: crates/tsukimi/resources/ui/account_settings.ui:696
+msgid "eg. 1080p"
+msgstr "எ.கா. 1080 ப"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:597
+#: crates/tsukimi/resources/ui/account_settings.ui:707
+msgid "eg. 1080p.*WebDL"
+msgstr "எ.கா. 1080p.*Webdl"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:617
+msgid "Edit descriptor"
+msgstr "விவரிப்பைத் திருத்து"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:634
+#: crates/tsukimi/resources/ui/image_dialog_edit_page.ui:37
+msgid "Save"
+msgstr "சேமி"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:727
+msgid "Change folder"
+msgstr "கோப்புறையை மாற்றவும்"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:729
+msgid "Select new mpv config folder"
+msgstr "புதிய MPV கட்டமைப்பு கோப்புறையைத் தேர்ந்தெடுக்கவும்"
+
+#: crates/tsukimi/resources/ui/account.ui:6
+#: crates/tsukimi/resources/ui/account.ui:14
+msgid "Add a New Server"
+msgstr "புதிய சேவையகத்தைச் சேர்க்கவும்"
+
+#: crates/tsukimi/resources/ui/account.ui:45
+msgid "Enter the server details below."
+msgstr "சேவையக விவரங்களை கீழே உள்ளிடவும்."
+
+#: crates/tsukimi/resources/ui/account.ui:48
+#: crates/tsukimi/resources/ui/identify_dialog.ui:75
+#: crates/tsukimi/resources/ui/other.ui:73
+msgid "Name"
+msgstr "பெயர்"
+
+#: crates/tsukimi/resources/ui/account.ui:66
+msgid "Server Address"
+msgstr "சேவையக முகவரி"
+
+#: crates/tsukimi/resources/ui/account.ui:85
+msgid "Port"
+msgstr "துறைமுகம்"
+
+#: crates/tsukimi/resources/ui/account.ui:92
+msgid "Username"
+msgstr "பயனர்பெயர்"
+
+#: crates/tsukimi/resources/ui/account.ui:97
+msgid "Password"
+msgstr "கடவுச்சொல்"
+
+#: crates/tsukimi/resources/ui/album_widget.ui:94
+#: crates/tsukimi/resources/ui/item.ui:184
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:27
+#: crates/tsukimi/resources/ui/other.ui:95
+#: crates/tsukimi/resources/ui/player_toolbar.ui:116
+#: crates/tsukimi/src/ui/mpv/page.rs:414 crates/tsukimi/src/ui/mpv/page.rs:416
+#: crates/tsukimi/src/ui/widgets/item.rs:704
+msgid "Play"
+msgstr "விளையாடுங்கள்"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:13
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:22
+#: crates/tsukimi/resources/ui/mpvpage.ui:395
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:39
+msgid "Danmaku"
+msgstr "டென்மார்க்"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:33
+#, fuzzy
+msgid "Danmaku disabled"
+msgstr "டான்மகு விரைவு"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:73
+msgid "Search Manually"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:91
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:110
+msgid "Danmaku Settings"
+msgstr "டான்மகு அமைப்புகள்"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:139
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:447
+msgid "Speed"
+msgstr "வேகம்"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:154
+#, fuzzy
+msgid "Font Size"
+msgstr "எழுத்துரு அளவு"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:169
+#, fuzzy
+msgid "Font Weight"
+msgstr "எழுத்துரு அளவு"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:174
+msgid "Thin"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:175
+msgid "Ultralight"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:176
+#, fuzzy
+msgid "Light"
+msgstr "உயரம்"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:177
+#, fuzzy
+msgid "Semilight"
+msgstr "உயரம்"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:178
+msgid "Book"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:179
+msgid "Normal"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:180
+#, fuzzy
+msgid "Medium"
+msgstr "ஊடகம்"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:181
+msgid "Semibold"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:182
+msgid "Bold"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:183
+msgid "Ultrabold"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:184
+msgid "Heavy"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:185
+msgid "Ultraheavy"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:193
+#, fuzzy
+msgid "Danmaku Intensity"
+msgstr "டான்மகு அமைப்புகள்"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:198
+msgid "Quarter"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:199
+msgid "Half"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:201
+msgid "Allow Overlay"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:209
+msgid "Spacing"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:210
+#, fuzzy
+msgid "N x Font Size"
+msgstr "எழுத்துரு அளவு"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:225
+#, fuzzy
+msgid "Stroke Size"
+msgstr "எல்லை அளவு"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:226
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:242
+msgid "px"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:241
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:326
+msgid "Shadow Offset"
+msgstr "நிழல் ஆஃப்செட்"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:261
+#: crates/tsukimi/resources/ui/media_viewer.ui:36
+#: crates/tsukimi/resources/ui/media_viewer.ui:38
+msgid "Back"
+msgstr "பின்"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:7
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:15
+#, fuzzy
+msgid "Search Danmaku"
+msgstr "டென்மார்க்"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:32
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:91
+#: crates/tsukimi/resources/ui/single_grid.ui:105
+#: crates/tsukimi/src/ui/widgets/item.rs:1105
+msgid "Title"
+msgstr "தலைப்பு"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:38
+#, fuzzy
+msgid "Anime Type"
+msgstr "வீடியோ வகைகள்"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:42
+#, fuzzy
+msgid "TV Series"
+msgstr "தொடர்"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:43
+#, fuzzy
+msgid "TV Special"
+msgstr "சிறப்பு"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:44
+msgid "OVA"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:45
+#: crates/tsukimi/resources/ui/other.ui:134
+#: crates/tsukimi/resources/ui/search.ui:54
+msgid "Movie"
+msgstr "படம்"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:46
+#, fuzzy
+msgid "Music Video"
+msgstr "ஒளிதோற்றம்"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:47
+msgid "Web"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:48
+#, fuzzy
+msgid "Other"
+msgstr "மற்றவர்கள்"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:49
+msgid "Japanese Movie"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:50
+msgid "Japanese Drama"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:51
+msgid "TMDB TV"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:52
+#, fuzzy
+msgid "TMDB Movie"
+msgstr "படம்"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:70
+#: crates/tsukimi/resources/ui/identify_dialog.ui:95
+#: crates/tsukimi/resources/ui/image_info_card.ui:127
+#: crates/tsukimi/resources/ui/search.ui:23
+#: crates/tsukimi/resources/ui/window.ui:21
+#: crates/tsukimi/resources/ui/window.ui:261
+#: crates/tsukimi/src/ui/widgets/window.rs:307
+msgid "Search"
+msgstr "தேடல்"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:113
+#, fuzzy
+msgid "Episodes"
+msgstr "அத்தியாயம்"
+
+#: crates/tsukimi/resources/ui/disc_box.ui:9
+#: crates/tsukimi/src/ui/widgets/disc_box.rs:99
+msgid "Disc"
+msgstr "வட்டு"
+
+#: crates/tsukimi/resources/ui/filter.ui:6
+#: crates/tsukimi/resources/ui/filter.ui:21
+#: crates/tsukimi/resources/ui/search.ui:31
+#: crates/tsukimi/resources/ui/single_grid.ui:47
+msgid "Filter Panel"
+msgstr "வடிகட்டி குழு"
+
+#: crates/tsukimi/resources/ui/filter.ui:42
+msgid "Filters"
+msgstr "வடிப்பான்கள்"
+
+#: crates/tsukimi/resources/ui/filter.ui:45
+msgid "Playback Status"
+msgstr "பிளேபேக் நிலை"
+
+#: crates/tsukimi/resources/ui/filter.ui:50
+#: crates/tsukimi/resources/ui/filter.ui:149
+msgid "Any"
+msgstr "ஏதேனும்"
+
+#: crates/tsukimi/resources/ui/filter.ui:51
+msgid "Played"
+msgstr "விளையாடியது"
+
+#: crates/tsukimi/resources/ui/filter.ui:52
+msgid "Unplayed"
+msgstr "விளையாடப்படாதது"
+
+#: crates/tsukimi/resources/ui/filter.ui:53
+msgid "Continue Play"
+msgstr "தொடர்ந்து விளையாடுங்கள்"
+
+#: crates/tsukimi/resources/ui/filter.ui:78
+#: crates/tsukimi/resources/ui/item.ui:483
+#: crates/tsukimi/resources/ui/other.ui:174
+#: crates/tsukimi/src/ui/widgets/list.rs:132
+msgid "Genres"
+msgstr "வகைகள்"
+
+#: crates/tsukimi/resources/ui/filter.ui:85
+#: crates/tsukimi/resources/ui/item.ui:488
+#: crates/tsukimi/resources/ui/other.ui:169
+#: crates/tsukimi/src/ui/widgets/list.rs:131
+msgid "Tags"
+msgstr "குறிச்சொற்கள்"
+
+#: crates/tsukimi/resources/ui/filter.ui:92
+msgid "Years"
+msgstr "ஆண்டுகள்"
+
+#: crates/tsukimi/resources/ui/filter.ui:99
+msgid "Official Ratings"
+msgstr "அதிகாரப்பூர்வ மதிப்பீடுகள்"
+
+#: crates/tsukimi/resources/ui/filter.ui:106
+#: crates/tsukimi/resources/ui/item.ui:478
+#: crates/tsukimi/resources/ui/other.ui:164
+msgid "Studios"
+msgstr "ச்டுடியோச்"
+
+#: crates/tsukimi/resources/ui/filter.ui:115
+msgid "Media Info"
+msgstr "ஊடக செய்தி"
+
+#: crates/tsukimi/resources/ui/filter.ui:118
+msgid "Containers"
+msgstr "கொள்கலன்கள்"
+
+#: crates/tsukimi/resources/ui/filter.ui:125
+msgid "Encoders"
+msgstr "குறியாக்கிகள்"
+
+#: crates/tsukimi/resources/ui/filter.ui:132
+msgid "Video Types"
+msgstr "வீடியோ வகைகள்"
+
+#: crates/tsukimi/resources/ui/filter.ui:139
+msgid "Resolution"
+msgstr "பகுத்தல்"
+
+#: crates/tsukimi/resources/ui/filter.ui:165
+msgid "Clear"
+msgstr "தெளிவான"
+
+#: crates/tsukimi/resources/ui/filter.ui:179
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:231
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:284
+msgid "Apply"
+msgstr "இடு"
+
+#: crates/tsukimi/resources/ui/home.ui:16
+msgid "Library"
+msgstr "நூலகம்"
+
+#. if merged, next up will contain resume items, so change title to continue watching
+#: crates/tsukimi/resources/ui/home.ui:21
+#: crates/tsukimi/resources/ui/item.ui:298
+#: crates/tsukimi/src/ui/widgets/home.rs:226
+msgid "Continue Watching"
+msgstr "தொடர்ந்து பார்த்துக் கொள்ளுங்கள்"
+
+#: crates/tsukimi/resources/ui/home.ui:29
+#: crates/tsukimi/src/ui/widgets/home.rs:228
+#, fuzzy
+msgid "Next Up"
+msgstr "அடுத்தது"
+
+#: crates/tsukimi/resources/ui/identify_dialog_search_page.ui:4
+#: crates/tsukimi/resources/ui/identify_dialog.ui:6
+#: crates/tsukimi/resources/ui/identify_dialog.ui:14
+#: crates/tsukimi/resources/ui/pop-menu.ui:57
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:125
+msgid "Identify"
+msgstr "அடையாளம் காணவும்"
+
+#: crates/tsukimi/resources/ui/identify_dialog.ui:57
+msgid ""
+"Enter one or more search criteria. Remove criteria to increase search "
+"results."
+msgstr ""
+"ஒன்று அல்லது அதற்கு மேற்பட்ட தேடல் அளவுகோல்களை உள்ளிடவும். தேடல் முடிவுகளை அதிகரிக்க "
+"அளவுகோல்களை அகற்று."
+
+#: crates/tsukimi/resources/ui/identify_dialog.ui:61
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:81
+msgid "Path"
+msgstr "பாதை"
+
+#: crates/tsukimi/resources/ui/identify_dialog.ui:62
+#: crates/tsukimi/resources/ui/image_dialog_search_page.ui:54
+#: crates/tsukimi/resources/ui/item.ui:108
+#: crates/tsukimi/resources/ui/item.ui:156
+msgid "Loading..."
+msgstr "ஏற்றுகிறது ..."
+
+#: crates/tsukimi/resources/ui/identify_dialog.ui:80
+msgid "Year"
+msgstr "ஆண்டு"
+
+#: crates/tsukimi/resources/ui/identify_dialog.ui:87
+msgid "External"
+msgstr "வெளிப்புறம்"
+
+#: crates/tsukimi/resources/ui/image_dialog_edit_page.ui:4
+msgid "Edit Image"
+msgstr "படத்தைத் திருத்து"
+
+#: crates/tsukimi/resources/ui/image_dialog_edit_page.ui:19
+msgid "Upload Image"
+msgstr "படத்தைப் பதிவேற்று"
+
+#: crates/tsukimi/resources/ui/image_dialog_edit_page.ui:24
+msgid "External Url"
+msgstr "வெளிப்புற முகவரி"
+
+#: crates/tsukimi/resources/ui/image_dialog_search_page.ui:4
+msgid "Choose Image"
+msgstr "படத்தைத் தேர்வுசெய்"
+
+#: crates/tsukimi/resources/ui/image_dialog_search_page.ui:15
+msgid "Provider:"
+msgstr "வழங்குநர்:"
+
+#: crates/tsukimi/resources/ui/image_dialog_search_page.ui:22
+msgid "Provider"
+msgstr "வழங்குநர்"
+
+#: crates/tsukimi/resources/ui/image_dialog_search_page.ui:64
+msgid "All Languages"
+msgstr "அனைத்து மொழிகளும்"
+
+#: crates/tsukimi/resources/ui/image_drop_row.ui:49
+msgid "Open"
+msgstr "திற"
+
+#: crates/tsukimi/resources/ui/image_drop_row.ui:109
+msgid "Pick Image"
+msgstr "படத்தைத் தேர்ந்தெடுங்கள்"
+
+#: crates/tsukimi/resources/ui/image_drop_row.ui:113
+#: crates/tsukimi/resources/ui/images_dialog.ui:69
+msgid "Images"
+msgstr "படங்கள்"
+
+#: crates/tsukimi/resources/ui/image_drop_row.ui:119
+msgid "Pick image to upload"
+msgstr "பதிவேற்ற படத்தைத் தேர்ந்தெடுக்கவும்"
+
+#: crates/tsukimi/resources/ui/image_info_card.ui:86
+msgid "Copy Image To Clipboard"
+msgstr "இடைநிலைப் பலகைக்கு படத்தை நகலெடுக்கவும்"
+
+#: crates/tsukimi/resources/ui/image_info_card.ui:98
+msgid "View Image"
+msgstr "படத்தைக் காண்க"
+
+#: crates/tsukimi/resources/ui/image_info_card.ui:109
+#: crates/tsukimi/resources/ui/image_info_card.ui:133
+#: crates/tsukimi/resources/ui/server_action_row.ui:30
+msgid "Edit"
+msgstr "தொகு"
+
+#: crates/tsukimi/resources/ui/image_info_card.ui:139
+#: crates/tsukimi/resources/ui/pop-menu.ui:93
+#: crates/tsukimi/resources/ui/server_action_row.ui:52
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:500
+msgid "Delete"
+msgstr "நீக்கு"
+
+#: crates/tsukimi/resources/ui/images_dialog.ui:6
+#: crates/tsukimi/resources/ui/images_dialog.ui:36
+#: crates/tsukimi/resources/ui/item_actions.ui:59
+#: crates/tsukimi/resources/ui/pop-menu.ui:49
+#: crates/tsukimi/resources/ui/song_widget.ui:161
+msgid "Edit Images"
+msgstr "படங்களைத் திருத்தவும்"
+
+#: crates/tsukimi/resources/ui/images_dialog.ui:59
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:70
+msgid "Not Available"
+msgstr "கிடைக்கவில்லை"
+
+#: crates/tsukimi/resources/ui/images_dialog.ui:60
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:71
+msgid "This page is READ-ONLY, because you have no permission to modify it."
+msgstr "இந்த பக்கம் படிக்க மட்டுமே, ஏனெனில் அதை மாற்ற உங்களுக்கு இசைவு இல்லை."
+
+#: crates/tsukimi/resources/ui/images_dialog.ui:157
+msgid "BackDrops"
+msgstr "பின்விடுகள்"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:40
+#: crates/tsukimi/resources/ui/pop-menu.ui:29
+msgid "Mark as Played"
+msgstr "விளையாடியபடி குறி"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:46
+#: crates/tsukimi/resources/ui/pop-menu.ui:35
+msgid "Mark as Unplayed"
+msgstr "விளையாடப்படாததைக் குறிக்கவும்"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:53
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:18
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:26
+#: crates/tsukimi/resources/ui/pop-menu.ui:43
+#: crates/tsukimi/resources/ui/song_widget.ui:156
+msgid "Edit Metadata"
+msgstr "மெட்டாடேட்டாவைத் திருத்து"
+
+#: crates/tsukimi/resources/ui/item.ui:218
+msgid "Video: "
+msgstr "வீடியோ: "
+
+#: crates/tsukimi/resources/ui/item.ui:238
+msgid "Subtitle: "
+msgstr "வசன வரிகள்: "
+
+#: crates/tsukimi/resources/ui/item.ui:312
+msgid "View this season"
+msgstr "இந்த பருவத்தைக் காண்க"
+
+#: crates/tsukimi/resources/ui/item.ui:421
+#: crates/tsukimi/resources/ui/liked.ui:69
+#: crates/tsukimi/resources/ui/single_grid.ui:164
+msgid "Nothing Here"
+msgstr "இங்கே எதுவும் இல்லை"
+
+#: crates/tsukimi/resources/ui/item.ui:447
+msgid "Included In"
+msgstr "இதில் சேர்க்கப்பட்டுள்ளது"
+
+#: crates/tsukimi/resources/ui/item.ui:452
+msgid "Additional Parts"
+msgstr "கூடுதல் பாகங்கள்"
+
+#: crates/tsukimi/resources/ui/item.ui:457
+msgid "Seasons"
+msgstr "பருவங்கள்"
+
+#: crates/tsukimi/resources/ui/item.ui:462
+#: crates/tsukimi/resources/ui/other.ui:158
+msgid "Actors"
+msgstr "நடிகர்கள்"
+
+#: crates/tsukimi/resources/ui/item.ui:468
+msgid "Recommend"
+msgstr "பரிந்துரைக்கவும்"
+
+#: crates/tsukimi/resources/ui/item.ui:473
+#: crates/tsukimi/resources/ui/other.ui:179
+msgid "Links"
+msgstr "இணைப்புகள்"
+
+#: crates/tsukimi/resources/ui/item.ui:506
+msgid "MediaInfo"
+msgstr "மீடியாஇன்ஃபோ"
+
+#: crates/tsukimi/resources/ui/liked.ui:70
+msgid "Your favorite items will be placed here"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/media_viewer.ui:6
+msgid "_Copy Image"
+msgstr "_ கோபி படம்"
+
+#: crates/tsukimi/resources/ui/media_viewer.ui:46
+#: crates/tsukimi/resources/ui/media_viewer.ui:48
+msgid "Media Menu"
+msgstr "மீடியா பட்டியல்"
+
+#: crates/tsukimi/resources/ui/media_viewer.ui:58
+#: crates/tsukimi/resources/ui/media_viewer.ui:60
+#: crates/tsukimi/resources/ui/mpvpage.ui:420
+#: crates/tsukimi/resources/ui/mpvpage.ui:423
+#: crates/tsukimi/resources/ui/window.ui:17
+#: crates/tsukimi/resources/ui/window.ui:50
+msgid "Fullscreen"
+msgstr "முழு திரை"
+
+#: crates/tsukimi/resources/ui/media_viewer.ui:69
+#: crates/tsukimi/resources/ui/media_viewer.ui:71
+#: crates/tsukimi/resources/ui/mpvpage.ui:437
+#: crates/tsukimi/resources/ui/mpvpage.ui:439
+msgid "Exit Fullscreen"
+msgstr "முழுத்திரை வெளியேறவும்"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:82
+msgid "No data."
+msgstr "தரவு இல்லை."
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:96
+msgid "Sort Title"
+msgstr "வரிசை தலைப்பு"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:101
+#: crates/tsukimi/resources/ui/single_grid.ui:107
+msgid "Date Created"
+msgstr "தேதி உருவாக்கப்பட்டது"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:107
+msgid "Pick Date"
+msgstr "தேதியைத் தேர்ந்தெடுங்கள்"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:127
+msgid "Pick Time"
+msgstr "நேரம் தேர்வு"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:180
+msgid "Overview"
+msgstr "கண்ணோட்டம்"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:197
+msgid "External Ids"
+msgstr "வெளிப்புற ஐடிகள்"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:203
+msgid "TheMovieDb Id"
+msgstr "Themoviedb ஐடி"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:208
+msgid "TheTVDb Id"
+msgstr "Thetvdb ஐடி"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:213
+msgid "IMDb Id"
+msgstr "IMDB ஐடி"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:221
+msgid "Lock The Item"
+msgstr "உருப்படியைப் பூட்டவும்"
+
+#: crates/tsukimi/resources/ui/missing_episodes.ui:6
+#: crates/tsukimi/resources/ui/missing_episodes.ui:36
+msgid "Missing Episodes"
+msgstr "எபிசோடுகளைக் காணவில்லை"
+
+#: crates/tsukimi/resources/ui/missing_episodes.ui:60
+msgid "Specials"
+msgstr "சிறப்பு"
+
+#: crates/tsukimi/resources/ui/missing_episodes.ui:72
+msgid "Upcoming"
+msgstr "வரவிருக்கும்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:5
+#: crates/tsukimi/resources/ui/window.ui:444
+msgid "Advanced Settings"
+msgstr "மேம்பட்ட அமைப்புகள்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:18
+msgid "Seek Action"
+msgstr "நடவடிக்கை தேடுங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:21
+msgid "Playback speed"
+msgstr "பின்னணி விரைவு"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:42
+msgid "Seek Backward"
+msgstr "பின்தங்கிய தேடுங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:43
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:63
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:115
+msgid "Unit: Seconds"
+msgstr "அலகு: விநாடிகள்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:62
+msgid "Seek Forward"
+msgstr "முன்னோக்கி தேடுங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:93
+msgid "Show Buffer Speed"
+msgstr "இடையக வேகத்தைக் காட்டு"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:98
+msgid "Cache Size"
+msgstr "கேச் அளவு"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:99
+msgid "Unit: MB"
+msgstr "அலகு: எம்பி"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:114
+msgid "Cache Time"
+msgstr "கேச் நேரம்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:132
+#: crates/tsukimi/resources/ui/mpvpage.ui:371
+msgid "Subtitle"
+msgstr "வசன வரிகள்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:135
+msgid "Subtitle Composing"
+msgstr "வசன இசையமைத்தல்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:206
+msgid "Position"
+msgstr "நிலை"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:226
+msgid "Subtitle Text Size"
+msgstr "வசன உரை அளவு"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:227
+msgid "This option only takes effect for srt subtitles"
+msgstr "இந்த விருப்பம் எச்ஆர்டி வசனங்களுக்கு மட்டுமே நடைமுறைக்கு வருகிறது"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:247
+msgid "Subtitle Text Scale"
+msgstr "வசன உரை அளவு"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:248
+msgid "This affects ASS subtitles as well"
+msgstr "இது கழுதை வசனங்களையும் பாதிக்கிறது"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:269
+msgid "Subtitle Text Font"
+msgstr "வசன உரை எழுத்துரு"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:271
+msgid ""
+"Specify font to use for subtitles that do not themselves specify a "
+"particular font"
+msgstr ""
+"ஒரு குறிப்பிட்ட எழுத்துருவைக் குறிப்பிடாத வசன வரிகளுக்குப் பயன்படுத்த எழுத்துருவைக் "
+"குறிப்பிடவும்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:296
+msgid "Border Style"
+msgstr "எல்லை நடை"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:301
+msgid "Outline and shadow"
+msgstr "அவுட்லைன் மற்றும் நிழல்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:302
+msgid "Opaque box"
+msgstr "ஒளிபுகா பெட்டி"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:303
+msgid "Background box"
+msgstr "பின்னணி பெட்டி"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:311
+msgid "Border Size"
+msgstr "எல்லை அளவு"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:342
+msgid "Stretch Image Subtitles to Screen"
+msgstr "திரைக்கு பட வசன வரிகள் நீட்டவும்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:349
+msgid "Subtitle Color"
+msgstr "வசன வண்ணம்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:362
+msgid "Text"
+msgstr "உரை"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:380
+msgid "Border"
+msgstr "எல்லை"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:418
+msgid "Subtitle Offset"
+msgstr "வசன வரிகள் ஆஃப்செட்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:431
+msgid "Offset"
+msgstr "ஈடுசெய்யும்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:432
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:481
+msgid "Unit: ms"
+msgstr "அலகு: எம்.எச்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:467
+#: crates/tsukimi/resources/ui/mpvpage.ui:359
+#: crates/tsukimi/resources/ui/search.ui:78
+msgid "Audio"
+msgstr "ஆடியோ"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:480
+msgid "Audio Offset"
+msgstr "ஆடியோ ஆஃப்செட்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:496
+msgid "Audio Channel"
+msgstr "ஆடியோ சேனல்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:501
+msgid "Auto"
+msgstr "தானி"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:502
+msgid "Auto (Safety)"
+msgstr "ஆட்டோ (பாதுகாப்பு)"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:503
+msgid "Mono"
+msgstr "மோனோ"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:504
+msgid "Dual Channel"
+msgstr "இரட்டை சேனல்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:505
+msgid "Dual Channel (Invert)"
+msgstr "இரட்டை சேனல் (தலைகீழ்)"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:515
+#: crates/tsukimi/resources/ui/other.ui:152
+#: crates/tsukimi/resources/ui/search.ui:84
+msgid "Video"
+msgstr "ஒளிதோற்றம்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:518
+msgid "Video Aspect"
+msgstr "வீடியோ நற்பொருத்தம்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:523
+msgid "Fit"
+msgstr "பொருத்தம்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:524
+msgid "Crop"
+msgstr "பயிர்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:532
+msgid "Video color grading"
+msgstr "வீடியோ வண்ண தகுதி"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:545
+msgid "Brightness"
+msgstr "ஒளி"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:560
+msgid "Contrast"
+msgstr "மாறுபாடு"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:575
+msgid "Saturation"
+msgstr "தெவிட்டல்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:590
+msgid "Hue"
+msgstr "வண்ணச்சாயல்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:605
+msgid "Gamma"
+msgstr "காமா"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:622
+msgid "Video Deband"
+msgstr "வீடியோ டெபாண்ட்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:645
+msgid "Deband Iterations"
+msgstr "டெபாண்ட் மறு செய்கைகள்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:660
+msgid "Deband Threshold"
+msgstr "டெபாண்ட் வாசல்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:675
+msgid "Deband Range"
+msgstr "டெபாண்ட் வரம்பு"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:690
+msgid "Deband Grain"
+msgstr "டெபாண்ட் தானியங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:708
+msgid "Video Deinterlace"
+msgstr "வீடியோ deinterlace"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:713
+msgid "Video Upscale"
+msgstr "வீடியோ மேல்தட்டு"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:736
+msgid "Action after video ends"
+msgstr "வீடியோ முடிந்ததும் நடவடிக்கை"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:739
+msgid "Play Next"
+msgstr "அடுத்து விளையாடுங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:752
+msgid "Loop Playback"
+msgstr "லூப் பிளேபேக்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:766
+msgid "Stop"
+msgstr "நிறுத்து"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:782
+msgid "Hardware decoding"
+msgstr "வன்பொருள் டிகோடிங்"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:786
+msgid "no (default)"
+msgstr "இல்லை (இயல்புநிலை)"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:830
+msgid "Not all settings will be saved"
+msgstr "எல்லா அமைப்புகளும் சேமிக்கப்படாது"
+
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:12
+#: crates/tsukimi/resources/ui/mpvpage.ui:255
+msgid "Backward"
+msgstr "பின்னோக்கு"
+
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:42
+#: crates/tsukimi/resources/ui/mpvpage.ui:298
+msgid "Forward"
+msgstr "முன்னோக்கி"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:11
+msgid "_Next"
+msgstr "அடுத்தது (_N)"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:16
+msgid "_Previous"
+msgstr "முன்தைய (_P)"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:23
+msgid "Next chapter"
+msgstr "அடுத்த அத்தியாயம்"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:28
+msgid "Previous chapter"
+msgstr "முந்தைய அத்தியாயம்"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:35
+#: crates/tsukimi/resources/ui/mpvpage.ui:179
+#: crates/tsukimi/resources/ui/window.ui:393
+#: crates/tsukimi/resources/ui/window.ui:415
+msgid "Playlist"
+msgstr "பிளேலிச்ட்"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:40
+#: crates/tsukimi/resources/ui/mpvpage.ui:407
+msgid "Advanced settings"
+msgstr "மேம்பட்ட அமைப்புகள்"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:47
+msgid "Media info"
+msgstr "ஊடக செய்தி"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:54
+#: crates/tsukimi/resources/ui/window.ui:35
+#: crates/tsukimi/resources/ui/window.ui:64
+msgid "_Keyboard shortcuts"
+msgstr "விசைப்பலகை குறுக்குவழிகள்"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:108
+msgid "Stop and quit"
+msgstr "நிறுத்தி வெளியேறவும்"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:165
+msgid "Shortcuts"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:193
+msgid "Media info (MPV)"
+msgstr "மீடியா செய்தி (எம்.பி.வி)"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:279
+#: crates/tsukimi/src/ui/mpv/page.rs:419 crates/tsukimi/src/ui/mpv/page.rs:421
+msgid "Pause"
+msgstr "இடைநிறுத்தம்"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:383
+#, fuzzy
+msgid "Adjust Volume"
+msgstr "தொகுதி"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:9
+#, fuzzy
+msgid "Pause / Resume"
+msgstr "மீண்டும் தொடங்குங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:15
+#, fuzzy
+msgid "Seek Forward 5 Seconds"
+msgstr "முன்னோக்கி தேடுங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:21
+#, fuzzy
+msgid "Seek Backward 5 Seconds"
+msgstr "பின்தங்கிய தேடுங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:27
+#, fuzzy
+msgid "Seek Forward 60 Seconds"
+msgstr "முன்னோக்கி தேடுங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:33
+#, fuzzy
+msgid "Seek Backward 60 Seconds"
+msgstr "பின்தங்கிய தேடுங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:39
+msgid "Seek Forward 1 Second (Exact)"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:45
+#, fuzzy
+msgid "Seek Backward 1 Second (Exact)"
+msgstr "பின்தங்கிய தேடுங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:51
+#, fuzzy
+msgid "Step One Frame Forward"
+msgstr "முன்னோக்கி தேடுங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:57
+#, fuzzy
+msgid "Step One Frame Backward"
+msgstr "பின்தங்கிய தேடுங்கள்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:65
+#, fuzzy
+msgid "Playback Speed"
+msgstr "பின்னணி விரைவு"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:68
+#, fuzzy
+msgid "Decrease Speed by 10%"
+msgstr "பிளேபேக் வேகத்தை 10% குறைக்க/அதிகரிக்கவும்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:74
+#, fuzzy
+msgid "Increase Speed by 10%"
+msgstr "பிளேபேக் வேகத்தை 10% குறைக்க/அதிகரிக்கவும்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:80
+#, fuzzy
+msgid "Halve Playback Speed"
+msgstr "பின்னணி விரைவு"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:86
+#, fuzzy
+msgid "Double Playback Speed"
+msgstr "பின்னணி விரைவு"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:92
+#, fuzzy
+msgid "Reset Playback Speed"
+msgstr "பின்னணி விரைவு"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:100
+msgid "Volume"
+msgstr "தொகுதி"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:103
+msgid "Increase Volume"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:109
+msgid "Decrease Volume"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:115
+msgid "Mute / Unmute"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:121
+msgid "Increase Volume (Numpad)"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:127
+msgid "Decrease Volume (Numpad)"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:135
+#, fuzzy
+msgid "Subtitles"
+msgstr "வசன வரிகள்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:138
+msgid "Cycle Subtitle Tracks Forward"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:144
+msgid "Cycle Subtitle Tracks Backward"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:150
+msgid "Toggle Subtitle Visibility"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:156
+msgid "Decrease Subtitle Delay"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:162
+msgid "Increase Subtitle Delay"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:168
+#, fuzzy
+msgid "Increase Subtitle Font Size"
+msgstr "வசன உரை அளவு"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:174
+#, fuzzy
+msgid "Decrease Subtitle Font Size"
+msgstr "வசன உரை அளவு"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:182
+msgid "Tracks"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:185
+msgid "Cycle Audio Tracks"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:191
+msgid "Cycle Video Tracks"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:199
+msgid "Chapters and Playlist"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:202
+#, fuzzy
+msgid "Previous Chapter"
+msgstr "முந்தைய அத்தியாயம்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:208
+#, fuzzy
+msgid "Next Chapter"
+msgstr "அடுத்த அத்தியாயம்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:214
+#, fuzzy
+msgid "Previous Playlist Entry"
+msgstr "முந்தைய அத்தியாயம்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:220
+msgid "Next Playlist Entry"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:231
+#, fuzzy
+msgid "Toggle Fullscreen"
+msgstr "முழு திரை"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:237
+msgid "Set / Clear A-B Loop Points"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:243
+msgid "Toggle Infinite Loop"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:249
+#, fuzzy
+msgid "Display Statistics"
+msgstr "டிச்ப்ளே டிடில்"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:255
+msgid "Quit"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:261
+msgid "Quit and Save Position"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/other.ui:113
+#: crates/tsukimi/src/ui/widgets/tu_overview_item.rs:239
+msgid "No Inscriptions"
+msgstr "கல்வெட்டுகள் இல்லை"
+
+#: crates/tsukimi/resources/ui/other.ui:140
+#: crates/tsukimi/resources/ui/search.ui:48
+msgid "Series"
+msgstr "தொடர்"
+
+#: crates/tsukimi/resources/ui/other.ui:146
+#: crates/tsukimi/resources/ui/search.ui:90
+msgid "Episode"
+msgstr "அத்தியாயம்"
+
+#: crates/tsukimi/resources/ui/player_toolbar.ui:104
+msgid "Previous"
+msgstr "முந்தைய"
+
+#: crates/tsukimi/resources/ui/player_toolbar.ui:134
+msgid "Next"
+msgstr "அடுத்தது"
+
+#: crates/tsukimi/resources/ui/player_toolbar.ui:206
+msgid "Stop And Hide PlayerBar"
+msgstr "பிளேயர்பரை நிறுத்தி மறைக்கவும்"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:11
+msgid "Remove"
+msgstr "அகற்று"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:17
+msgid "Like"
+msgstr "போன்ற"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:23
+msgid "Unlike"
+msgstr "போலல்லாமல்"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:63
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:554
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:555
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:560
+msgid "Remove Identification"
+msgstr "அடையாளத்தை அகற்று"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:71
+msgid "View Missing Episodes"
+msgstr "காணாமல் போன அத்தியாயங்களைக் காண்க"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:79
+#: crates/tsukimi/resources/ui/refresh_dialog.ui:8
+msgid "Refresh Metadata"
+msgstr "மெட்டாடேட்டாவை புதுப்பிக்கவும்"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:85
+msgid "Scan"
+msgstr "ச்கேன்"
+
+#: crates/tsukimi/resources/ui/refresh_dialog.ui:30
+msgid "Replace All Metadata"
+msgstr "அனைத்து மெட்டாடேட்டாவையும் மாற்றவும்"
+
+#: crates/tsukimi/resources/ui/refresh_dialog.ui:39
+msgid "Replace All Images"
+msgstr "எல்லா படங்களையும் மாற்றவும்"
+
+#: crates/tsukimi/resources/ui/refresh_dialog.ui:49
+#: crates/tsukimi/resources/ui/server_action_row.ui:41
+msgid "Refresh"
+msgstr "புதுப்பிப்பு"
+
+#: crates/tsukimi/resources/ui/search.ui:60
+#: crates/tsukimi/src/ui/widgets/list.rs:130
+msgid "BoxSet"
+msgstr "பாக்ச் செட்"
+
+#: crates/tsukimi/resources/ui/search.ui:66
+msgid "Person"
+msgstr "ஆள்"
+
+#: crates/tsukimi/resources/ui/search.ui:72
+msgid "Music Album"
+msgstr "இசை ஆல்பம்"
+
+#: crates/tsukimi/resources/ui/search.ui:166
+msgid "Nothing Here or No type selected"
+msgstr "இங்கே எதுவும் இல்லை அல்லது வகை தேர்ந்தெடுக்கப்படவில்லை"
+
+#: crates/tsukimi/resources/ui/search.ui:167
+msgid "Maybe you should try using different search terms"
+msgstr "ஒருவேளை நீங்கள் வெவ்வேறு தேடல் சொற்களைப் பயன்படுத்த முயற்சிக்க வேண்டும்"
+
+#: crates/tsukimi/resources/ui/server_action_row.ui:23
+msgid "Drag to reorder"
+msgstr "மறுவரிசைப்படுத்த இழுக்கவும்"
+
+#: crates/tsukimi/resources/ui/server_panel.ui:47
+msgid "Restart Server"
+msgstr "சேவையகத்தை மறுதொடக்கம் செய்யுங்கள்"
+
+#: crates/tsukimi/resources/ui/server_panel.ui:58
+msgid "Shutdown Server"
+msgstr "பணிநிறுத்தம் சேவையகம்"
+
+#: crates/tsukimi/resources/ui/server_panel.ui:78
+msgid "System Logs"
+msgstr "கணினி பதிவுகள்"
+
+#: crates/tsukimi/resources/ui/server_panel.ui:83
+msgid "Activity Logs"
+msgstr "செயல்பாட்டு பதிவுகள்"
+
+#: crates/tsukimi/resources/ui/server_panel.ui:103
+msgid "Tasks"
+msgstr "பணிகள்"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:32
+msgid "Change Poster"
+msgstr "சுவரொட்டியை மாற்றவும்"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:38
+msgid "View"
+msgstr "பார்வை"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:65
+msgid "Grid View"
+msgstr "கட்டம் பார்வை"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:72
+msgid "List View"
+msgstr "பட்டியல் பார்வை"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:84
+msgid "Ascending"
+msgstr "ஏறுதல்"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:91
+msgid "Descending"
+msgstr "இறங்கு"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:101
+msgid "Sort By"
+msgstr "வரிசைப்படுத்தவும்"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:106
+#: crates/tsukimi/src/ui/widgets/item.rs:1109
+msgid "Bitrate"
+msgstr "பிட்ரேட்"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:108
+msgid "Imdb Rate"
+msgstr "IMDB வீதம்"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:109
+msgid "Critic Rating"
+msgstr "விமர்சகர் மதிப்பீடு"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:110
+msgid "Premiere Date"
+msgstr "பிரீமியர் தேதி"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:111
+msgid "Offical Rating"
+msgstr "அதிகாரப்பூர்வ மதிப்பீடு"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:112
+msgid "Production Year"
+msgstr "விளைவாக்கம் ஆண்டு"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:113
+msgid "Date Played"
+msgstr "விளையாடிய தேதி"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:114
+msgid "Runtime"
+msgstr "இயக்க நேரம்"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:115
+msgid "Updated At"
+msgstr "இல் புதுப்பிக்கப்பட்டது"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:179
+msgid "Poster"
+msgstr "சுவரொட்டி"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:183
+msgid "Backdrop"
+msgstr "பின்விடு"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:187
+msgid "Banner"
+msgstr "பேனர்"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:25
+#: crates/tsukimi/resources/ui/theme_switcher.ui:27
+msgid "Follow system style"
+msgstr "கணினி பாணியைப் பின்பற்றுங்கள்"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:43
+#: crates/tsukimi/resources/ui/theme_switcher.ui:45
+msgid "Light style"
+msgstr "ஒளி நடை"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:61
+#: crates/tsukimi/resources/ui/theme_switcher.ui:63
+msgid "Dark style"
+msgstr "இருண்ட நடை"
+
+#: crates/tsukimi/resources/ui/window.ui:11
+msgid "Sign out"
+msgstr "விடுபதிகை"
+
+#: crates/tsukimi/resources/ui/window.ui:25
+#: crates/tsukimi/resources/ui/window.ui:54
+msgid "Preferences"
+msgstr "விருப்பத்தேர்வுகள்"
+
+#: crates/tsukimi/resources/ui/window.ui:31
+#: crates/tsukimi/resources/ui/window.ui:60
+msgid "About"
+msgstr "பற்றி"
+
+#: crates/tsukimi/resources/ui/window.ui:44
+msgid "Add server"
+msgstr "சேவையகத்தைச் சேர்க்கவும்"
+
+#: crates/tsukimi/resources/ui/window.ui:163
+msgid "No Server"
+msgstr "சேவையகம் இல்லை"
+
+#: crates/tsukimi/resources/ui/window.ui:166
+msgid "Add Server"
+msgstr "சேவையகத்தைச் சேர்க்கவும்"
+
+#: crates/tsukimi/resources/ui/window.ui:205
+msgid "Log Out"
+msgstr "விடுபதிகை"
+
+#: crates/tsukimi/resources/ui/window.ui:246
+msgid "Contents"
+msgstr "உள்ளடக்கங்கள்"
+
+#: crates/tsukimi/resources/ui/window.ui:249
+#: crates/tsukimi/src/ui/widgets/window.rs:283
+msgid "Home"
+msgstr "வீடு"
+
+#: crates/tsukimi/resources/ui/window.ui:255
+#: crates/tsukimi/src/ui/widgets/list.rs:133
+#: crates/tsukimi/src/ui/widgets/window.rs:295
+msgid "Liked"
+msgstr "பிடித்திருந்தது"
+
+#: crates/tsukimi/resources/ui/window.ui:269
+msgid "Servers"
+msgstr "சேவையகங்கள்"
+
+#: crates/tsukimi/src/client/error.rs:19
+msgid "Timeout Error, Check your internet connection"
+msgstr "காலக்கெடு பிழை, உங்கள் இணைய இணைப்பை சரிபார்க்கவும்"
+
+#: crates/tsukimi/src/client/error.rs:22
+msgid "Connection Error, Check your internet connection"
+msgstr "இணைப்பு பிழை, உங்கள் இணைய இணைப்பை சரிபார்க்கவும்"
+
+#: crates/tsukimi/src/ui/mpv/control_sidebar.rs:531
+msgid "Video filter settings cleared."
+msgstr "வீடியோ வடிகட்டி அமைப்புகள் அழிக்கப்பட்டன."
+
+#: crates/tsukimi/src/ui/mpv/control_sidebar.rs:555
+msgid "Subtitle settings cleared."
+msgstr "வசன அமைப்புகள் அழிக்கப்பட்டன."
+
+#: crates/tsukimi/src/ui/mpv/control_sidebar.rs:568
+msgid "Subtitle color settings cleared."
+msgstr "வசன வண்ண அமைப்புகள் அழிக்கப்பட்டன."
+
+#: crates/tsukimi/src/ui/mpv/control_sidebar.rs:577
+msgid "Subtitle offset settings cleared."
+msgstr "வசன ஆஃப்செட் அமைப்புகள் அழிக்கப்பட்டன."
+
+#: crates/tsukimi/src/ui/mpv/control_sidebar.rs:619
+msgid "Deband settings cleared."
+msgstr "டெபாண்ட் அமைப்புகள் அழிக்கப்பட்டன."
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:37
+#, fuzzy, rust-format
+msgid "{count} Danmaku Loaded"
+msgstr "டான்மகச் ஏற்றப்படவில்லை"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:45
+#, fuzzy
+msgid "Searching"
+msgstr "தேடல்"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:46
+#, fuzzy
+msgid "Loading"
+msgstr "ஏற்றுகிறது ..."
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:49
+#, fuzzy
+msgid "No danmaku found"
+msgstr "டான்மகச் ஏற்றப்படவில்லை"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:51
+msgid "This feature requires an official build"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:53
+msgid "Disabled"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:54
+msgid "Maybe there is something wrong"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:60
+msgid "From play (Auto Matched)"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:62
+msgid "From play (Manually Matched)"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:185
+msgid "Enter at least two characters"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:207
+#, fuzzy
+msgid "No matching anime found"
+msgstr "மேலும் வீடியோ கிடைக்கவில்லை"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:211
+#, fuzzy
+msgid "Search failed"
+msgstr "தேடல்"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:242
+#, fuzzy
+msgid "Invalid episode ID"
+msgstr "தவறான ரீசெக்ச்"
+
+#: crates/tsukimi/src/ui/mpv/page.rs:1079
+msgid "Skip Intro"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/page.rs:1080
+msgid "Skip Outro"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/page.rs:1234
+msgid "No more video found"
+msgstr "மேலும் வீடியோ கிடைக்கவில்லை"
+
+#: crates/tsukimi/src/ui/mpv/page.rs:1345
+msgid ""
+"MPV has been shutdown, Application will exit.\n"
+"Tsukimi can't restart MPV."
+msgstr ""
+"MPV பணிநிறுத்தம் செய்யப்பட்டுள்ளது, விண்ணப்பம் வெளியேறும்.\n"
+" சுகிமி எம்.பி.வி.யை மறுதொடக்கம் செய்ய முடியாது."
+
+#: crates/tsukimi/src/ui/provider/tu_item.rs:638
+msgid "No next up video found"
+msgstr "அடுத்த வீடியோ எதுவும் கிடைக்கவில்லை"
+
+#: crates/tsukimi/src/ui/provider/tu_item.rs:667
+#: crates/tsukimi/src/ui/widgets/tu_overview_item.rs:276
+msgid "Present"
+msgstr "தற்போது"
+
+#: crates/tsukimi/src/ui/provider/tu_item.rs:675
+#: crates/tsukimi/src/ui/provider/tu_item.rs:693
+#: crates/tsukimi/src/ui/provider/tu_item.rs:716
+#: crates/tsukimi/src/ui/provider/tu_item.rs:739
+#: crates/tsukimi/src/ui/provider/tu_item.rs:742
+msgid "Unknown"
+msgstr ""
+
+#: crates/tsukimi/src/ui/widgets/account_add.rs:145
+msgid "Fields must be filled in"
+msgstr "புலங்கள் நிரப்பப்பட வேண்டும்"
+
+#: crates/tsukimi/src/ui/widgets/account_add.rs:195
+msgid "Server edited successfully"
+msgstr "சேவையகம் வெற்றிகரமாக திருத்தப்பட்டது"
+
+#: crates/tsukimi/src/ui/widgets/account_add.rs:200
+msgid "Server added successfully"
+msgstr "சேவையகம் வெற்றிகரமாக சேர்க்கப்பட்டது"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:236
+msgid "Password cannot be empty!"
+msgstr "கடவுச்சொல் காலியாக இருக்க முடியாது!"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:240
+msgid "Passwords do not match!"
+msgstr "கடவுச்சொற்கள் பொருந்தவில்லை!"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:247
+msgid "Password changed successfully! Please login again."
+msgstr "கடவுச்சொல் வெற்றிகரமாக மாற்றப்பட்டது! மீண்டும் உள்நுழைக."
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:251
+msgid "Failed to change password"
+msgstr "கடவுச்சொல்லை மாற்றுவதில் தோல்வி"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:285
+msgid "Cache Cleared"
+msgstr "கேச் அழிக்கப்பட்டது"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:306
+msgid "No file selected"
+msgstr "எந்த கோப்பும் தேர்ந்தெடுக்கப்படவில்லை"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:543
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:552
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:586
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:595
+msgid "Descriptor cannot be empty!"
+msgstr "விவரிப்பான் காலியாக இருக்க முடியாது!"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:557
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:600
+msgid "Invalid regex"
+msgstr "தவறான ரீசெக்ச்"
+
+#: crates/tsukimi/src/ui/widgets/home.rs:395
+msgid "Latest"
+msgstr "அண்மைக் கால"
+
+#: crates/tsukimi/src/ui/widgets/identify/dialog.rs:140
+msgid "Failed to get path"
+msgstr "பாதையைப் பெறுவதில் தோல்வி"
+
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:127
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:148
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:286
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:495
+msgid "Are you sure you wish to continue?"
+msgstr "நீங்கள் தொடர விரும்புகிறீர்களா?"
+
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:131
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:152
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:290
+msgid "Ok"
+msgstr "சரி"
+
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:134
+msgid "Replace existing images"
+msgstr "இருக்கும் படங்களை மாற்றவும்"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_adw_dialog.rs:130
+#, fuzzy
+msgid "View Images"
+msgstr "படத்தைக் காண்க"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_edit_dialog_page.rs:182
+msgid "Image saved"
+msgstr "படம் சேமிக்கப்பட்டது"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_edit_dialog_page.rs:187
+msgid "Failed to load image"
+msgstr "படத்தை ஏற்றுவதில் தோல்வி"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:159
+msgid "No image to view"
+msgstr "பார்க்க படம் இல்லை"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:175
+msgid "No image to copy"
+msgstr "நகலெடுக்க படம் இல்லை"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:179
+#: crates/tsukimi/src/ui/widgets/media_viewer.rs:349
+msgid "Image copied to clipboard"
+msgstr "படம் இடைநிலைப்பலகைக்கு நகலெடுக்கப்பட்டது"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:218
+msgid "Image deleted"
+msgstr "படம் நீக்கப்பட்டது"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:223
+msgid "Error deleting image"
+msgstr "படத்தை நீக்குவதில் பிழை"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:254
+#, fuzzy
+msgid "Error loading image"
+msgstr "படத்தை நீக்குவதில் பிழை"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:146
+msgid "Replace Image"
+msgstr "படத்தை மாற்றவும்"
+
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:121
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:98
+msgid "Success"
+msgstr "செய்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:356
+#, fuzzy
+msgid "No episode selected"
+msgstr "எந்த கோப்பும் தேர்ந்தெடுக்கப்படவில்லை"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:357
+#, fuzzy
+msgid "Select an episode"
+msgstr "புதிய MPV கட்டமைப்பு கோப்புறையைத் தேர்ந்தெடுக்கவும்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:700
+#: crates/tsukimi/src/ui/widgets/list.rs:129
+msgid "Resume"
+msgstr "மீண்டும் தொடங்குங்கள்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1099
+msgid "Codec"
+msgstr "புரிப்பு"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1102
+msgid "Language"
+msgstr "மொழி"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1114
+msgid "BitDepth"
+msgstr "பிட்டெப்ட்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1118
+msgid "SampleRate"
+msgstr "மாதிரி"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1122
+msgid "Height"
+msgstr "உயரம்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1125
+msgid "Width"
+msgstr "அகலம்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1128
+msgid "ColorSpace"
+msgstr "வண்ணங்கள்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1132
+msgid "DisplayTitle"
+msgstr "டிச்ப்ளே டிடில்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1136
+msgid "Channel"
+msgstr "வாய்க்கால்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1140
+msgid "ChannelLayout"
+msgstr "சேன்லேஅவுட்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1145
+msgid "AverageFrameRate"
+msgstr "சராசரி ஃபிரமரேட்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1149
+msgid "PixelFormat"
+msgstr "பிக்சல்ஃபார்மட்"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1258
+msgid "No video source found"
+msgstr "வீடியோ மூலமும் கிடைக்கவில்லை"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1331
+msgid "Season not found. Is this a continue watching list?"
+msgstr "சீசன் கிடைக்கவில்லை. இது தொடர்ந்து பார்க்கும் பட்டியலா?"
+
+#: crates/tsukimi/src/ui/widgets/liked.rs:155
+msgid "Favourite"
+msgstr "பிடித்த"
+
+#: crates/tsukimi/src/ui/widgets/list.rs:121
+msgid "Channels"
+msgstr "சேனல்கள்"
+
+#: crates/tsukimi/src/ui/widgets/list.rs:128
+msgid "All"
+msgstr "அனைத்தும்"
+
+#: crates/tsukimi/src/ui/widgets/list.rs:134
+msgid "Folder"
+msgstr "கோப்புறை"
+
+#: crates/tsukimi/src/ui/widgets/missing_episodes_dialog.rs:147
+msgid "Special"
+msgstr "சிறப்பு"
+
+#: crates/tsukimi/src/ui/widgets/music_album.rs:241
+msgid "Songs"
+msgstr "பாடல்கள்"
+
+#: crates/tsukimi/src/ui/widgets/music_album.rs:343
+msgid "More From"
+msgstr "மேலும்"
+
+#: crates/tsukimi/src/ui/widgets/refresh_dialog.rs:94
+msgid "Scanning..."
+msgstr "ச்கேனிங் ..."
+
+#: crates/tsukimi/src/ui/widgets/search.rs:198
+#, fuzzy
+msgid "No overview"
+msgstr "கண்ணோட்டம்"
+
+#: crates/tsukimi/src/ui/widgets/server_action_row.rs:128
+#, fuzzy
+msgid "Edit Server"
+msgstr "சேவையகத்தைச் சேர்க்கவும்"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:119
+msgid "Shut down server"
+msgstr "சேவையகத்தை மூடு"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:120
+msgid "Are you sure you want to shut down the server?"
+msgstr "சேவையகத்தை மூட விரும்புகிறீர்களா?"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:151
+msgid "Restart server"
+msgstr "சேவையகத்தை மறுதொடக்கம் செய்யுங்கள்"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:152
+msgid "Are you sure you want to restart the server?"
+msgstr "சேவையகத்தை மறுதொடக்கம் செய்ய விரும்புகிறீர்களா?"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:155
+msgid "Revert"
+msgstr "மாற்றியமைக்கவும்"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:156
+msgid "Confirm"
+msgstr "உறுதிப்படுத்தவும்"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:192
+msgid "Server is shutting down"
+msgstr "சேவையகம் மூடப்படுகிறது"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:204
+msgid "Server is restarting"
+msgstr "சேவையகம் மறுதொடக்கம் செய்கிறது"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:291
+msgid "Last execute: "
+msgstr "கடைசியாக செயல்படுத்த: "
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:296
+msgid "Duration: "
+msgstr "காலம்: "
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:301
+msgid "Result: "
+msgstr "முடிவு: "
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:347
+msgid "Task started"
+msgstr "பணி தொடங்கியது"
+
+#: crates/tsukimi/src/ui/widgets/single_grid.rs:486
+msgid "Items"
+msgstr "உருப்படிகள்"
+
+#: crates/tsukimi/src/ui/widgets/star_toggle.rs:65
+msgid "Remove from favorites"
+msgstr "பிடித்தவைகளிலிருந்து அகற்று"
+
+#: crates/tsukimi/src/ui/widgets/star_toggle.rs:70
+msgid "Add to favorites"
+msgstr "பிடித்தவைகளில் சேர்க்கவும்"
+
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:489
+msgid "Delete Item"
+msgstr "உருப்படியை நீக்கு"
+
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:493
+msgid ""
+"Deleting this item will delete it from both the file system and your media "
+"library.\n"
+"The following files and folders will be deleted:"
+msgstr ""
+"இந்த உருப்படியை நீக்குவது கோப்பு முறைமை மற்றும் உங்கள் ஊடக நூலகம் இரண்டிலிருந்தும் அதை "
+"நீக்கிவிடும்.\n"
+" பின்வரும் கோப்புகள் மற்றும் கோப்புறைகள் நீக்கப்படும்:"
+
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:556
+msgid "Are you sure you wish to reset all metadata?"
+msgstr "எல்லா மெட்டாடேட்டாவையும் மீட்டமைக்க விரும்புகிறீர்களா?"
+
+#: crates/tsukimi/src/ui/widgets/window.rs:794
+msgid "Server Panel"
+msgstr "சேவையக குழு"
+
+#: crates/tsukimi/src/ui/widgets/window.rs:966
+msgid "Fatal Error"
+msgstr "அபாயகரமான பிழை"
+
+#: crates/tsukimi/src/ui/widgets/window.rs:969
+msgid "Copy Error & Close"
+msgstr "பிழை மற்றும் மூடு"
+
+#. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
+#: crates/tsukimi/src/ui/widgets/window.rs:998
+msgid "translator-credits"
+msgstr "மொழிபெயர்ப்பாளர்-வரவு"
+
+#, fuzzy
+#~| msgid "Contents"
+#~ msgid "GPU Context"
+#~ msgstr "உள்ளடக்கங்கள்"
+
+#, fuzzy
+#~| msgid "Failed to get GLContext"
+#~ msgid "Failed to realize GLArea"
+#~ msgstr "Glcontext ஐப் பெறுவதில் தோல்வி"
+
+#~ msgid "Failed to get GLContext"
+#~ msgstr "Glcontext ஐப் பெறுவதில் தோல்வி"
+
+#~ msgid "Video Output"
+#~ msgstr "வீடியோ வெளியீடு"
+
+#~ msgid "Only for debugging"
+#~ msgstr "பிழைத்திருத்தத்திற்கு மட்டுமே"
+
+#~ msgid "libmpv (default)"
+#~ msgstr "libmpv (இயல்புநிலை)"
+
+#~ msgid "Waiting for mediasource ..."
+#~ msgstr "மீடியாசோர்சுக்காக காத்திருக்கிறது ..."
+
+#~ msgid "Halve/double current playback speed"
+#~ msgstr "பாதி/இரட்டை தற்போதைய பின்னணி விரைவு"
+
+#~ msgid "Reset playback speed to normal"
+#~ msgstr "பிளேபேக் வேகத்தை இயல்புநிலைக்கு மீட்டமைக்கவும்"
+
+#~ msgid "Restart App To Take Effect"
+#~ msgstr "பயன்பாட்டை மறுதொடக்கம் செய்யுங்கள்"
+
+#~ msgid "Windows Alert"
+#~ msgstr "சாளரங்கள் எச்சரிக்கை"
+
+#~ msgid ""
+#~ "It seems you're using Tsukimi on Windows. Please note that GTK used by "
+#~ "this application is designed for Linux, and no functionality is "
+#~ "guaranteed to work on Windows, including but not limited to video "
+#~ "rendering, audio playback, network connections, and external links. "
+#~ "Additionally, there are known issues that cannot be fixed, such as black "
+#~ "borders, image rendering, font rendering, DPI scaling, video rendering, "
+#~ "GL renderer, fullscreen mode, HDR, and locale detection. \n"
+#~ "If you wish to open an issue, please ensure that it is related to this "
+#~ "software and not an upstream issue. Choose the appropriate issue template "
+#~ "and fill in all required fields without any omissions."
+#~ msgstr ""
+#~ "நீங்கள் சாளரங்களில் சுகிமியைப் பயன்படுத்துகிறீர்கள் என்று தெரிகிறது. இந்த பயன்பாட்டால் "
+#~ "பயன்படுத்தப்படும் சி.டி.கே லினக்சிற்காக வடிவமைக்கப்பட்டுள்ளது என்பதை நினைவில் கொள்க, "
+#~ "மேலும் வீடியோ வழங்குதல், ஆடியோ பிளேபேக், பிணையம் இணைப்புகள் மற்றும் வெளிப்புற "
+#~ "இணைப்புகள் உள்ளிட்டவை அல்ல, ஆனால் அவை மட்டுமல்ல. கூடுதலாக, கருப்பு எல்லைகள், பட "
+#~ "வழங்குதல், எழுத்துரு வழங்குதல், டிபிஐ அளவிடுதல், வீடியோ வழங்குதல், சிஎல் ரெண்டரர், "
+#~ "ஃபுல்ச்கிரீன் பயன்முறை, எச்டிஆர் மற்றும் லோகேல் கண்டறிதல் போன்றவற்றை சரிசெய்ய முடியாத "
+#~ "சிக்கல்கள் உள்ளன.\n"
+#~ " நீங்கள் ஒரு சிக்கலைத் திறக்க விரும்பினால், இது இந்த மென்பொருளுடன் தொடர்புடையது என்பதை "
+#~ "உறுதிப்படுத்தவும், மேலோடை சிக்கல் அல்ல. பொருத்தமான வெளியீட்டு வார்ப்புருவைத் "
+#~ "தேர்ந்தெடுத்து, எந்த குறைபாடுகளும் இல்லாமல் தேவையான அனைத்து புலங்களையும் நிரப்பவும்."
+
+#~ msgid "Close"
+#~ msgstr "மூடு"
+
+#~ msgid ""
+#~ "This feature may cause significant lag. Please enable it with caution."
+#~ msgstr ""
+#~ "இந்த நற்பொருத்தம் குறிப்பிடத்தக்க பின்னடைவை ஏற்படுத்தக்கூடும். தயவுசெய்து அதை "
+#~ "எச்சரிக்கையுடன் இயக்கவும்."
+
+#~ msgid "Blur (Experimental)"
+#~ msgstr "மங்கலான (சோதனை)"
+
+#~ msgid "Warning: High GPU usage"
+#~ msgstr "எச்சரிக்கை: உயர் சி.பீ.யூ பயன்பாடு"
+
+#~ msgid "Blur Radius (Experimental)"
+#~ msgstr "மங்கலான ஆரம் (சோதனை)"
+
+#~ msgid "Not implemented"
+#~ msgstr "செயல்படுத்தப்படவில்லை"
+
+#~ msgid "Margin &amp; Size"
+#~ msgstr "விளிம்பு &amp; அளவு"
+
+#~ msgid "Top padding"
+#~ msgstr "மேல் திணிப்பு"
+
+#~ msgid "Font family"
+#~ msgstr "எழுத்துரு குடும்பம்"
+
+#~ msgid "Scroll danmaku max lines"
+#~ msgstr "உருட்டல் டான்மகு அதிகபட்ச கோடுகள்"
+
+#~ msgid "Topcenter danmaku max lines"
+#~ msgstr "டாப் சென்டர் டான்மாகு அதிகபட்ச கோடுகள்"
+
+#~ msgid "Bottomcenter danmaku max lines"
+#~ msgstr "பாட்டம் சென்டர் டான்மாகு அதிகபட்ச கோடுகள்"
+
+#~ msgid "API from DanDanPlay"
+#~ msgstr "Tandanplay இலிருந்து பநிஇ"

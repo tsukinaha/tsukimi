@@ -1,0 +1,2483 @@
+# Chinese translations for PACKAGE package
+# PACKAGE 软件包的简体中文翻译.
+# Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# <tsukimi@tutanota.com>, 2024.
+# dyphire <qimoge@gmail.com>, 2024, 2026.
+# Inaha <sakuovds@gmail.com>, 2024, 2025, 2026.
+# Gracealina  clover <zhiweishuisheng@gmail.com>, 2024, 2025, 2026.
+# HLiang Shao <792332448@qq.com>, 2024, 2025, 2026.
+# 雲の中を漂う船 <nogamenolife_zero@qq.com>, 2025.
+# Mon3tr <nogamenolife_zero@qq.com>, 2026.
+# ᴀᴍᴛᴏᴀᴇʀ <amtoaer@outlook.com>, 2026.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-20 20:35+0800\n"
+"PO-Revision-Date: 2026-07-10 13:01+0000\n"
+"Last-Translator: ᴀᴍᴛᴏᴀᴇʀ <amtoaer@outlook.com>\n"
+"Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
+"projects/tsukimi/main/zh_Hans/>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 2026.7.1.dev0\n"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:4
+msgid "Settings"
+msgstr "设置"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:12
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:228
+msgid "General"
+msgstr "常规"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:17
+msgid "Preferred Language"
+msgstr "语言偏好"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:18
+msgid "This is globally effective"
+msgstr "全局有效"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:21
+msgid "Preferred Audio Language"
+msgstr "首选音频语言"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:30
+#: crates/tsukimi/resources/ui/account_settings.ui:56
+#: crates/tsukimi/resources/ui/account_settings.ui:212
+msgid "Default"
+msgstr "默认"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:47
+msgid "Preferred Subtitle Language"
+msgstr "首选字幕语言"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:75
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:6
+msgid "Playback"
+msgstr "播放"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:78
+msgid "Automatically Skip Intros and Outros"
+msgstr "自动跳过片头片尾"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:79
+#: crates/tsukimi/resources/ui/account_settings.ui:176
+msgid "Jellyfin only"
+msgstr "仅适用于 Jellyfin"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:86
+msgid "Appearance"
+msgstr "外观"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:89
+msgid "Use Custom Accent Color"
+msgstr "使用自定义强调色"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:90
+msgid "Disable to follow the system accent color"
+msgstr "禁用以跟随系统强调色"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:95
+msgid "Accent Color"
+msgstr "强调色"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:111
+msgid "Hide Sidebar"
+msgstr "隐藏侧边栏"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:116
+msgid "Auto Select Last Server"
+msgstr "自动选择上次使用的服务器"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:121
+msgid "Text Display"
+msgstr "文本显示"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:127
+msgid "Compact"
+msgstr "紧凑"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:133
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:200
+msgid "Full"
+msgstr "完整"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:143
+msgid "Card Style"
+msgstr "卡片样式"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:149
+msgid "Integrated"
+msgstr "一体"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:155
+msgid "Separated"
+msgstr "分离"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:167
+msgid "Home Page"
+msgstr "首页"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:170
+msgid "Refresh when returning to home page"
+msgstr "返回首页时刷新"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:175
+msgid "Merge Continue Watching and Next Up"
+msgstr "合并“继续观看”和“接下来”"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:183
+msgid "Network"
+msgstr "网络"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:186
+msgid "Threads"
+msgstr "线程"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:187
+msgid "Excessive thread counts may exhaust the system's connection pool"
+msgstr "过多的线程数可能会耗尽系统的连接池"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:203
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:398
+msgid "Background"
+msgstr "背景"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:235
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:124
+msgid "Opacity"
+msgstr "不透明度"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:249
+msgid "Blur"
+msgstr "模糊"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:254
+msgid "Blur Radius"
+msgstr "模糊半径"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:270
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:84
+msgid "Cache"
+msgstr "缓存"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:273
+msgid "Clear Cache"
+msgstr "清除缓存"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:288
+msgid "Others"
+msgstr "其他"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:291
+#: crates/tsukimi/resources/ui/account_settings.ui:430
+msgid "Preferred Video Version"
+msgstr "首选视频版本"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:303
+msgid "Account"
+msgstr "帐户"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:316
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "更改密码"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:319
+msgid "New Password"
+msgstr "新密码"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:324
+msgid "Confirm Password"
+msgstr "确认密码"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:347
+msgid "Media"
+msgstr "媒体"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:352
+msgid "Music Player"
+msgstr "音乐播放器"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:355
+#: crates/tsukimi/resources/ui/player_toolbar.ui:223
+msgid "Repeat Mode"
+msgstr "循环模式"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:359
+#: crates/tsukimi/resources/ui/player_toolbar.ui:257
+msgid "Repeat One"
+msgstr "单曲循环"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:360
+#: crates/tsukimi/resources/ui/player_toolbar.ui:261
+msgid "Repeat All"
+msgstr "列表循环"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:361
+#: crates/tsukimi/resources/ui/account_settings.ui:390
+#: crates/tsukimi/resources/ui/player_toolbar.ui:265
+msgid "None"
+msgstr "关闭循环"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:371
+msgid "Video Player"
+msgstr "视频播放器"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:372
+msgid "Requires restart"
+msgstr "需要重新启动"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:376
+msgid "Enable external config"
+msgstr "启用外部 mpv 配置"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:381
+msgid "Config dir"
+msgstr "配置目录"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:408
+msgid "Preferred Version"
+msgstr "首选版本"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:431
+msgid ""
+"Weight is ordered from high to low, until a specific version is matched, or "
+"the highest matching version is obtained before clearing the match list"
+msgstr ""
+"权重从高到低排序，直到匹配到特定版本，或在清除匹配列表前获得最高匹配版本为止"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:446
+msgid "Descriptors"
+msgstr "描述符"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:468
+msgid "It is recommended to set no more than 3 lines"
+msgstr "建议设置不超过 3 行"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:488
+msgid "No Descriptors"
+msgstr "无描述符"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:507
+msgid "Add a descriptor"
+msgstr "添加描述符"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:518
+#: crates/tsukimi/resources/ui/account_settings.ui:628
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:130
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:151
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:289
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:499
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:559
+msgid "Cancel"
+msgstr "取消"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:524
+#: crates/tsukimi/resources/ui/account.ui:108
+msgid "Add"
+msgstr "添加"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:549
+#: crates/tsukimi/resources/ui/account_settings.ui:659
+msgid "This will use exact matching to obtain a list"
+msgstr "这将使用精确匹配来获取列表"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:552
+#: crates/tsukimi/resources/ui/account_settings.ui:662
+msgid "Descriptor Type"
+msgstr "描述符类型"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:557
+#: crates/tsukimi/resources/ui/account_settings.ui:667
+msgid "String"
+msgstr "字符串"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:558
+#: crates/tsukimi/resources/ui/account_settings.ui:668
+msgid "Regular Expression"
+msgstr "正则表达式"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:570
+#: crates/tsukimi/resources/ui/account_settings.ui:680
+msgid "Descriptor"
+msgstr "描述符"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:575
+#: crates/tsukimi/resources/ui/account_settings.ui:685
+msgid "Descriptor should not be too long"
+msgstr "描述符不宜太长"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:586
+#: crates/tsukimi/resources/ui/account_settings.ui:696
+msgid "eg. 1080p"
+msgstr "例如：1080p"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:597
+#: crates/tsukimi/resources/ui/account_settings.ui:707
+msgid "eg. 1080p.*WebDL"
+msgstr "例如：1080p.*WebDL"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:617
+msgid "Edit descriptor"
+msgstr "编辑描述符"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:634
+#: crates/tsukimi/resources/ui/image_dialog_edit_page.ui:37
+msgid "Save"
+msgstr "保存"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:727
+msgid "Change folder"
+msgstr "修改文件夹"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:729
+msgid "Select new mpv config folder"
+msgstr "选择 mpv 配置读取目录"
+
+#: crates/tsukimi/resources/ui/account.ui:6
+#: crates/tsukimi/resources/ui/account.ui:14
+msgid "Add a New Server"
+msgstr "添加一个新服务器"
+
+#: crates/tsukimi/resources/ui/account.ui:45
+msgid "Enter the server details below."
+msgstr "在下面填入服务器的信息。"
+
+#: crates/tsukimi/resources/ui/account.ui:48
+#: crates/tsukimi/resources/ui/identify_dialog.ui:75
+#: crates/tsukimi/resources/ui/other.ui:73
+msgid "Name"
+msgstr "名称"
+
+#: crates/tsukimi/resources/ui/account.ui:66
+msgid "Server Address"
+msgstr "服务器地址"
+
+#: crates/tsukimi/resources/ui/account.ui:85
+msgid "Port"
+msgstr "端口"
+
+#: crates/tsukimi/resources/ui/account.ui:92
+msgid "Username"
+msgstr "用户名"
+
+#: crates/tsukimi/resources/ui/account.ui:97
+msgid "Password"
+msgstr "密码"
+
+#: crates/tsukimi/resources/ui/album_widget.ui:94
+#: crates/tsukimi/resources/ui/item.ui:184
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:27
+#: crates/tsukimi/resources/ui/other.ui:95
+#: crates/tsukimi/resources/ui/player_toolbar.ui:116
+#: crates/tsukimi/src/ui/mpv/page.rs:414 crates/tsukimi/src/ui/mpv/page.rs:416
+#: crates/tsukimi/src/ui/widgets/item.rs:704
+msgid "Play"
+msgstr "播放"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:13
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:22
+#: crates/tsukimi/resources/ui/mpvpage.ui:395
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:39
+msgid "Danmaku"
+msgstr "弹幕"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:33
+#, fuzzy
+msgid "Danmaku disabled"
+msgstr "弹幕速度"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:73
+msgid "Search Manually"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:91
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:110
+msgid "Danmaku Settings"
+msgstr "弹幕设置"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:139
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:447
+msgid "Speed"
+msgstr "速度"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:154
+#, fuzzy
+msgid "Font Size"
+msgstr "字体大小"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:169
+#, fuzzy
+msgid "Font Weight"
+msgstr "字体大小"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:174
+msgid "Thin"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:175
+msgid "Ultralight"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:176
+#, fuzzy
+msgid "Light"
+msgstr "高度"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:177
+#, fuzzy
+msgid "Semilight"
+msgstr "高度"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:178
+msgid "Book"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:179
+msgid "Normal"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:180
+#, fuzzy
+msgid "Medium"
+msgstr "媒体"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:181
+msgid "Semibold"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:182
+msgid "Bold"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:183
+msgid "Ultrabold"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:184
+msgid "Heavy"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:185
+msgid "Ultraheavy"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:193
+#, fuzzy
+msgid "Danmaku Intensity"
+msgstr "弹幕设置"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:198
+msgid "Quarter"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:199
+msgid "Half"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:201
+msgid "Allow Overlay"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:209
+msgid "Spacing"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:210
+#, fuzzy
+msgid "N x Font Size"
+msgstr "字体大小"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:225
+#, fuzzy
+msgid "Stroke Size"
+msgstr "边框大小"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:226
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:242
+msgid "px"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:241
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:326
+msgid "Shadow Offset"
+msgstr "阴影偏移"
+
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:261
+#: crates/tsukimi/resources/ui/media_viewer.ui:36
+#: crates/tsukimi/resources/ui/media_viewer.ui:38
+msgid "Back"
+msgstr "后退"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:7
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:15
+#, fuzzy
+msgid "Search Danmaku"
+msgstr "弹幕"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:32
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:91
+#: crates/tsukimi/resources/ui/single_grid.ui:105
+#: crates/tsukimi/src/ui/widgets/item.rs:1105
+msgid "Title"
+msgstr "标题"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:38
+#, fuzzy
+msgid "Anime Type"
+msgstr "视频类型"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:42
+#, fuzzy
+msgid "TV Series"
+msgstr "系列"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:43
+#, fuzzy
+msgid "TV Special"
+msgstr "特别"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:44
+msgid "OVA"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:45
+#: crates/tsukimi/resources/ui/other.ui:134
+#: crates/tsukimi/resources/ui/search.ui:54
+msgid "Movie"
+msgstr "电影"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:46
+#, fuzzy
+msgid "Music Video"
+msgstr "视频"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:47
+msgid "Web"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:48
+#, fuzzy
+msgid "Other"
+msgstr "其他"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:49
+msgid "Japanese Movie"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:50
+msgid "Japanese Drama"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:51
+msgid "TMDB TV"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:52
+#, fuzzy
+msgid "TMDB Movie"
+msgstr "电影"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:70
+#: crates/tsukimi/resources/ui/identify_dialog.ui:95
+#: crates/tsukimi/resources/ui/image_info_card.ui:127
+#: crates/tsukimi/resources/ui/search.ui:23
+#: crates/tsukimi/resources/ui/window.ui:21
+#: crates/tsukimi/resources/ui/window.ui:261
+#: crates/tsukimi/src/ui/widgets/window.rs:307
+msgid "Search"
+msgstr "搜索"
+
+#: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:113
+#, fuzzy
+msgid "Episodes"
+msgstr "剧集"
+
+#: crates/tsukimi/resources/ui/disc_box.ui:9
+#: crates/tsukimi/src/ui/widgets/disc_box.rs:99
+msgid "Disc"
+msgstr "圆盘"
+
+#: crates/tsukimi/resources/ui/filter.ui:6
+#: crates/tsukimi/resources/ui/filter.ui:21
+#: crates/tsukimi/resources/ui/search.ui:31
+#: crates/tsukimi/resources/ui/single_grid.ui:47
+msgid "Filter Panel"
+msgstr "筛选面板"
+
+#: crates/tsukimi/resources/ui/filter.ui:42
+msgid "Filters"
+msgstr "过滤器"
+
+#: crates/tsukimi/resources/ui/filter.ui:45
+msgid "Playback Status"
+msgstr "播放状态"
+
+#: crates/tsukimi/resources/ui/filter.ui:50
+#: crates/tsukimi/resources/ui/filter.ui:149
+msgid "Any"
+msgstr "任意"
+
+#: crates/tsukimi/resources/ui/filter.ui:51
+msgid "Played"
+msgstr "已播放"
+
+#: crates/tsukimi/resources/ui/filter.ui:52
+msgid "Unplayed"
+msgstr "未播放"
+
+#: crates/tsukimi/resources/ui/filter.ui:53
+msgid "Continue Play"
+msgstr "继续播放"
+
+#: crates/tsukimi/resources/ui/filter.ui:78
+#: crates/tsukimi/resources/ui/item.ui:483
+#: crates/tsukimi/resources/ui/other.ui:174
+#: crates/tsukimi/src/ui/widgets/list.rs:132
+msgid "Genres"
+msgstr "片单"
+
+#: crates/tsukimi/resources/ui/filter.ui:85
+#: crates/tsukimi/resources/ui/item.ui:488
+#: crates/tsukimi/resources/ui/other.ui:169
+#: crates/tsukimi/src/ui/widgets/list.rs:131
+msgid "Tags"
+msgstr "标签"
+
+#: crates/tsukimi/resources/ui/filter.ui:92
+msgid "Years"
+msgstr "年份"
+
+#: crates/tsukimi/resources/ui/filter.ui:99
+msgid "Official Ratings"
+msgstr "官方分级"
+
+#: crates/tsukimi/resources/ui/filter.ui:106
+#: crates/tsukimi/resources/ui/item.ui:478
+#: crates/tsukimi/resources/ui/other.ui:164
+msgid "Studios"
+msgstr "工作室"
+
+#: crates/tsukimi/resources/ui/filter.ui:115
+msgid "Media Info"
+msgstr "媒体信息"
+
+#: crates/tsukimi/resources/ui/filter.ui:118
+msgid "Containers"
+msgstr "封装"
+
+#: crates/tsukimi/resources/ui/filter.ui:125
+msgid "Encoders"
+msgstr "编码方式"
+
+#: crates/tsukimi/resources/ui/filter.ui:132
+msgid "Video Types"
+msgstr "视频类型"
+
+#: crates/tsukimi/resources/ui/filter.ui:139
+msgid "Resolution"
+msgstr "分辨率"
+
+#: crates/tsukimi/resources/ui/filter.ui:165
+msgid "Clear"
+msgstr "清除"
+
+#: crates/tsukimi/resources/ui/filter.ui:179
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:231
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:284
+msgid "Apply"
+msgstr "应用"
+
+#: crates/tsukimi/resources/ui/home.ui:16
+msgid "Library"
+msgstr "媒体库"
+
+#. if merged, next up will contain resume items, so change title to continue watching
+#: crates/tsukimi/resources/ui/home.ui:21
+#: crates/tsukimi/resources/ui/item.ui:298
+#: crates/tsukimi/src/ui/widgets/home.rs:226
+msgid "Continue Watching"
+msgstr "继续观看"
+
+#: crates/tsukimi/resources/ui/home.ui:29
+#: crates/tsukimi/src/ui/widgets/home.rs:228
+msgid "Next Up"
+msgstr "接下来"
+
+#: crates/tsukimi/resources/ui/identify_dialog_search_page.ui:4
+#: crates/tsukimi/resources/ui/identify_dialog.ui:6
+#: crates/tsukimi/resources/ui/identify_dialog.ui:14
+#: crates/tsukimi/resources/ui/pop-menu.ui:57
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:125
+msgid "Identify"
+msgstr "识别"
+
+#: crates/tsukimi/resources/ui/identify_dialog.ui:57
+msgid ""
+"Enter one or more search criteria. Remove criteria to increase search "
+"results."
+msgstr "输入一个或多个搜索条件，删除条件可增加搜索结果。"
+
+#: crates/tsukimi/resources/ui/identify_dialog.ui:61
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:81
+msgid "Path"
+msgstr "路径"
+
+#: crates/tsukimi/resources/ui/identify_dialog.ui:62
+#: crates/tsukimi/resources/ui/image_dialog_search_page.ui:54
+#: crates/tsukimi/resources/ui/item.ui:108
+#: crates/tsukimi/resources/ui/item.ui:156
+msgid "Loading..."
+msgstr "正在载入..."
+
+#: crates/tsukimi/resources/ui/identify_dialog.ui:80
+msgid "Year"
+msgstr "年份"
+
+#: crates/tsukimi/resources/ui/identify_dialog.ui:87
+msgid "External"
+msgstr "外部"
+
+#: crates/tsukimi/resources/ui/image_dialog_edit_page.ui:4
+msgid "Edit Image"
+msgstr "编辑图片"
+
+#: crates/tsukimi/resources/ui/image_dialog_edit_page.ui:19
+msgid "Upload Image"
+msgstr "上传图片"
+
+#: crates/tsukimi/resources/ui/image_dialog_edit_page.ui:24
+msgid "External Url"
+msgstr "外部链接"
+
+#: crates/tsukimi/resources/ui/image_dialog_search_page.ui:4
+msgid "Choose Image"
+msgstr "选择图片"
+
+#: crates/tsukimi/resources/ui/image_dialog_search_page.ui:15
+msgid "Provider:"
+msgstr "提供者："
+
+#: crates/tsukimi/resources/ui/image_dialog_search_page.ui:22
+msgid "Provider"
+msgstr "提供者"
+
+#: crates/tsukimi/resources/ui/image_dialog_search_page.ui:64
+msgid "All Languages"
+msgstr "所有语言"
+
+#: crates/tsukimi/resources/ui/image_drop_row.ui:49
+msgid "Open"
+msgstr "打开"
+
+#: crates/tsukimi/resources/ui/image_drop_row.ui:109
+msgid "Pick Image"
+msgstr "选择图片"
+
+#: crates/tsukimi/resources/ui/image_drop_row.ui:113
+#: crates/tsukimi/resources/ui/images_dialog.ui:69
+msgid "Images"
+msgstr "图像"
+
+#: crates/tsukimi/resources/ui/image_drop_row.ui:119
+msgid "Pick image to upload"
+msgstr "选择要上传的图片"
+
+#: crates/tsukimi/resources/ui/image_info_card.ui:86
+msgid "Copy Image To Clipboard"
+msgstr "将图像复制到剪贴板"
+
+#: crates/tsukimi/resources/ui/image_info_card.ui:98
+msgid "View Image"
+msgstr "查看图片"
+
+#: crates/tsukimi/resources/ui/image_info_card.ui:109
+#: crates/tsukimi/resources/ui/image_info_card.ui:133
+#: crates/tsukimi/resources/ui/server_action_row.ui:30
+msgid "Edit"
+msgstr "编辑"
+
+#: crates/tsukimi/resources/ui/image_info_card.ui:139
+#: crates/tsukimi/resources/ui/pop-menu.ui:93
+#: crates/tsukimi/resources/ui/server_action_row.ui:52
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:500
+msgid "Delete"
+msgstr "删除"
+
+#: crates/tsukimi/resources/ui/images_dialog.ui:6
+#: crates/tsukimi/resources/ui/images_dialog.ui:36
+#: crates/tsukimi/resources/ui/item_actions.ui:59
+#: crates/tsukimi/resources/ui/pop-menu.ui:49
+#: crates/tsukimi/resources/ui/song_widget.ui:161
+msgid "Edit Images"
+msgstr "编辑图片"
+
+#: crates/tsukimi/resources/ui/images_dialog.ui:59
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:70
+msgid "Not Available"
+msgstr "不可用"
+
+#: crates/tsukimi/resources/ui/images_dialog.ui:60
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:71
+msgid "This page is READ-ONLY, because you have no permission to modify it."
+msgstr "此页面是只读的，因为您没有权限修改它。"
+
+#: crates/tsukimi/resources/ui/images_dialog.ui:157
+msgid "BackDrops"
+msgstr "背景"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:40
+#: crates/tsukimi/resources/ui/pop-menu.ui:29
+msgid "Mark as Played"
+msgstr "标记为已播放"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:46
+#: crates/tsukimi/resources/ui/pop-menu.ui:35
+msgid "Mark as Unplayed"
+msgstr "标记为未播放"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:53
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:18
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:26
+#: crates/tsukimi/resources/ui/pop-menu.ui:43
+#: crates/tsukimi/resources/ui/song_widget.ui:156
+msgid "Edit Metadata"
+msgstr "编辑元数据"
+
+#: crates/tsukimi/resources/ui/item.ui:218
+msgid "Video: "
+msgstr "视频： "
+
+#: crates/tsukimi/resources/ui/item.ui:238
+msgid "Subtitle: "
+msgstr "字幕： "
+
+#: crates/tsukimi/resources/ui/item.ui:312
+msgid "View this season"
+msgstr "查看本季"
+
+#: crates/tsukimi/resources/ui/item.ui:421
+#: crates/tsukimi/resources/ui/liked.ui:69
+#: crates/tsukimi/resources/ui/single_grid.ui:164
+msgid "Nothing Here"
+msgstr "空空如也"
+
+#: crates/tsukimi/resources/ui/item.ui:447
+msgid "Included In"
+msgstr "包括在"
+
+#: crates/tsukimi/resources/ui/item.ui:452
+msgid "Additional Parts"
+msgstr "附加部分"
+
+#: crates/tsukimi/resources/ui/item.ui:457
+msgid "Seasons"
+msgstr "季"
+
+#: crates/tsukimi/resources/ui/item.ui:462
+#: crates/tsukimi/resources/ui/other.ui:158
+msgid "Actors"
+msgstr "演员"
+
+#: crates/tsukimi/resources/ui/item.ui:468
+msgid "Recommend"
+msgstr "推荐"
+
+#: crates/tsukimi/resources/ui/item.ui:473
+#: crates/tsukimi/resources/ui/other.ui:179
+msgid "Links"
+msgstr "链接"
+
+#: crates/tsukimi/resources/ui/item.ui:506
+msgid "MediaInfo"
+msgstr "媒体信息"
+
+#: crates/tsukimi/resources/ui/liked.ui:70
+msgid "Your favorite items will be placed here"
+msgstr "您收藏的项目将显示在这里"
+
+#: crates/tsukimi/resources/ui/media_viewer.ui:6
+msgid "_Copy Image"
+msgstr "复制图像"
+
+#: crates/tsukimi/resources/ui/media_viewer.ui:46
+#: crates/tsukimi/resources/ui/media_viewer.ui:48
+msgid "Media Menu"
+msgstr "媒体菜单"
+
+#: crates/tsukimi/resources/ui/media_viewer.ui:58
+#: crates/tsukimi/resources/ui/media_viewer.ui:60
+#: crates/tsukimi/resources/ui/mpvpage.ui:420
+#: crates/tsukimi/resources/ui/mpvpage.ui:423
+#: crates/tsukimi/resources/ui/window.ui:17
+#: crates/tsukimi/resources/ui/window.ui:50
+msgid "Fullscreen"
+msgstr "全屏"
+
+#: crates/tsukimi/resources/ui/media_viewer.ui:69
+#: crates/tsukimi/resources/ui/media_viewer.ui:71
+#: crates/tsukimi/resources/ui/mpvpage.ui:437
+#: crates/tsukimi/resources/ui/mpvpage.ui:439
+msgid "Exit Fullscreen"
+msgstr "退出全屏"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:82
+msgid "No data."
+msgstr "没有数据."
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:96
+msgid "Sort Title"
+msgstr "排序标题"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:101
+#: crates/tsukimi/resources/ui/single_grid.ui:107
+msgid "Date Created"
+msgstr "创建日期"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:107
+msgid "Pick Date"
+msgstr "选择日期"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:127
+msgid "Pick Time"
+msgstr "选择时间"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:180
+msgid "Overview"
+msgstr "概览"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:197
+msgid "External Ids"
+msgstr "外部 ID"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:203
+msgid "TheMovieDb Id"
+msgstr "TMDb Id"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:208
+msgid "TheTVDb Id"
+msgstr "TVDb Id"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:213
+msgid "IMDb Id"
+msgstr "IMDb Id"
+
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:221
+msgid "Lock The Item"
+msgstr "锁定此项目"
+
+#: crates/tsukimi/resources/ui/missing_episodes.ui:6
+#: crates/tsukimi/resources/ui/missing_episodes.ui:36
+msgid "Missing Episodes"
+msgstr "缺失剧集"
+
+#: crates/tsukimi/resources/ui/missing_episodes.ui:60
+msgid "Specials"
+msgstr "特殊"
+
+#: crates/tsukimi/resources/ui/missing_episodes.ui:72
+msgid "Upcoming"
+msgstr "即将到来"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:5
+#: crates/tsukimi/resources/ui/window.ui:444
+msgid "Advanced Settings"
+msgstr "高级设置"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:18
+msgid "Seek Action"
+msgstr "进度"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:21
+msgid "Playback speed"
+msgstr "播放速度"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:42
+msgid "Seek Backward"
+msgstr "向后跳转"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:43
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:63
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:115
+msgid "Unit: Seconds"
+msgstr "单位: 秒"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:62
+msgid "Seek Forward"
+msgstr "向前跳转"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:93
+msgid "Show Buffer Speed"
+msgstr "显示缓冲速度"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:98
+msgid "Cache Size"
+msgstr "缓存大小"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:99
+msgid "Unit: MB"
+msgstr "单位: MB"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:114
+msgid "Cache Time"
+msgstr "缓存时间"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:132
+#: crates/tsukimi/resources/ui/mpvpage.ui:371
+msgid "Subtitle"
+msgstr "字幕"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:135
+msgid "Subtitle Composing"
+msgstr "字幕编排"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:206
+msgid "Position"
+msgstr "位置"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:226
+msgid "Subtitle Text Size"
+msgstr "字幕文本大小"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:227
+msgid "This option only takes effect for srt subtitles"
+msgstr "此选项仅对 SRT 字幕生效"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:247
+msgid "Subtitle Text Scale"
+msgstr "字幕文本比例"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:248
+msgid "This affects ASS subtitles as well"
+msgstr "这也会影响 ASS 字幕"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:269
+msgid "Subtitle Text Font"
+msgstr "字幕文本字体"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:271
+msgid ""
+"Specify font to use for subtitles that do not themselves specify a "
+"particular font"
+msgstr "指定不指定特定字体的字幕使用的字体"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:296
+msgid "Border Style"
+msgstr "边框样式"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:301
+msgid "Outline and shadow"
+msgstr "轮廓和阴影"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:302
+msgid "Opaque box"
+msgstr "不透明框"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:303
+msgid "Background box"
+msgstr "背景框"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:311
+msgid "Border Size"
+msgstr "边框大小"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:342
+msgid "Stretch Image Subtitles to Screen"
+msgstr "将图像字幕拉伸至全屏"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:349
+msgid "Subtitle Color"
+msgstr "字幕颜色"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:362
+msgid "Text"
+msgstr "文本"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:380
+msgid "Border"
+msgstr "边框"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:418
+msgid "Subtitle Offset"
+msgstr "字幕偏移"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:431
+msgid "Offset"
+msgstr "偏移"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:432
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:481
+msgid "Unit: ms"
+msgstr "单位: ms"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:467
+#: crates/tsukimi/resources/ui/mpvpage.ui:359
+#: crates/tsukimi/resources/ui/search.ui:78
+msgid "Audio"
+msgstr "音频"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:480
+msgid "Audio Offset"
+msgstr "音频偏移"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:496
+msgid "Audio Channel"
+msgstr "音频通道"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:501
+msgid "Auto"
+msgstr "自动"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:502
+msgid "Auto (Safety)"
+msgstr "自动(安全)"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:503
+msgid "Mono"
+msgstr "单声道"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:504
+msgid "Dual Channel"
+msgstr "双声道"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:505
+msgid "Dual Channel (Invert)"
+msgstr "双声道(反转)"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:515
+#: crates/tsukimi/resources/ui/other.ui:152
+#: crates/tsukimi/resources/ui/search.ui:84
+msgid "Video"
+msgstr "视频"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:518
+msgid "Video Aspect"
+msgstr "视频长宽比"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:523
+msgid "Fit"
+msgstr "适应"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:524
+msgid "Crop"
+msgstr "裁剪"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:532
+msgid "Video color grading"
+msgstr "视频调色"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:545
+msgid "Brightness"
+msgstr "亮度"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:560
+msgid "Contrast"
+msgstr "对比度"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:575
+msgid "Saturation"
+msgstr "饱和度"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:590
+msgid "Hue"
+msgstr "色调"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:605
+msgid "Gamma"
+msgstr "伽马"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:622
+msgid "Video Deband"
+msgstr "视频去色带"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:645
+msgid "Deband Iterations"
+msgstr "去色带迭代次数"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:660
+msgid "Deband Threshold"
+msgstr "去色带阈值"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:675
+msgid "Deband Range"
+msgstr "去色带范围"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:690
+msgid "Deband Grain"
+msgstr "去色带颗粒"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:708
+msgid "Video Deinterlace"
+msgstr "视频反交错"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:713
+msgid "Video Upscale"
+msgstr "视频升频算法"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:736
+msgid "Action after video ends"
+msgstr "视频结束后的动作"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:739
+msgid "Play Next"
+msgstr "自动连播"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:752
+msgid "Loop Playback"
+msgstr "循环播放"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:766
+msgid "Stop"
+msgstr "播完暂停"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:782
+msgid "Hardware decoding"
+msgstr "硬件解码"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:786
+msgid "no (default)"
+msgstr "无 (默认)"
+
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:830
+msgid "Not all settings will be saved"
+msgstr "不是所有的设置都会被保存"
+
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:12
+#: crates/tsukimi/resources/ui/mpvpage.ui:255
+msgid "Backward"
+msgstr "快退"
+
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:42
+#: crates/tsukimi/resources/ui/mpvpage.ui:298
+msgid "Forward"
+msgstr "快进"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:11
+msgid "_Next"
+msgstr "下一集"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:16
+msgid "_Previous"
+msgstr "上一集"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:23
+msgid "Next chapter"
+msgstr "下一章"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:28
+msgid "Previous chapter"
+msgstr "上一章"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:35
+#: crates/tsukimi/resources/ui/mpvpage.ui:179
+#: crates/tsukimi/resources/ui/window.ui:393
+#: crates/tsukimi/resources/ui/window.ui:415
+msgid "Playlist"
+msgstr "播放列表"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:40
+#: crates/tsukimi/resources/ui/mpvpage.ui:407
+msgid "Advanced settings"
+msgstr "高级设置"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:47
+msgid "Media info"
+msgstr "媒体信息"
+
+#: crates/tsukimi/resources/ui/mpv_menu.ui:54
+#: crates/tsukimi/resources/ui/window.ui:35
+#: crates/tsukimi/resources/ui/window.ui:64
+msgid "_Keyboard shortcuts"
+msgstr "快捷键"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:108
+msgid "Stop and quit"
+msgstr "停止并退出"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:165
+msgid "Shortcuts"
+msgstr "快捷键"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:193
+msgid "Media info (MPV)"
+msgstr "媒体信息 (MPV)"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:279
+#: crates/tsukimi/src/ui/mpv/page.rs:419 crates/tsukimi/src/ui/mpv/page.rs:421
+msgid "Pause"
+msgstr "暂停"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:383
+msgid "Adjust Volume"
+msgstr "调整音量"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:9
+msgid "Pause / Resume"
+msgstr "暂停 / 继续"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:15
+msgid "Seek Forward 5 Seconds"
+msgstr "向前跳转 5 秒"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:21
+msgid "Seek Backward 5 Seconds"
+msgstr "向后跳转 5 秒"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:27
+msgid "Seek Forward 60 Seconds"
+msgstr "向前跳转 60 秒"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:33
+msgid "Seek Backward 60 Seconds"
+msgstr "向后跳转 60 秒"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:39
+msgid "Seek Forward 1 Second (Exact)"
+msgstr "向前跳转 1 秒（精确）"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:45
+msgid "Seek Backward 1 Second (Exact)"
+msgstr "向后跳转 1 秒（精确）"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:51
+msgid "Step One Frame Forward"
+msgstr "向前步进一帧"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:57
+msgid "Step One Frame Backward"
+msgstr "向后步进一帧"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:65
+msgid "Playback Speed"
+msgstr "播放速度"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:68
+msgid "Decrease Speed by 10%"
+msgstr "将播放速度降低 10%"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:74
+msgid "Increase Speed by 10%"
+msgstr "将播放速度提高 10%"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:80
+msgid "Halve Playback Speed"
+msgstr "播放速度减半"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:86
+msgid "Double Playback Speed"
+msgstr "播放速度翻倍"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:92
+msgid "Reset Playback Speed"
+msgstr "重置播放速度"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:100
+msgid "Volume"
+msgstr "音量"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:103
+msgid "Increase Volume"
+msgstr "增加音量"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:109
+msgid "Decrease Volume"
+msgstr "降低音量"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:115
+msgid "Mute / Unmute"
+msgstr "静音 / 解除静音"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:121
+msgid "Increase Volume (Numpad)"
+msgstr "增加音量（小键盘）"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:127
+msgid "Decrease Volume (Numpad)"
+msgstr "降低音量（小键盘）"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:135
+msgid "Subtitles"
+msgstr "字幕"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:138
+msgid "Cycle Subtitle Tracks Forward"
+msgstr "切换到下一字幕轨"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:144
+msgid "Cycle Subtitle Tracks Backward"
+msgstr "切换到上一字幕轨"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:150
+msgid "Toggle Subtitle Visibility"
+msgstr "切换字幕可见性"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:156
+msgid "Decrease Subtitle Delay"
+msgstr "降低字幕偏移"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:162
+msgid "Increase Subtitle Delay"
+msgstr "增加字幕偏移"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:168
+msgid "Increase Subtitle Font Size"
+msgstr "增大字幕字体"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:174
+msgid "Decrease Subtitle Font Size"
+msgstr "减小字幕字体"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:182
+msgid "Tracks"
+msgstr "音视频轨"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:185
+msgid "Cycle Audio Tracks"
+msgstr "切换音频轨"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:191
+msgid "Cycle Video Tracks"
+msgstr "切换视频轨"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:199
+msgid "Chapters and Playlist"
+msgstr "章节与播放列表"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:202
+msgid "Previous Chapter"
+msgstr "上一章"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:208
+msgid "Next Chapter"
+msgstr "下一章"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:214
+msgid "Previous Playlist Entry"
+msgstr "上一播放列表项"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:220
+msgid "Next Playlist Entry"
+msgstr "下一播放列表项"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:231
+msgid "Toggle Fullscreen"
+msgstr "切换全屏"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:237
+msgid "Set / Clear A-B Loop Points"
+msgstr "设置 / 清除 A-B 循环点"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:243
+msgid "Toggle Infinite Loop"
+msgstr "切换循环播放"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:249
+msgid "Display Statistics"
+msgstr "显示统计信息"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:255
+msgid "Quit"
+msgstr "退出"
+
+#: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:261
+msgid "Quit and Save Position"
+msgstr "退出并保存位置"
+
+#: crates/tsukimi/resources/ui/other.ui:113
+#: crates/tsukimi/src/ui/widgets/tu_overview_item.rs:239
+msgid "No Inscriptions"
+msgstr "无内容"
+
+#: crates/tsukimi/resources/ui/other.ui:140
+#: crates/tsukimi/resources/ui/search.ui:48
+msgid "Series"
+msgstr "系列"
+
+#: crates/tsukimi/resources/ui/other.ui:146
+#: crates/tsukimi/resources/ui/search.ui:90
+msgid "Episode"
+msgstr "剧集"
+
+#: crates/tsukimi/resources/ui/player_toolbar.ui:104
+msgid "Previous"
+msgstr "上一个"
+
+#: crates/tsukimi/resources/ui/player_toolbar.ui:134
+msgid "Next"
+msgstr "下一个"
+
+#: crates/tsukimi/resources/ui/player_toolbar.ui:206
+msgid "Stop And Hide PlayerBar"
+msgstr "停止并隐藏播放器栏"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:11
+msgid "Remove"
+msgstr "删除"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:17
+msgid "Like"
+msgstr "收藏"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:23
+msgid "Unlike"
+msgstr "从收藏中移除"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:63
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:554
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:555
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:560
+msgid "Remove Identification"
+msgstr "删除标识"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:71
+msgid "View Missing Episodes"
+msgstr "查看缺失剧集"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:79
+#: crates/tsukimi/resources/ui/refresh_dialog.ui:8
+msgid "Refresh Metadata"
+msgstr "刷新元数据"
+
+#: crates/tsukimi/resources/ui/pop-menu.ui:85
+msgid "Scan"
+msgstr "扫描"
+
+#: crates/tsukimi/resources/ui/refresh_dialog.ui:30
+msgid "Replace All Metadata"
+msgstr "替换所有元数据"
+
+#: crates/tsukimi/resources/ui/refresh_dialog.ui:39
+msgid "Replace All Images"
+msgstr "替换所有图像"
+
+#: crates/tsukimi/resources/ui/refresh_dialog.ui:49
+#: crates/tsukimi/resources/ui/server_action_row.ui:41
+msgid "Refresh"
+msgstr "刷新"
+
+#: crates/tsukimi/resources/ui/search.ui:60
+#: crates/tsukimi/src/ui/widgets/list.rs:130
+msgid "BoxSet"
+msgstr "合集"
+
+#: crates/tsukimi/resources/ui/search.ui:66
+msgid "Person"
+msgstr "艺术家"
+
+#: crates/tsukimi/resources/ui/search.ui:72
+msgid "Music Album"
+msgstr "音乐专辑"
+
+#: crates/tsukimi/resources/ui/search.ui:166
+msgid "Nothing Here or No type selected"
+msgstr "无内容或未选择类型"
+
+#: crates/tsukimi/resources/ui/search.ui:167
+msgid "Maybe you should try using different search terms"
+msgstr "也许您可以尝试使用不同的搜索词"
+
+#: crates/tsukimi/resources/ui/server_action_row.ui:23
+msgid "Drag to reorder"
+msgstr "拖动以重新排序"
+
+#: crates/tsukimi/resources/ui/server_panel.ui:47
+msgid "Restart Server"
+msgstr "重启服务器"
+
+#: crates/tsukimi/resources/ui/server_panel.ui:58
+msgid "Shutdown Server"
+msgstr "关闭服务器"
+
+#: crates/tsukimi/resources/ui/server_panel.ui:78
+msgid "System Logs"
+msgstr "系统日志"
+
+#: crates/tsukimi/resources/ui/server_panel.ui:83
+msgid "Activity Logs"
+msgstr "活动日志"
+
+#: crates/tsukimi/resources/ui/server_panel.ui:103
+msgid "Tasks"
+msgstr "任务"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:32
+msgid "Change Poster"
+msgstr "修改视图"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:38
+msgid "View"
+msgstr "视图"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:65
+msgid "Grid View"
+msgstr "网络视图"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:72
+msgid "List View"
+msgstr "列表视图"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:84
+msgid "Ascending"
+msgstr "升序"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:91
+msgid "Descending"
+msgstr "降序"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:101
+msgid "Sort By"
+msgstr "排序方式"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:106
+#: crates/tsukimi/src/ui/widgets/item.rs:1109
+msgid "Bitrate"
+msgstr "比特率"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:108
+msgid "Imdb Rate"
+msgstr "Imdb 评分"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:109
+msgid "Critic Rating"
+msgstr "影评人评分"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:110
+msgid "Premiere Date"
+msgstr "首映日期"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:111
+msgid "Offical Rating"
+msgstr "官方评分"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:112
+msgid "Production Year"
+msgstr "出品年份"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:113
+msgid "Date Played"
+msgstr "播放日期"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:114
+msgid "Runtime"
+msgstr "播放时长"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:115
+msgid "Updated At"
+msgstr "更新日期"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:179
+msgid "Poster"
+msgstr "海报"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:183
+msgid "Backdrop"
+msgstr "背景图"
+
+#: crates/tsukimi/resources/ui/single_grid.ui:187
+msgid "Banner"
+msgstr "横幅"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:25
+#: crates/tsukimi/resources/ui/theme_switcher.ui:27
+msgid "Follow system style"
+msgstr "跟随系统风格"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:43
+#: crates/tsukimi/resources/ui/theme_switcher.ui:45
+msgid "Light style"
+msgstr "浅色风格"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:61
+#: crates/tsukimi/resources/ui/theme_switcher.ui:63
+msgid "Dark style"
+msgstr "深色风格"
+
+#: crates/tsukimi/resources/ui/window.ui:11
+msgid "Sign out"
+msgstr "登出"
+
+#: crates/tsukimi/resources/ui/window.ui:25
+#: crates/tsukimi/resources/ui/window.ui:54
+msgid "Preferences"
+msgstr "首选项"
+
+#: crates/tsukimi/resources/ui/window.ui:31
+#: crates/tsukimi/resources/ui/window.ui:60
+msgid "About"
+msgstr "关于"
+
+#: crates/tsukimi/resources/ui/window.ui:44
+msgid "Add server"
+msgstr "添加服务器"
+
+#: crates/tsukimi/resources/ui/window.ui:163
+msgid "No Server"
+msgstr "暂无服务器"
+
+#: crates/tsukimi/resources/ui/window.ui:166
+msgid "Add Server"
+msgstr "添加服务器"
+
+#: crates/tsukimi/resources/ui/window.ui:205
+msgid "Log Out"
+msgstr "登出"
+
+#: crates/tsukimi/resources/ui/window.ui:246
+msgid "Contents"
+msgstr "目录"
+
+#: crates/tsukimi/resources/ui/window.ui:249
+#: crates/tsukimi/src/ui/widgets/window.rs:283
+msgid "Home"
+msgstr "首页"
+
+#: crates/tsukimi/resources/ui/window.ui:255
+#: crates/tsukimi/src/ui/widgets/list.rs:133
+#: crates/tsukimi/src/ui/widgets/window.rs:295
+msgid "Liked"
+msgstr "收藏"
+
+#: crates/tsukimi/resources/ui/window.ui:269
+msgid "Servers"
+msgstr "服务器"
+
+#: crates/tsukimi/src/client/error.rs:19
+msgid "Timeout Error, Check your internet connection"
+msgstr "连接超时，请检查您的网络"
+
+#: crates/tsukimi/src/client/error.rs:22
+msgid "Connection Error, Check your internet connection"
+msgstr "连接错误, 请检查您的网络"
+
+#: crates/tsukimi/src/ui/mpv/control_sidebar.rs:531
+msgid "Video filter settings cleared."
+msgstr "视频滤镜设置已清除。"
+
+#: crates/tsukimi/src/ui/mpv/control_sidebar.rs:555
+msgid "Subtitle settings cleared."
+msgstr "字幕设置已清除。"
+
+#: crates/tsukimi/src/ui/mpv/control_sidebar.rs:568
+msgid "Subtitle color settings cleared."
+msgstr "字幕颜色设置已清除。"
+
+#: crates/tsukimi/src/ui/mpv/control_sidebar.rs:577
+msgid "Subtitle offset settings cleared."
+msgstr "字幕偏移设置已清除。"
+
+#: crates/tsukimi/src/ui/mpv/control_sidebar.rs:619
+msgid "Deband settings cleared."
+msgstr "去色带设置已清除。"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:37
+#, fuzzy, rust-format
+msgid "{count} Danmaku Loaded"
+msgstr "无弹幕加载"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:45
+#, fuzzy
+msgid "Searching"
+msgstr "搜索"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:46
+#, fuzzy
+msgid "Loading"
+msgstr "正在载入..."
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:49
+#, fuzzy
+msgid "No danmaku found"
+msgstr "无弹幕加载"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:51
+msgid "This feature requires an official build"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:53
+msgid "Disabled"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:54
+msgid "Maybe there is something wrong"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:60
+msgid "From play (Auto Matched)"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:62
+msgid "From play (Manually Matched)"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:185
+msgid "Enter at least two characters"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:207
+#, fuzzy
+msgid "No matching anime found"
+msgstr "未找到转码URL"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:211
+#, fuzzy
+msgid "Search failed"
+msgstr "搜索"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:242
+#, fuzzy
+msgid "Invalid episode ID"
+msgstr "正则表达式无效"
+
+#: crates/tsukimi/src/ui/mpv/page.rs:1079
+msgid "Skip Intro"
+msgstr "跳过片头"
+
+#: crates/tsukimi/src/ui/mpv/page.rs:1080
+msgid "Skip Outro"
+msgstr "跳过片尾"
+
+#: crates/tsukimi/src/ui/mpv/page.rs:1234
+msgid "No more video found"
+msgstr "未找到更多视频"
+
+#: crates/tsukimi/src/ui/mpv/page.rs:1345
+msgid ""
+"MPV has been shutdown, Application will exit.\n"
+"Tsukimi can't restart MPV."
+msgstr ""
+"MPV 已关闭，应用将退出。\n"
+"Tsukimi 无法重新启动 MPV。"
+
+#: crates/tsukimi/src/ui/provider/tu_item.rs:638
+msgid "No next up video found"
+msgstr "未找到下一个视频"
+
+#: crates/tsukimi/src/ui/provider/tu_item.rs:667
+#: crates/tsukimi/src/ui/widgets/tu_overview_item.rs:276
+msgid "Present"
+msgstr "现在"
+
+#: crates/tsukimi/src/ui/provider/tu_item.rs:675
+#: crates/tsukimi/src/ui/provider/tu_item.rs:693
+#: crates/tsukimi/src/ui/provider/tu_item.rs:716
+#: crates/tsukimi/src/ui/provider/tu_item.rs:739
+#: crates/tsukimi/src/ui/provider/tu_item.rs:742
+msgid "Unknown"
+msgstr "未知"
+
+#: crates/tsukimi/src/ui/widgets/account_add.rs:145
+msgid "Fields must be filled in"
+msgstr "字段必须填入"
+
+#: crates/tsukimi/src/ui/widgets/account_add.rs:195
+msgid "Server edited successfully"
+msgstr "服务器编辑成功"
+
+#: crates/tsukimi/src/ui/widgets/account_add.rs:200
+msgid "Server added successfully"
+msgstr "服务器添加成功"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:236
+msgid "Password cannot be empty!"
+msgstr "密码不能为空！"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:240
+msgid "Passwords do not match!"
+msgstr "密码不匹配！"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:247
+msgid "Password changed successfully! Please login again."
+msgstr "密码修改成功！请重新登录。"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:251
+msgid "Failed to change password"
+msgstr "更改密码失败"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:285
+msgid "Cache Cleared"
+msgstr "缓存已清除"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:306
+msgid "No file selected"
+msgstr "未选择文件"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:543
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:552
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:586
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:595
+msgid "Descriptor cannot be empty!"
+msgstr "描述符不能为空！"
+
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:557
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:600
+msgid "Invalid regex"
+msgstr "正则表达式无效"
+
+#: crates/tsukimi/src/ui/widgets/home.rs:395
+msgid "Latest"
+msgstr "最新的"
+
+#: crates/tsukimi/src/ui/widgets/identify/dialog.rs:140
+msgid "Failed to get path"
+msgstr "获取路径失败"
+
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:127
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:148
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:286
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:495
+msgid "Are you sure you wish to continue?"
+msgstr "确认要继续吗？"
+
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:131
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:152
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:290
+msgid "Ok"
+msgstr "好的"
+
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:134
+msgid "Replace existing images"
+msgstr "替换现有图片"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_adw_dialog.rs:130
+msgid "View Images"
+msgstr "查看图像"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_edit_dialog_page.rs:182
+msgid "Image saved"
+msgstr "保存的图像"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_edit_dialog_page.rs:187
+msgid "Failed to load image"
+msgstr "加载图像失败"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:159
+msgid "No image to view"
+msgstr "没有图像可查看"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:175
+msgid "No image to copy"
+msgstr "没有图像可复制"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:179
+#: crates/tsukimi/src/ui/widgets/media_viewer.rs:349
+msgid "Image copied to clipboard"
+msgstr "图像已复制到剪贴板"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:218
+msgid "Image deleted"
+msgstr "图片已删除"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:223
+msgid "Error deleting image"
+msgstr "删除图像出错"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/image_infocard.rs:254
+msgid "Error loading image"
+msgstr "加载图像时出错"
+
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:146
+msgid "Replace Image"
+msgstr "替换图片"
+
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:121
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:98
+msgid "Success"
+msgstr "成功"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:356
+msgid "No episode selected"
+msgstr "未选择集"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:357
+msgid "Select an episode"
+msgstr "选择一集"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:700
+#: crates/tsukimi/src/ui/widgets/list.rs:129
+msgid "Resume"
+msgstr "续播"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1099
+msgid "Codec"
+msgstr "编解码器"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1102
+msgid "Language"
+msgstr "语言"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1114
+msgid "BitDepth"
+msgstr "位深度"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1118
+msgid "SampleRate"
+msgstr "采样率"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1122
+msgid "Height"
+msgstr "高度"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1125
+msgid "Width"
+msgstr "宽度"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1128
+msgid "ColorSpace"
+msgstr "色彩空间"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1132
+msgid "DisplayTitle"
+msgstr "显示标题"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1136
+msgid "Channel"
+msgstr "声道"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1140
+msgid "ChannelLayout"
+msgstr "声道布局"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1145
+msgid "AverageFrameRate"
+msgstr "平均帧率"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1149
+msgid "PixelFormat"
+msgstr "像素格式"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1258
+msgid "No video source found"
+msgstr "未找到视频源"
+
+#: crates/tsukimi/src/ui/widgets/item.rs:1331
+msgid "Season not found. Is this a continue watching list?"
+msgstr "未找到该季，确认不是继续观看列表吗？"
+
+#: crates/tsukimi/src/ui/widgets/liked.rs:155
+msgid "Favourite"
+msgstr "收藏"
+
+#: crates/tsukimi/src/ui/widgets/list.rs:121
+msgid "Channels"
+msgstr "频道"
+
+#: crates/tsukimi/src/ui/widgets/list.rs:128
+msgid "All"
+msgstr "全部"
+
+#: crates/tsukimi/src/ui/widgets/list.rs:134
+msgid "Folder"
+msgstr "文件夹"
+
+#: crates/tsukimi/src/ui/widgets/missing_episodes_dialog.rs:147
+msgid "Special"
+msgstr "特别"
+
+#: crates/tsukimi/src/ui/widgets/music_album.rs:241
+msgid "Songs"
+msgstr "歌曲"
+
+#: crates/tsukimi/src/ui/widgets/music_album.rs:343
+msgid "More From"
+msgstr "更多来自"
+
+#: crates/tsukimi/src/ui/widgets/refresh_dialog.rs:94
+msgid "Scanning..."
+msgstr "正在扫描..."
+
+#: crates/tsukimi/src/ui/widgets/search.rs:198
+msgid "No overview"
+msgstr "无概览"
+
+#: crates/tsukimi/src/ui/widgets/server_action_row.rs:128
+msgid "Edit Server"
+msgstr "编辑服务器"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:119
+msgid "Shut down server"
+msgstr "关闭服务器"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:120
+msgid "Are you sure you want to shut down the server?"
+msgstr "您确定要关闭服务器吗？"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:151
+msgid "Restart server"
+msgstr "重启服务器"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:152
+msgid "Are you sure you want to restart the server?"
+msgstr "您确定要重启服务器吗？"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:155
+msgid "Revert"
+msgstr "取消"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:156
+msgid "Confirm"
+msgstr "确认"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:192
+msgid "Server is shutting down"
+msgstr "服务器正在关闭"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:204
+msgid "Server is restarting"
+msgstr "服务器正在重启"
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:291
+msgid "Last execute: "
+msgstr "上次执行时间： "
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:296
+msgid "Duration: "
+msgstr "持续时间： "
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:301
+msgid "Result: "
+msgstr "结果： "
+
+#: crates/tsukimi/src/ui/widgets/server_panel.rs:347
+msgid "Task started"
+msgstr "任务开始"
+
+#: crates/tsukimi/src/ui/widgets/single_grid.rs:486
+msgid "Items"
+msgstr "项目"
+
+#: crates/tsukimi/src/ui/widgets/star_toggle.rs:65
+msgid "Remove from favorites"
+msgstr "从收藏中删除"
+
+#: crates/tsukimi/src/ui/widgets/star_toggle.rs:70
+msgid "Add to favorites"
+msgstr "添加到收藏"
+
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:489
+msgid "Delete Item"
+msgstr "删除项目"
+
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:493
+msgid ""
+"Deleting this item will delete it from both the file system and your media "
+"library.\n"
+"The following files and folders will be deleted:"
+msgstr ""
+"删除该项目将同时将它从文件系统和媒体库中删除。\n"
+"以下的文件和文件夹将被删除："
+
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:556
+msgid "Are you sure you wish to reset all metadata?"
+msgstr "您确定要重置所有元数据吗？"
+
+#: crates/tsukimi/src/ui/widgets/window.rs:794
+msgid "Server Panel"
+msgstr "服务器面板"
+
+#: crates/tsukimi/src/ui/widgets/window.rs:966
+msgid "Fatal Error"
+msgstr "致命错误"
+
+#: crates/tsukimi/src/ui/widgets/window.rs:969
+msgid "Copy Error & Close"
+msgstr "复制错误并关闭"
+
+#. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
+#: crates/tsukimi/src/ui/widgets/window.rs:998
+msgid "translator-credits"
+msgstr ""
+"Gracealina clover <zhiweishuisheng@gmail.com>\n"
+"dyphire <qimoge@gmail.com>"
+
+#, fuzzy
+#~| msgid "Contents"
+#~ msgid "GPU Context"
+#~ msgstr "目录"
+
+#~ msgid "Failed to realize GLArea"
+#~ msgstr "无法初始化 GLArea"
+
+#~ msgid "Failed to get GLContext"
+#~ msgstr "获取 GLContext 失败"
+
+#~ msgid "Video Output"
+#~ msgstr "视频输出"
+
+#~ msgid "Only for debugging"
+#~ msgstr "仅用于调试"
+
+#~ msgid "libmpv (default)"
+#~ msgstr "libmpv (默认)"
+
+#~ msgid "Waiting for mediasource ..."
+#~ msgstr "正在等待媒体源..."
+
+#~ msgid "Halve/double current playback speed"
+#~ msgstr "将当前播放速度减半/加倍"
+
+#~ msgid "Reset playback speed to normal"
+#~ msgstr "重置播放速度"
+
+#~ msgid "Restart App To Take Effect"
+#~ msgstr "重启应用程序生效"
+
+#~ msgid "Windows Alert"
+#~ msgstr "Windows 警告"
+
+#~ msgid ""
+#~ "It seems you're using Tsukimi on Windows. Please note that GTK used by "
+#~ "this application is designed for Linux, and no functionality is "
+#~ "guaranteed to work on Windows, including but not limited to video "
+#~ "rendering, audio playback, network connections, and external links. "
+#~ "Additionally, there are known issues that cannot be fixed, such as black "
+#~ "borders, image rendering, font rendering, DPI scaling, video rendering, "
+#~ "GL renderer, fullscreen mode, HDR, and locale detection. \n"
+#~ "If you wish to open an issue, please ensure that it is related to this "
+#~ "software and not an upstream issue. Choose the appropriate issue template "
+#~ "and fill in all required fields without any omissions."
+#~ msgstr ""
+#~ "您似乎正在 Windows 上使用 Tsukimi。请注意，此应用程序使用的 GTK 框架是为 "
+#~ "Linux 设计的，所有功能都无法保证在 Windows 上正常运行，包括但不限于视频渲"
+#~ "染、音频回放、网络连接和外部链接。此外，还存在一些无法修复的已知问题，例如"
+#~ "黑边、图片渲染、字体渲染、DPI 缩放、视频渲染、GL 渲染器、全屏模式、HDR 和"
+#~ "区域检测。\n"
+#~ "如果您希望提交问题，请确保问题与此软件相关，而非上游问题。选择合适的问题模"
+#~ "板，并完整填写所有必填项，不要遗漏任何信息。"
+
+#~ msgid "Close"
+#~ msgstr "关闭"
+
+#~ msgid ""
+#~ "This feature may cause significant lag. Please enable it with caution."
+#~ msgstr "此功能可能会造成严重性能问题，请谨慎启用。"
+
+#~ msgid "Blur (Experimental)"
+#~ msgstr "模糊（实验性）"
+
+#~ msgid "Warning: High GPU usage"
+#~ msgstr "警告: GPU 使用率较高"
+
+#~ msgid "Blur Radius (Experimental)"
+#~ msgstr "模糊半径（实验性）"
+
+#~ msgid "Not implemented"
+#~ msgstr "未实现"
+
+#~ msgid "Margin &amp; Size"
+#~ msgstr "边距 &amp; 大小"
+
+#~ msgid "Top padding"
+#~ msgstr "顶部内边距"
+
+#~ msgid "Font family"
+#~ msgstr "字体系列"
+
+#~ msgid "Scroll danmaku max lines"
+#~ msgstr "滚动弹幕最大显示行数"
+
+#~ msgid "Topcenter danmaku max lines"
+#~ msgstr "顶部居中弹幕最大显示行数"
+
+#~ msgid "Bottomcenter danmaku max lines"
+#~ msgstr "底部居中弹幕最大显示行数"
+
+#~ msgid "API from DanDanPlay"
+#~ msgstr "来自 DanDanPlay 的 API"
+
+#~ msgid "Font Cleared, Restart to take effect."
+#~ msgstr "字体已清除，重启以生效。"
+
+#~ msgid "Item deleted"
+#~ msgstr "删除的项目"
+
+#~ msgid "Initializing..."
+#~ msgstr "初始化中..."
+
+#~ msgid "No media source found"
+#~ msgstr "未找到媒体源"
+
+#~ msgid "Post Scale"
+#~ msgstr "海报缩放"
+
+#~ msgid "Font Scale"
+#~ msgstr "字体缩放"
+
+#~ msgid "Font Family"
+#~ msgstr "字体族"
+
+#~ msgid "Disable Client Side Decoration"
+#~ msgstr "禁用客户端装饰"
+
+#~ msgid "This may helpful for eliminating black border in specific platforms."
+#~ msgstr "这可能有助于消除特定平台上的黑边。"
+
+#~ msgid "Processing..."
+#~ msgstr "处理中..."
+
+#~ msgid "No mediasource found"
+#~ msgstr "未找到媒体源"
+
+#~ msgid "Loading Video..."
+#~ msgstr "正在载入视频..."
+
+#~ msgid "No more videos found"
+#~ msgstr "未找到更多视频"
+
+#~ msgid "Waiting for mediasource..."
+#~ msgstr "正在等待媒体源..."
+
+#~ msgid "No media sources found"
+#~ msgstr "暂未找到媒体源"
+
+#~ msgid "View Metadata"
+#~ msgstr "查看元数据"
+
+#~ msgid "Accent Foreground Color"
+#~ msgstr "前景强调色"
+
+#~ msgid "Music"
+#~ msgstr "音乐"
+
+#~ msgid "Player"
+#~ msgstr "播放器"
+
+#~ msgid ""
+#~ "Warning: Do NOT use any method other than the software's own controls to "
+#~ "control the window. Restart to take effect"
+#~ msgstr "警告: 不要使用 Tsukimi 控制窗口以外的窗口控件。重启生效"
+
+#~ msgid "Load external mpv config"
+#~ msgstr "加载外部 mpv 配置"
+
+#~ msgid "May cause crashes, Requires restart"
+#~ msgstr "可能会造成崩溃，重启生效"
+
+#~ msgid "_Add"
+#~ msgstr "添加"
+
+#~ msgid "Name (Nullable)"
+#~ msgstr "名称(可为空)"
+
+#~ msgid "Server Address (Auto parse)"
+#~ msgstr "服务器地址(自动解析)"
+
+#~ msgid "Password (Nullable)"
+#~ msgstr "密码(可为空)"
+
+#~ msgid "_Save"
+#~ msgstr "保存"
+
+#~ msgid "Artists"
+#~ msgstr "艺人"
+
+#~ msgid "Album Artists"
+#~ msgstr "专辑艺人"
+
+#~ msgid "Album"
+#~ msgstr "专辑"
+
+#~ msgid "Track Number"
+#~ msgstr "轨道编号"
+
+#~ msgid "Official Rating"
+#~ msgstr "官方评级"
+
+#~ msgid "Container"
+#~ msgstr "容器"
+
+#~ msgid "Encoder"
+#~ msgstr "编码器"
+
+#~ msgid "This only effects on getting images/updating cache"
+#~ msgstr "这仅对获取图像/更新缓存有影响"
+
+#~ msgid "View Metadata (Read Only)"
+#~ msgstr "查看元数据 (只读)"
+
+#~ msgid "This only effects on getting images"
+#~ msgstr "这仅对获取海报墙图片产生影响"
+
+#~ msgid "Error"
+#~ msgstr "错误"
+
+#~ msgid ""
+#~ "MPV has been shutdown, Application will exit. \n"
+#~ "Tsukimi can't restart MPV."
+#~ msgstr ""
+#~ "MPV 已被关闭，应用即将退出。\n"
+#~ "Tsukimi 无法重启 MPV。"
+
+#~ msgid "Shutdown"
+#~ msgstr "关闭"
+
+#~ msgid "Read from mpv config dir"
+#~ msgstr "从 mpv 配置目录读取"
+
+#~ msgid "Video Filters"
+#~ msgstr "视频调色"
+
+#~ msgid "Video Upscale Filter"
+#~ msgstr "视频升频算法"
+
+#~ msgid "Daily Recommend"
+#~ msgstr "每日推荐"
+
+#~ msgid "HTTP Proxy"
+#~ msgstr "HTTP 代理"
+
+#~ msgid "Video Settings"
+#~ msgstr "视频设置"
+
+#~ msgid "Force Stereo"
+#~ msgstr "强制立体声"
+
+#~ msgid "More"
+#~ msgstr "更多"
+
+#~ msgid "More Video Settings"
+#~ msgstr "更多视频设置"
+
+#~ msgid "Customizing mpv params"
+#~ msgstr "自定义 mpv 参数"
+
+#~ msgid "One param per line"
+#~ msgstr "每行一个参数"
+
+#~ msgid "Font Cleared"
+#~ msgstr "字体已清除"
+
+#~ msgid "_Playlist"
+#~ msgstr "播放列表"
+
+#~ msgid "This currently only applies to the player"
+#~ msgstr "当前仅适用于播放器"
+
+#~ msgid "Estimate Frame Rate"
+#~ msgstr "估计帧率"
+
+#~ msgid ""
+#~ "Use vf filter to interpolate frames to improve the smoothness of resizing "
+#~ "and menus."
+#~ msgstr "使用 vf 滤镜插帧来提高调整大小和菜单的流畅度。"
+
+#~ msgid "Recommended setting value: Current display frame rate"
+#~ msgstr "当前软件显示刷新率推荐设置值"
+
+#~ msgid "Box Set"
+#~ msgstr "合集"
+
+#~ msgid "config=true"
+#~ msgstr "开启配置"
+
+#~ msgid "May cause crashes, with serious performance issues, Requires restart"
+#~ msgstr "可能会造成崩溃，需要重启"
+
+#~ msgid "Disc 1"
+#~ msgstr "盘 1"

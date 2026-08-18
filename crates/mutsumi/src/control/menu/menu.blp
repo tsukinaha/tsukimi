@@ -1,0 +1,47 @@
+using Gtk 4.0;
+
+menu player-menu {
+    section {
+        item {
+            custom: "menu-actions";
+        }
+    }
+
+    section {
+        item {
+            label: _("Next chapter");
+            action: "player.chapter-next";
+            accel: "<Control>N";
+        }
+
+        item {
+            label: _("Previous chapter");
+            action: "player.chapter-prev";
+            accel: "<Control>P";
+        }
+    }
+
+    section {
+        item {
+            label: _("Advanced settings");
+            action: "player.show-settings";
+            accel: "A";
+        }
+    }
+
+    section {
+        item {
+            label: _("Media info");
+            action: "player.show-info";
+            accel: "I";
+        }
+    }
+
+    section {
+        item {
+            label: _("Keyboard shortcuts");
+            action: "player.show-shortcuts";
+            accel: "F1";
+        }
+    }
+}

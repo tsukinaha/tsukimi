@@ -39,7 +39,7 @@ just run
 ```
 
 The `run` recipe installs into `build/dev-prefix/` first, then launches
-`build/src/tsukimi` with `GSETTINGS_SCHEMA_DIR` and `XDG_DATA_DIRS` pointed at
+`build/crates/tsukimi/src/tsukimi` with `GSETTINGS_SCHEMA_DIR` and `XDG_DATA_DIRS` pointed at
 that local install tree so schemas, icons, and bundled resources are found.
 
 To specify debug/release build, run:

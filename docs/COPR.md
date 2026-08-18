@@ -24,7 +24,7 @@ Recommended COPR settings:
 When the selected SCM checkout points at an exact Git tag such as `v26.6.1`,
 `.copr/Makefile` automatically converts that tag into the RPM version
 `26.6.1`. If the checkout is not exactly on a tag, it falls back to the
-version declared in `Cargo.toml`.
+version declared in `crates/tsukimi/Cargo.toml`.
 
 To provide a development snapshot package in the same COPR project, add a
 second package source that uses `tsukimi-git.spec`.
@@ -35,7 +35,7 @@ second package source that uses `tsukimi-git.spec`.
 `tsukimi-git.spec` is intended for building the current HEAD commit. The SRPM
 generator injects:
 
-- `Version` from `Cargo.toml`
+- `Version` from `crates/tsukimi/Cargo.toml`
 - `Release` as `0.<YYYYMMDD>git<shortsha>`
 
 This keeps tagged releases and development snapshots separate while still

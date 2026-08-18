@@ -1,0 +1,31 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $VolumeBar: Adw.Bin {
+    Revealer revealer {
+        reveal-child: false;
+        transition-type: crossfade;
+
+        Box box1 {
+            orientation: vertical;
+            spacing: 12;
+
+            ProgressBar progress {
+                orientation: vertical;
+                inverted: true;
+                height-request: 200;
+                margin-top: 6;
+            }
+
+            Image icon {
+                icon-name: "audio-volume-muted-symbolic";
+                margin-bottom: 6;
+            }
+
+            styles [
+                "volume-bar",
+                "osd",
+            ]
+        }
+    }
+}

@@ -1,5 +1,5 @@
 name: Clippy check
-on: 
+on:
   workflow_call:
 
 jobs:
@@ -29,5 +29,6 @@ jobs:
 
       - name: Lint
         run: |
-          cargo +nightly fmt --check
-          cargo clippy --no-deps --release --all-targets
+          cargo +nightly fmt --all -- --check
+          cargo check --workspace --lib --bins --tests --locked
+          cargo clippy --workspace --lib --bins --tests --locked --no-deps

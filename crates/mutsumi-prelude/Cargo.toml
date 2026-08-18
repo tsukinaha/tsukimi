@@ -1,0 +1,11 @@
+[package]
+name = "mutsumi-prelude"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+description = "Snippet utilities for GTK4 Rust applications"
+license = "MIT"
+
+[dependencies]
+tokio = { version = "1", features = ["rt", "sync"] }
+glib = "0.22"

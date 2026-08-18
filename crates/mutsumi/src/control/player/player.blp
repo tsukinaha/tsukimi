@@ -1,0 +1,764 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $MutsumiPlayer: Adw.Bin {
+    video-title: "Mutsumi Danmaku Video Player";
+    video-subtitle: "uses wl-proxy for rendering";
+    focusable: true;
+    show-sidebar: bind split_view.show-sidebar bidirectional;
+
+    styles [
+        "mutsumi-player",
+    ]
+
+    EventControllerMotion {
+        motion => $on_motion() swapped;
+        leave => $on_leave() swapped;
+        enter => $on_enter() swapped;
+    }
+
+    EventControllerKey {
+        key-pressed => $on_key_pressed() swapped;
+        key-released => $on_key_released() swapped;
+    }
+
+    Adw.ToastOverlay toast_overlay {
+        Adw.OverlaySplitView split_view {
+            sidebar-position: end;
+            show-sidebar: false;
+            collapsed: false;
+            max-sidebar-width: 400;
+            min-sidebar-width: 320;
+
+            sidebar: Adw.ToolbarView sidebar {
+                [top]
+                Adw.HeaderBar {
+                    show-end-title-buttons: false;
+
+                    title-widget: Adw.ViewSwitcher {
+                        policy: wide;
+                        stack: sidebar_stack;
+                    };
+                }
+
+                content: Adw.ViewStack sidebar_stack {
+                    Adw.ViewStackPage {
+                        name: "settings";
+                        title: _("Settings");
+                        icon-name: "settings-symbolic";
+
+                        child: $ControlSidebar control_sidebar {};
+                    }
+
+                    Adw.ViewStackPage playlist_stack_page {
+                        visible: false;
+                        name: "playlist";
+                        title: _("Playlist");
+                        icon-name: "view-list-bullet-symbolic";
+
+                        child: Adw.Bin playlist_page {};
+                    }
+                };
+
+                styles [
+                    "osd",
+                ]
+            };
+
+            content: Overlay content_overlay {
+                $MutsumiVideoPlayer video {}
+
+                GestureClick {
+                    button: 1;
+                    released => $left_click_cb() swapped;
+                }
+
+                GestureClick {
+                    button: 3;
+                    released => $right_click_cb() swapped;
+                }
+
+                EventControllerScroll {
+                    flags: vertical;
+                    scroll => $video_scroll_cb() swapped;
+                }
+
+                [overlay]
+                $Danmakw danmakw {
+                    hexpand: "true";
+                    vexpand: "true";
+                    visible: bind danmaku_switch.active;
+                    opacity: bind danmaku_opacity.value;
+                    speed-factor: bind danmaku_speed_spin.value;
+                    font-size: bind font_size_spin.value;
+                    font-weight: bind font_weight_row.value;
+                    spacing-factor: bind spacing_spin.value;
+                    outline-px: bind outline_spin.value;
+                    shadow-offset: bind shadow_spin.value;
+                }
+
+                [overlay]
+                $VolumeBar volume_bar {
+                    halign: "start";
+                    valign: "center";
+                    margin-start: "10";
+                }
+
+                [overlay]
+                Adw.Bin overlay_status {
+                    halign: center;
+                    valign: center;
+                }
+
+                [overlay]
+                Box loading_box {
+                    visible: false;
+                    valign: center;
+                    halign: center;
+                    orientation: vertical;
+                    height-request: 160;
+                    width-request: 160;
+                    spacing: 20;
+
+                    Adw.Spinner spinner {
+                        halign: center;
+                        valign: center;
+                        height-request: 64;
+                        width-request: 64;
+                        margin-top: 20;
+
+                        styles [
+                            "accent",
+                        ]
+                    }
+
+                    Label network_speed_label {
+                        halign: center;
+                        margin-bottom: 20;
+
+                        styles [
+                            "accent",
+                            "speed-label",
+                        ]
+                    }
+                }
+
+                [overlay]
+                Revealer top_revealer {
+                    transition-type: crossfade;
+                    transition-duration: 800;
+                    reveal-child: false;
+                    halign: fill;
+                    valign: start;
+                    focusable: false;
+
+                    Adw.HeaderBar {
+                        show-start-title-buttons: false;
+                        show-end-title-buttons: false;
+
+                        title-widget: Box {};
+
+                        [start]
+                        Box {
+                            orientation: horizontal;
+                            spacing: 10;
+                            valign: center;
+
+                            Box title_box {
+                                orientation: vertical;
+                                valign: center;
+                                spacing: 0;
+
+                                Label title_label {
+                                    halign: start;
+                                    ellipsize: middle;
+                                    label: bind template.video-title;
+
+                                    styles [
+                                        "heading",
+                                    ]
+                                }
+
+                                Label subtitle_label {
+                                    halign: start;
+                                    ellipsize: middle;
+                                    label: bind template.video-subtitle;
+
+                                    styles [
+                                        "dimmed",
+                                        "caption",
+                                    ]
+                                }
+                            }
+                        }
+
+                        [end]
+                        Box {
+                            orientation: horizontal;
+                            spacing: 6;
+
+                            Button network_speed_button {
+                                valign: center;
+                                visible: bind control_sidebar.show-buffer-speed;
+
+                                child: Adw.ButtonContent {
+                                    icon-name: "speedometer5-symbolic";
+                                    label: bind network_speed_label.label;
+                                };
+
+                                styles [
+                                    "accent",
+                                ]
+                            }
+
+                            Button {
+                                valign: center;
+                                icon-name: "keyboard-shortcuts-symbolic";
+                                tooltip-text: _("Shortcuts");
+                                action-name: "player.show-shortcuts";
+
+                                styles [
+                                    "flat",
+                                    "circular",
+                                ]
+                            }
+
+                            Button _media_info_button {
+                                valign: center;
+                                icon-name: "help-about-symbolic";
+                                focusable: true;
+                                receives-default: true;
+                                tooltip-text: _("Media info");
+                                action-name: "player.show-info";
+
+                                styles [
+                                    "flat",
+                                    "circular",
+                                ]
+                            }
+
+                            WindowControls {
+                                side: end;
+
+                                styles [
+                                    "flat",
+                                ]
+                            }
+                        }
+
+                        styles [
+                            "flat",
+                            "mpv-top-bar",
+                        ]
+                    }
+                }
+
+                [overlay]
+                Revealer bottom_revealer {
+                    transition-type: crossfade;
+                    transition-duration: 800;
+                    reveal-child: false;
+                    halign: fill;
+                    valign: end;
+                    focusable: false;
+
+                    Box {
+                        orientation: vertical;
+                        halign: fill;
+                        hexpand: true;
+                        spacing: 4;
+
+                        CenterBox {
+                            [start]
+                            Box {
+                                orientation: horizontal;
+                                spacing: 10;
+
+                                Button {
+                                    tooltip-text: _("Backward");
+                                    action-name: "player.backward";
+                                    valign: center;
+
+                                    Image {
+                                        icon-name: "seek-backward-large-symbolic";
+                                        pixel-size: 24;
+                                        halign: center;
+                                        valign: center;
+                                    }
+
+                                    styles [
+                                        "circular",
+                                        "flat",
+                                    ]
+                                }
+
+                                Button _play_button {
+                                    height-request: 48;
+                                    width-request: 48;
+                                    focusable: true;
+                                    receives-default: true;
+                                    valign: center;
+                                    tooltip-text: _("Pause");
+                                    action-name: "player.play-pause";
+
+                                    Image play_pause_image {
+                                        icon-name: "media-playback-pause-symbolic";
+                                        pixel-size: 32;
+                                        halign: center;
+                                        valign: center;
+                                    }
+
+                                    styles [
+                                        "flat",
+                                        "mpv-play-button",
+                                        "circular",
+                                    ]
+                                }
+
+                                Button {
+                                    tooltip-text: _("Forward");
+                                    action-name: "player.forward";
+                                    valign: center;
+
+                                    Image {
+                                        icon-name: "seek-forward-large-symbolic";
+                                        pixel-size: 24;
+                                        halign: center;
+                                        valign: center;
+                                    }
+
+                                    styles [
+                                        "circular",
+                                        "flat",
+                                    ]
+                                }
+                            }
+
+                            [end]
+                            Box {
+                                orientation: horizontal;
+                                spacing: 6;
+                                valign: center;
+
+                                Button playback_speed_indicator {
+                                    valign: center;
+                                    margin-end: 6;
+                                    visible: false;
+                                    clicked => $playback_speed_indicator_cb() swapped;
+
+                                    child: Adw.ButtonContent playback_speed_button_content {
+                                        icon-name: "playback-options-symbolic";
+                                    };
+
+                                    styles [
+                                        "accent",
+                                        "monospace",
+                                    ]
+                                }
+
+                                Box {
+                                    orientation: horizontal;
+                                    spacing: 2;
+                                    valign: center;
+
+                                    MenuButton audio_tracks_menu_button {
+                                        popover: audio_tracks_popover;
+                                        icon-name: "audio-x-generic-symbolic";
+                                        tooltip-text: _("Audio");
+                                        valign: center;
+
+                                        styles [
+                                            "flat",
+                                            "circular",
+                                        ]
+                                    }
+
+                                    MenuButton subtitle_tracks_menu_button {
+                                        popover: subtitle_tracks_popover;
+                                        icon-name: "media-view-subtitles-symbolic";
+                                        tooltip-text: _("Subtitle");
+                                        valign: center;
+
+                                        styles [
+                                            "flat",
+                                            "circular",
+                                        ]
+                                    }
+
+                                    MenuButton volume_button {
+                                        popover: volume_adj_popover;
+                                        icon-name: "audio-volume-high-symbolic";
+                                        tooltip-text: _("Adjust Volume");
+                                        valign: center;
+
+                                        styles [
+                                            "flat",
+                                            "circular",
+                                        ]
+                                    }
+
+                                    MenuButton danmaku_button {
+                                        popover: danmaku_popover;
+                                        icon-name: "card-bulleted-symbolic";
+                                        tooltip-text: _("Danmaku Options");
+                                        valign: center;
+
+                                        styles [
+                                            "flat",
+                                            "circular",
+                                        ]
+                                    }
+
+                                    Button {
+                                        icon-name: "dock-right-symbolic";
+                                        action-name: "player.show-settings";
+                                        tooltip-text: _("Sidebar");
+                                        valign: center;
+
+                                        styles [
+                                            "flat",
+                                            "circular",
+                                        ]
+                                    }
+
+                                    Button {
+                                        visible: bind template.fullscreened inverted;
+                                        icon-name: "view-fullscreen-symbolic";
+                                        action-name: "player.toggle-fullscreen";
+                                        tooltip-text: _("Fullscreen");
+                                        valign: center;
+
+                                        accessibility {
+                                            label: _("Fullscreen");
+                                        }
+
+                                        styles [
+                                            "flat",
+                                            "circular",
+                                        ]
+                                    }
+
+                                    Button {
+                                        visible: bind template.fullscreened;
+                                        icon-name: "view-restore-symbolic";
+                                        action-name: "player.toggle-fullscreen";
+                                        valign: center;
+                                        tooltip-text: _("Exit Fullscreen");
+
+                                        accessibility {
+                                            label: _("Exit Fullscreen");
+                                        }
+
+                                        styles [
+                                            "flat",
+                                            "circular",
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+
+                        Box {
+                            orientation: horizontal;
+                            spacing: 8;
+
+                            Label progress_time_label {
+                                focusable: false;
+                                halign: start;
+                                valign: center;
+                                label: "0:00";
+
+                                styles [
+                                    "numeric",
+                                ]
+                            }
+
+                            $VideoScale video_scale {
+                                focusable: "True";
+                                valign: "center";
+                                hexpand: "True";
+                                draw-value: "False";
+                                restrict-to-fill-level: "False";
+                                show-fill-level: "True";
+                                value-changed => $on_progress_value_changed() swapped;
+
+                                styles [
+                                    "accent",
+                                    "mpv-seekbar",
+                                ]
+                            }
+
+                            Label duration_label {
+                                focusable: false;
+                                halign: start;
+                                valign: center;
+                                label: "0:00";
+
+                                styles [
+                                    "numeric",
+                                ]
+                            }
+                        }
+
+                        styles [
+                            "mpv-bottom-bar",
+                        ]
+                    }
+                }
+
+                [overlay]
+                Revealer drag_revealer {
+                    reveal-child: false;
+                    transition-type: crossfade;
+                    transition-duration: 250;
+                    visible: bind $revealer_visible(drag_revealer.reveal-child, drag_revealer.child-revealed) as <bool>;
+                }
+            };
+        }
+    }
+}
+
+Popover danmaku_popover {
+    height-request: 100;
+    width-request: 320;
+    position: bottom;
+    has-arrow: true;
+    map => $on_popover_opened() swapped;
+    unmap => $on_popover_closed() swapped;
+
+    Box {
+        orientation: vertical;
+
+        Adw.PreferencesGroup danmaku_status_group {
+            title: _("0 Loaded danmaku");
+            description: _("No danmaku loaded");
+            margin-top: 18;
+            margin-start: 12;
+            margin-end: 12;
+
+            [header-suffix]
+            Switch danmaku_switch {
+                active: false;
+                sensitive: false;
+                valign: center;
+                state-set => $on_danmaku_switch_state_set() swapped;
+            }
+        }
+
+        ListBox {
+            selection-mode: none;
+            valign: start;
+
+            Adw.SpinRow {
+                title: _("Opacity");
+                digits: 2;
+
+                adjustment: Adjustment danmaku_opacity {
+                    lower: 0.10;
+                    upper: 1.00;
+                    value: 1.00;
+                    step-increment: 0.01;
+                    page-increment: 0.05;
+                };
+            }
+
+            Adw.SpinRow danmaku_speed_spin {
+                title: _("Speed");
+                digits: 2;
+
+                adjustment: Adjustment {
+                    lower: 0.10;
+                    upper: 5.00;
+                    value: 1.00;
+                    step-increment: 0.05;
+                    page-increment: 0.20;
+                };
+            }
+
+            Adw.SpinRow font_size_spin {
+                title: _("Font Size");
+                digits: 0;
+
+                adjustment: Adjustment {
+                    lower: 8;
+                    upper: 96;
+                    value: 24;
+                    step-increment: 1;
+                    page-increment: 4;
+                };
+            }
+
+            $ScaleRow font_weight_row {
+                title: _("Font Weight");
+                value: 8;
+
+                model: StringList {
+                    strings [
+                        _("Thin"),
+                        _("Ultralight"),
+                        _("Light"),
+                        _("Semilight"),
+                        _("Book"),
+                        _("Normal"),
+                        _("Medium"),
+                        _("Semibold"),
+                        _("Bold"),
+                        _("Ultrabold"),
+                        _("Heavy"),
+                        _("Ultraheavy"),
+                    ]
+                };
+            }
+
+            $ScaleRow intensity_row {
+                title: _("Danmaku Intensity");
+                value: 1;
+
+                model: StringList {
+                    strings [
+                        _("Quarter"),
+                        _("Half"),
+                        _("Full"),
+                        _("Allow Overlay"),
+                    ]
+                };
+            }
+
+            Adw.SpinRow spacing_spin {
+                title: _("Spacing");
+                subtitle: _("N x Font Size");
+                digits: 2;
+
+                adjustment: Adjustment {
+                    lower: 1;
+                    upper: 5;
+                    value: 1.5;
+                    step-increment: 0.05;
+                    page-increment: 0.20;
+                };
+            }
+
+            Adw.SpinRow outline_spin {
+                title: _("Stroke Size");
+                subtitle: _("px");
+                digits: 1;
+
+                adjustment: Adjustment {
+                    lower: 0;
+                    upper: 5;
+                    value: 1;
+                    step-increment: 0.5;
+                    page-increment: 1;
+                };
+            }
+
+            Adw.SpinRow shadow_spin {
+                title: _("Shadow Offset");
+                subtitle: _("px");
+                digits: 1;
+
+                adjustment: Adjustment {
+                    lower: 0;
+                    upper: 5;
+                    value: 1;
+                    step-increment: 0.5;
+                    page-increment: 1;
+                };
+            }
+
+            styles [
+                "boxed-list",
+            ]
+        }
+    }
+}
+
+Popover subtitle_tracks_popover {
+    height-request: 300;
+    width-request: 320;
+    position: top;
+    has-arrow: true;
+    map => $on_popover_opened() swapped;
+    unmap => $on_popover_closed() swapped;
+
+    ScrolledWindow {
+        ListBox sub_listbox {
+            selection-mode: none;
+            valign: start;
+
+            styles [
+                "boxed-list-separate",
+            ]
+        }
+    }
+}
+
+Popover audio_tracks_popover {
+    height-request: 300;
+    width-request: 320;
+    position: top;
+    has-arrow: true;
+    map => $on_popover_opened() swapped;
+    unmap => $on_popover_closed() swapped;
+
+    ScrolledWindow {
+        ListBox audio_listbox {
+            selection-mode: none;
+            valign: start;
+
+            styles [
+                "boxed-list-separate",
+            ]
+        }
+    }
+}
+
+Popover volume_adj_popover {
+    position: top;
+    has-arrow: true;
+    map => $on_popover_opened() swapped;
+    unmap => $on_popover_closed() swapped;
+
+    Scale volume_scale {
+        adjustment: volume_adj;
+        height-request: 180;
+        halign: center;
+        margin-end: 6;
+        draw-value: false;
+        orientation: vertical;
+        inverted: true;
+        value-changed => $on_volume_scale_value_changed() swapped;
+
+        styles [
+            "accent",
+        ]
+    }
+}
+
+Adjustment volume_adj {
+    lower: 0;
+    upper: 100;
+    value: 75;
+    step-increment: 1;
+    page-increment: 4;
+}
+
+SizeGroup {
+    mode: vertical;
+
+    widgets [
+        _play_button,
+        progress_time_label,
+        video_scale,
+        duration_label,
+    ]
+}
+
+SizeGroup {
+    mode: vertical;
+
+    widgets [
+        network_speed_button,
+        _media_info_button,
+    ]
+}
