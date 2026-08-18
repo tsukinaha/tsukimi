@@ -1,0 +1,737 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $ControlSidebar: Adw.NavigationPage {
+    title: _("Advanced Settings");
+
+    child: ScrolledWindow {
+        hexpand: true;
+        hscrollbar-policy: never;
+
+        Box {
+            margin-start: 15;
+            margin-end: 15;
+            orientation: vertical;
+            spacing: 18;
+
+            Adw.PreferencesGroup {
+                title: _("Seek Action");
+
+                Adw.SpinRow {
+                    title: _("Playback speed");
+                    notify::value => $on_playback_speed() swapped;
+
+                    [prefix]
+                    Image {
+                        icon-name: "playback-options-symbolic";
+                    }
+
+                    digits: 2;
+
+                    adjustment: Adjustment playback_speed_adj {
+                        lower: 0.10;
+                        upper: 5.00;
+                        value: 1.00;
+                        step-increment: 0.05;
+                        page-increment: 0.2;
+                    };
+                }
+
+                Adw.SpinRow {
+                    title: _("Seek Backward");
+                    subtitle: _("Unit: Seconds");
+
+                    [prefix]
+                    Image {
+                        icon-name: "skip-backwards-30-symbolic";
+                    }
+
+                    adjustment: Adjustment seek_backward_adj {
+                        lower: 1;
+                        upper: 1000;
+                        value: 10;
+                        page-increment: 5;
+                        step-increment: 5;
+                    };
+                }
+
+                Adw.SpinRow {
+                    title: _("Seek Forward");
+                    subtitle: _("Unit: Seconds");
+
+                    [prefix]
+                    Image {
+                        icon-name: "skip-forward-30-symbolic";
+                    }
+
+                    adjustment: Adjustment seek_forward_adj {
+                        lower: 1;
+                        upper: 1000;
+                        value: 10;
+                        page-increment: 5;
+                        step-increment: 5;
+                    };
+                }
+            }
+
+            Adw.PreferencesGroup {
+                title: _("Cache");
+
+                Adw.SwitchRow buffer_switchrow {
+                    active: bind template.show-buffer-speed bidirectional;
+
+                    [prefix]
+                    Image {
+                        icon-name: "speedometer5-symbolic";
+                    }
+
+                    title: _("Show Buffer Speed");
+                }
+
+                Adw.SpinRow {
+                    title: _("Cache Size");
+                    subtitle: _("Unit: MiB");
+                    notify::value => $on_cache_size() swapped;
+
+                    adjustment: Adjustment cache_size_adj {
+                        lower: 50;
+                        upper: 1000;
+                        value: 100;
+                        page-increment: 50;
+                        step-increment: 50;
+                    };
+                }
+
+                Adw.SpinRow {
+                    title: _("Cache Time");
+                    subtitle: _("Unit: Seconds");
+                    notify::value => $on_cache_time() swapped;
+
+                    adjustment: Adjustment cache_time_adj {
+                        lower: 30;
+                        upper: 1000;
+                        value: 300;
+                        page-increment: 30;
+                        step-increment: 30;
+                    };
+                }
+            }
+
+            Adw.PreferencesGroup {
+                title: _("Subtitle");
+
+                Adw.ExpanderRow {
+                    title: _("Subtitle Composing");
+
+                    [suffix]
+                    ToggleButton {
+                        icon-name: "large-brush-symbolic";
+                        valign: center;
+                        tooltip-text: _("Reset");
+                        toggled => $on_sub_clear() swapped;
+
+                        styles [
+                            "flat",
+                        ]
+                    }
+
+                    Adw.ActionRow {
+                        [prefix]
+                        ToggleButton sub_bold_toggle {
+                            icon-name: "text-bold-symbolic";
+                            valign: center;
+                            toggled => $on_sub_bold() swapped;
+
+                            styles [
+                                "flat",
+                            ]
+                        }
+
+                        [prefix]
+                        ToggleButton sub_italic_toggle {
+                            icon-name: "text-italic-symbolic";
+                            valign: center;
+                            toggled => $on_sub_italic() swapped;
+
+                            styles [
+                                "flat",
+                            ]
+                        }
+
+                        [suffix]
+                        Box {
+                            orientation: horizontal;
+
+                            styles [
+                                "linked",
+                            ]
+
+                            ToggleButton text {
+                                icon-name: "text-justify-left-symbolic";
+                                valign: center;
+                                action-name: "sidebar.text-justify";
+                                action-target: "0";
+                            }
+
+                            ToggleButton {
+                                icon-name: "text-justify-center-symbolic";
+                                group: text;
+                                valign: center;
+                                action-name: "sidebar.text-justify";
+                                action-target: "1";
+                            }
+
+                            ToggleButton {
+                                icon-name: "text-justify-right-symbolic";
+                                group: text;
+                                valign: center;
+                                action-name: "sidebar.text-justify";
+                                action-target: "2";
+                            }
+                        }
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Position");
+                        notify::value => $on_sub_position() swapped;
+
+                        [prefix]
+                        Image {
+                            icon-name: "arrow-pointing-at-line-down-symbolic";
+                        }
+
+                        adjustment: Adjustment sub_position_adj {
+                            lower: 1;
+                            upper: 150;
+                            value: 100;
+                            page-increment: 1;
+                            step-increment: 1;
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Subtitle Text Size");
+                        subtitle: _("This option only takes effect for srt subtitles");
+                        notify::value => $on_sub_size() swapped;
+
+                        [prefix]
+                        Image {
+                            icon-name: "media-view-subtitles-symbolic";
+                        }
+
+                        adjustment: Adjustment sub_size_adj {
+                            lower: 1;
+                            upper: 500;
+                            value: 55;
+                            page-increment: 1;
+                            step-increment: 1;
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Subtitle Text Scale");
+                        subtitle: _("This affects ASS subtitles as well");
+                        notify::value => $on_sub_scale() swapped;
+
+                        [prefix]
+                        Image {
+                            icon-name: "media-view-subtitles-symbolic";
+                        }
+
+                        digits: 2;
+
+                        adjustment: Adjustment sub_scale_adj {
+                            lower: 0.00;
+                            upper: 5.00;
+                            value: 1.00;
+                            page-increment: 0.10;
+                            step-increment: 0.01;
+                        };
+                    }
+
+                    Adw.ActionRow {
+                        title: _("Subtitle Text Font");
+                        title-lines: 1;
+                        tooltip-text: _(
+                            "Specify font to use for subtitles that do not themselves specify a particular font"
+                        );
+                        activatable-widget: sub_font_button;
+
+                        [prefix]
+                        Image {
+                            icon-name: "preferences-desktop-font-symbolic";
+                        }
+
+                        [suffix]
+                        FontDialogButton sub_font_button {
+                            valign: center;
+                            level: family;
+                            notify::font-desc => $on_sub_font() swapped;
+
+                            dialog: FontDialog {};
+
+                            styles [
+                                "flat",
+                            ]
+                        }
+                    }
+
+                    Adw.ComboRow sub_border_style_combo {
+                        title: _("Border Style");
+                        notify::selected => $on_border_style() swapped;
+
+                        model: StringList {
+                            strings [
+                                _("Outline and shadow"),
+                                _("Opaque box"),
+                                _("Background box"),
+                            ]
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Border Size");
+                        notify::value => $on_border_size() swapped;
+
+                        adjustment: Adjustment sub_border_size_adj {
+                            lower: 0;
+                            upper: 100;
+                            value: 3;
+                            page-increment: 10;
+                            step-increment: 1;
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Shadow Offset");
+                        notify::value => $on_shadow_offset() swapped;
+
+                        adjustment: Adjustment sub_shadow_offset_adj {
+                            lower: 0;
+                            upper: 100;
+                            value: 0;
+                            page-increment: 10;
+                            step-increment: 1;
+                        };
+                    }
+
+                    Adw.SwitchRow stretch_image_subs_to_screen_switchrow {
+                        notify::active => $on_stretch_image_subs_to_screen() swapped;
+                        title: _("Stretch Image Subtitles to Screen");
+                    }
+                }
+
+                Adw.ExpanderRow {
+                    title: _("Subtitle Color");
+
+                    [suffix]
+                    Button {
+                        icon-name: "large-brush-symbolic";
+                        valign: center;
+                        tooltip-text: _("Reset");
+                        clicked => $on_sub_color_clear() swapped;
+
+                        styles [
+                            "flat",
+                        ]
+                    }
+
+                    Adw.ActionRow {
+                        title: _("Text");
+
+                        [suffix]
+                        ColorDialogButton sub_text_color {
+                            valign: center;
+                            rgba: "rgba(255,255,255,255)";
+                            notify::rgba => $on_sub_text_color() swapped;
+
+                            dialog: ColorDialog {};
+
+                            styles [
+                                "flat",
+                            ]
+                        }
+                    }
+
+                    Adw.ActionRow {
+                        title: _("Border");
+
+                        [suffix]
+                        ColorDialogButton sub_border_color {
+                            valign: center;
+                            rgba: "rgba(0,0,0,255)";
+                            notify::rgba => $on_sub_border_color() swapped;
+
+                            dialog: ColorDialog {};
+
+                            styles [
+                                "flat",
+                            ]
+                        }
+                    }
+
+                    Adw.ActionRow {
+                        title: _("Background");
+
+                        [suffix]
+                        ColorDialogButton sub_background_color {
+                            valign: center;
+                            rgba: "rgba(0,0,0,0)";
+                            notify::rgba => $on_sub_background_color() swapped;
+
+                            dialog: ColorDialog {};
+
+                            styles [
+                                "flat",
+                            ]
+                        }
+                    }
+                }
+
+                Adw.ExpanderRow {
+                    title: _("Subtitle Offset");
+
+                    [suffix]
+                    Button {
+                        icon-name: "large-brush-symbolic";
+                        valign: center;
+                        tooltip-text: _("Reset");
+                        clicked => $on_sub_offset_clear() swapped;
+
+                        styles [
+                            "flat",
+                        ]
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Offset");
+                        subtitle: _("Unit: ms");
+                        notify::value => $on_sub_offset() swapped;
+
+                        adjustment: Adjustment sub_offset_adj {
+                            lower: -10000;
+                            upper: 10000;
+                            value: 0;
+                            page-increment: 100;
+                            step-increment: 50;
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Speed");
+                        digits: 2;
+                        notify::value => $on_sub_speed() swapped;
+
+                        adjustment: Adjustment sub_speed_adj {
+                            lower: 0.10;
+                            upper: 10.00;
+                            value: 1.00;
+                            page-increment: 0.05;
+                            step-increment: 0.01;
+                        };
+                    }
+                }
+            }
+
+            Adw.PreferencesGroup {
+                title: _("Audio");
+
+                header-suffix: Button {
+                    icon-name: "large-brush-symbolic";
+                    valign: center;
+                    tooltip-text: _("Reset");
+                    clicked => $on_audio_clear() swapped;
+
+                    styles [
+                        "flat",
+                    ]
+                };
+
+                Adw.SpinRow {
+                    title: _("Audio Offset");
+                    subtitle: _("Unit: ms");
+                    notify::value => $on_audio_offset() swapped;
+
+                    adjustment: Adjustment audio_offset_adj {
+                        lower: -10000;
+                        upper: 10000;
+                        value: 0;
+                        page-increment: 100;
+                        step-increment: 50;
+                    };
+                }
+
+                Adw.ComboRow audio_channel_combo {
+                    title: _("Audio Channel");
+                    notify::selected => $on_audio_channel() swapped;
+
+                    model: StringList {
+                        strings [
+                            _("Auto"),
+                            _("Auto (Safety)"),
+                            _("Mono"),
+                            _("Dual Channel"),
+                            _("Dual Channel (Invert)"),
+                        ]
+                    };
+                }
+            }
+
+            Adw.PreferencesGroup {
+                title: _("Video");
+
+                Adw.ComboRow panscan_combo {
+                    title: _("Video Aspect");
+                    notify::selected => $on_video_aspect() swapped;
+
+                    model: StringList {
+                        strings [
+                            _("Fit"),
+                            _("Crop"),
+                        ]
+                    };
+                }
+
+                Adw.ExpanderRow {
+                    title: _("Video color grading");
+
+                    [suffix]
+                    Button {
+                        icon-name: "large-brush-symbolic";
+                        valign: center;
+                        tooltip-text: _("Reset");
+                        clicked => $on_video_filter_clear() swapped;
+
+                        styles [
+                            "flat",
+                        ]
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Brightness");
+                        notify::value => $on_brightness_spinrow() swapped;
+
+                        adjustment: Adjustment brightness_adj {
+                            lower: -100;
+                            upper: 100;
+                            value: 0;
+                            page-increment: 10;
+                            step-increment: 1;
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Contrast");
+                        notify::value => $on_contrast_spinrow() swapped;
+
+                        adjustment: Adjustment contrast_adj {
+                            lower: -100;
+                            upper: 100;
+                            value: 0;
+                            page-increment: 10;
+                            step-increment: 1;
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Saturation");
+                        notify::value => $on_saturation_spinrow() swapped;
+
+                        adjustment: Adjustment saturation_adj {
+                            lower: -100;
+                            upper: 100;
+                            value: 0;
+                            page-increment: 10;
+                            step-increment: 1;
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Hue");
+                        notify::value => $on_hue_spinrow() swapped;
+
+                        adjustment: Adjustment hue_adj {
+                            lower: -100;
+                            upper: 100;
+                            value: 0;
+                            page-increment: 10;
+                            step-increment: 1;
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Gamma");
+                        notify::value => $on_gamma_spinrow() swapped;
+
+                        adjustment: Adjustment gamma_adj {
+                            lower: -100;
+                            upper: 100;
+                            value: 0;
+                            page-increment: 10;
+                            step-increment: 1;
+                        };
+                    }
+                }
+
+                Adw.ExpanderRow {
+                    title: _("Video Deband");
+                    expanded: bind deband_switch.active;
+
+                    [suffix]
+                    Button {
+                        icon-name: "large-brush-symbolic";
+                        valign: center;
+                        tooltip-text: _("Reset");
+                        clicked => $on_video_deband_clear() swapped;
+
+                        styles [
+                            "flat",
+                        ]
+                    }
+
+                    [suffix]
+                    Switch deband_switch {
+                        valign: center;
+                        notify::active => $on_video_deband() swapped;
+
+                        styles [
+                            "flat",
+                        ]
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Deband Iterations");
+                        notify::value => $on_deband_iterations_spinrow() swapped;
+
+                        adjustment: Adjustment deband_iterations_adj {
+                            lower: 0;
+                            upper: 16;
+                            value: 1;
+                            page-increment: 4;
+                            step-increment: 1;
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Deband Threshold");
+                        notify::value => $on_deband_threshold_spinrow() swapped;
+
+                        adjustment: Adjustment deband_threshold_adj {
+                            lower: 0;
+                            upper: 4096;
+                            value: 48;
+                            page-increment: 24;
+                            step-increment: 2;
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Deband Range");
+                        notify::value => $on_deband_range_spinrow() swapped;
+
+                        adjustment: Adjustment deband_range_adj {
+                            lower: 1;
+                            upper: 64;
+                            value: 16;
+                            page-increment: 2;
+                            step-increment: 1;
+                        };
+                    }
+
+                    Adw.SpinRow {
+                        title: _("Deband Grain");
+                        notify::value => $on_deband_grain_spinrow() swapped;
+
+                        adjustment: Adjustment deband_grain_adj {
+                            lower: 0;
+                            upper: 4096;
+                            value: 32;
+                            page-increment: 16;
+                            step-increment: 2;
+                        };
+                    }
+                }
+
+                Adw.SwitchRow video_deinterlace_switchrow {
+                    notify::active => $on_video_deinterlace() swapped;
+                    title: _("Video Deinterlace");
+                }
+
+                Adw.ComboRow video_upscale_filter_combo {
+                    title: _("Video Upscale");
+                    notify::selected => $on_video_upscale() swapped;
+
+                    model: StringList {
+                        strings [
+                            "lanczos",
+                            "bilinear",
+                            "ewa_lanczos",
+                            "mitchell",
+                            "hermite",
+                            "oversample",
+                            "linear",
+                            "ewa_hanning",
+                            "ewa_lanczossharp",
+                        ]
+                    };
+                }
+            }
+
+            Adw.PreferencesGroup {
+                title: _("Hardware decoding");
+                description: "--hwdec";
+
+                Adw.ActionRow {
+                    title: _("no (default)");
+                    activatable-widget: hwdec_group;
+
+                    [prefix]
+                    CheckButton hwdec_group {
+                        valign: center;
+                        action-name: "sidebar.hwdec";
+                        action-target: "0";
+                    }
+                }
+
+                Adw.ActionRow {
+                    title: "auto-safe";
+                    activatable-widget: hwdec_group2;
+
+                    [prefix]
+                    CheckButton hwdec_group2 {
+                        valign: center;
+                        group: hwdec_group;
+                        action-name: "sidebar.hwdec";
+                        action-target: "1";
+                    }
+                }
+
+                Adw.ActionRow {
+                    title: "vaapi";
+                    activatable-widget: hwdec_group3;
+                    subtitle: "requires --vo=gpu, --vo=vaapi or --vo=dmabuf-wayland (Linux only)";
+
+                    [prefix]
+                    CheckButton hwdec_group3 {
+                        valign: center;
+                        group: hwdec_group;
+                        action-name: "sidebar.hwdec";
+                        action-target: "2";
+                    }
+                }
+            }
+
+            Label {
+                label: _("Settings are not persisted");
+                margin-top: 12;
+                margin-bottom: 24;
+                justify: left;
+                halign: start;
+
+                styles [
+                    "dimmed",
+                ]
+            }
+        }
+    };
+}

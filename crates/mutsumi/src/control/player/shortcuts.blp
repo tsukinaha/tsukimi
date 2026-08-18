@@ -1,0 +1,212 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.ShortcutsDialog shortcuts_dialog {
+    Adw.ShortcutsSection {
+        title: _("Playback");
+
+        Adw.ShortcutsItem {
+            title: _("Pause / Resume");
+            accelerator: "space";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Seek Forward 5 Seconds");
+            accelerator: "Right";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Seek Backward 5 Seconds");
+            accelerator: "Left";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Seek Forward 60 Seconds");
+            accelerator: "Up";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Seek Backward 60 Seconds");
+            accelerator: "Down";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Seek Forward 1 Second (Exact)");
+            accelerator: "<Shift>Right";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Seek Backward 1 Second (Exact)");
+            accelerator: "<Shift>Left";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Step One Frame Forward");
+            accelerator: "period";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Step One Frame Backward");
+            accelerator: "comma";
+        }
+    }
+
+    Adw.ShortcutsSection {
+        title: _("Playback Speed");
+
+        Adw.ShortcutsItem {
+            title: _("Decrease Speed by 10%");
+            accelerator: "bracketleft";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Increase Speed by 10%");
+            accelerator: "bracketright";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Halve Playback Speed");
+            accelerator: "braceleft";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Double Playback Speed");
+            accelerator: "braceright";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Reset Playback Speed");
+            accelerator: "BackSpace";
+        }
+    }
+
+    Adw.ShortcutsSection {
+        title: _("Volume");
+
+        Adw.ShortcutsItem {
+            title: _("Increase Volume");
+            accelerator: "0";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Decrease Volume");
+            accelerator: "9";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Mute / Unmute");
+            accelerator: "m";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Increase Volume (Numpad)");
+            accelerator: "asterisk";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Decrease Volume (Numpad)");
+            accelerator: "slash";
+        }
+    }
+
+    Adw.ShortcutsSection {
+        title: _("Subtitles");
+
+        Adw.ShortcutsItem {
+            title: _("Cycle Subtitle Tracks Forward");
+            accelerator: "j";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Cycle Subtitle Tracks Backward");
+            accelerator: "<Shift>j";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Toggle Subtitle Visibility");
+            accelerator: "v";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Decrease Subtitle Delay");
+            accelerator: "z";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Increase Subtitle Delay");
+            accelerator: "x";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Increase Subtitle Font Size");
+            accelerator: "<Shift>g";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Decrease Subtitle Font Size");
+            accelerator: "<Shift>f";
+        }
+    }
+
+    Adw.ShortcutsSection {
+        title: _("Tracks");
+
+        Adw.ShortcutsItem {
+            title: _("Cycle Audio Tracks");
+            accelerator: "numbersign";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Cycle Video Tracks");
+            accelerator: "underscore";
+        }
+    }
+
+    Adw.ShortcutsSection {
+        title: _("Chapters and Playlist");
+
+        Adw.ShortcutsItem {
+            title: _("Previous Chapter");
+            accelerator: "Page_Up";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Next Chapter");
+            accelerator: "Page_Down";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Previous Playlist Entry");
+            accelerator: "less";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Next Playlist Entry");
+            accelerator: "greater";
+        }
+    }
+
+    Adw.ShortcutsSection {
+        title: _("General");
+
+        Adw.ShortcutsItem {
+            title: _("Toggle Fullscreen");
+            accelerator: "f";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Set / Clear A-B Loop Points");
+            accelerator: "l";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Toggle Infinite Loop");
+            accelerator: "<Shift>l";
+        }
+
+        Adw.ShortcutsItem {
+            title: _("Display Statistics");
+            accelerator: "i";
+        }
+    }
+}

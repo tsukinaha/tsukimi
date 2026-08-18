@@ -1,0 +1,59 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $MenuActions: Adw.Bin {
+    child: Grid grid {
+        accessible-role: group;
+        row-spacing: 4;
+        column-spacing: 10;
+        halign: center;
+
+        Button {
+            tooltip-text: _("Backward");
+            icon-name: "media-seek-backward-symbolic";
+            action-name: "player.backward";
+
+            layout {
+                column: "0";
+                row: "0";
+            }
+
+            styles [
+                "circular",
+                "flat",
+            ]
+        }
+
+        Button play_pause_button {
+            tooltip-text: _("Play");
+            icon-name: "media-playback-start-symbolic";
+            action-name: "player.play-pause";
+
+            layout {
+                column: "1";
+                row: "0";
+            }
+
+            styles [
+                "circular",
+                "flat",
+            ]
+        }
+
+        Button {
+            tooltip-text: _("Forward");
+            icon-name: "media-seek-forward-symbolic";
+            action-name: "player.forward";
+
+            layout {
+                column: "2";
+                row: "0";
+            }
+
+            styles [
+                "circular",
+                "flat",
+            ]
+        }
+    };
+}

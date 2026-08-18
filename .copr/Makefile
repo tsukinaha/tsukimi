@@ -5,7 +5,7 @@ srpm:
 	dnf -y install cargo git-core python3 rpm-build rust zstd
 	name="$$(rpmspec -q --srpm --qf '%{NAME}\n' "$(SPEC)" | head -n1)"; \
 	if [ "$$name" = "tsukimi-git" ]; then \
-		version="$$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["version"])')"; \
+		version="$$(python3 -c 'import tomllib; print(tomllib.load(open("crates/tsukimi/Cargo.toml", "rb"))["package"]["version"])')"; \
 		git_date="$$(git log -1 --date=format:%Y%m%d --format=%cd HEAD)"; \
 		git_short="$$(git rev-parse --short=10 HEAD)"; \
 	else \
@@ -14,7 +14,7 @@ srpm:
 			version="$${tag#v}"; \
 			version="$${version%-copr}"; \
 		else \
-			version="$$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["version"])')"; \
+			version="$$(python3 -c 'import tomllib; print(tomllib.load(open("crates/tsukimi/Cargo.toml", "rb"))["package"]["version"])')"; \
 		fi; \
 	fi; \
 	workdir="$$(mktemp -d)"; \
