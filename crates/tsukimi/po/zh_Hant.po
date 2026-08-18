@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 20:35+0800\n"
+"Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
+"POT-Creation-Date: 2026-08-18 05:33+0200\n"
 "PO-Revision-Date: 2026-06-16 10:01+0000\n"
 "Last-Translator: Sheng <shengchi2@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
@@ -20,6 +20,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 2026.7.dev0\n"
+
+#: crates/tsukimi/resources/ui/account.ui:6
+#: crates/tsukimi/resources/ui/account.ui:14
+msgid "Add a New Server"
+msgstr "新增伺服器"
+
+#: crates/tsukimi/resources/ui/account.ui:45
+msgid "Enter the server details below."
+msgstr "輸入以下伺服器詳細資料。"
+
+#: crates/tsukimi/resources/ui/account.ui:48
+#: crates/tsukimi/resources/ui/identify_dialog.ui:75
+#: crates/tsukimi/resources/ui/other.ui:73
+msgid "Name"
+msgstr "名稱"
+
+#: crates/tsukimi/resources/ui/account.ui:66
+msgid "Server Address"
+msgstr "伺服器地址"
+
+#: crates/tsukimi/resources/ui/account.ui:85
+msgid "Port"
+msgstr "連接埠"
+
+#: crates/tsukimi/resources/ui/account.ui:92
+msgid "Username"
+msgstr "使用者名稱"
+
+#: crates/tsukimi/resources/ui/account.ui:97
+msgid "Password"
+msgstr "密碼"
+
+#: crates/tsukimi/resources/ui/account.ui:108
+#: crates/tsukimi/resources/ui/account_settings.ui:524
+msgid "Add"
+msgstr "新增"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:4
 msgid "Settings"
@@ -181,11 +217,6 @@ msgstr "首選影片版本"
 msgid "Account"
 msgstr "帳戶"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:316
-#: crates/tsukimi/resources/ui/account_settings.ui:333
-msgid "Change Password"
-msgstr "修改密碼"
-
 #: crates/tsukimi/resources/ui/account_settings.ui:319
 msgid "New Password"
 msgstr "新密碼"
@@ -193,6 +224,10 @@ msgstr "新密碼"
 #: crates/tsukimi/resources/ui/account_settings.ui:324
 msgid "Confirm Password"
 msgstr "確認密碼"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "修改密碼"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:347
 msgid "Media"
@@ -276,11 +311,6 @@ msgstr "新增描述元"
 msgid "Cancel"
 msgstr "取消"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:524
-#: crates/tsukimi/resources/ui/account.ui:108
-msgid "Add"
-msgstr "新增"
-
 #: crates/tsukimi/resources/ui/account_settings.ui:549
 #: crates/tsukimi/resources/ui/account_settings.ui:659
 msgid "This will use exact matching to obtain a list"
@@ -337,37 +367,6 @@ msgstr "更改資料夾"
 #: crates/tsukimi/resources/ui/account_settings.ui:729
 msgid "Select new mpv config folder"
 msgstr "自訂 mpv 配置讀取目錄"
-
-#: crates/tsukimi/resources/ui/account.ui:6
-#: crates/tsukimi/resources/ui/account.ui:14
-msgid "Add a New Server"
-msgstr "新增伺服器"
-
-#: crates/tsukimi/resources/ui/account.ui:45
-msgid "Enter the server details below."
-msgstr "輸入以下伺服器詳細資料。"
-
-#: crates/tsukimi/resources/ui/account.ui:48
-#: crates/tsukimi/resources/ui/identify_dialog.ui:75
-#: crates/tsukimi/resources/ui/other.ui:73
-msgid "Name"
-msgstr "名稱"
-
-#: crates/tsukimi/resources/ui/account.ui:66
-msgid "Server Address"
-msgstr "伺服器地址"
-
-#: crates/tsukimi/resources/ui/account.ui:85
-msgid "Port"
-msgstr "連接埠"
-
-#: crates/tsukimi/resources/ui/account.ui:92
-msgid "Username"
-msgstr "使用者名稱"
-
-#: crates/tsukimi/resources/ui/account.ui:97
-msgid "Password"
-msgstr "密碼"
 
 #: crates/tsukimi/resources/ui/album_widget.ui:94
 #: crates/tsukimi/resources/ui/item.ui:184
@@ -700,17 +699,19 @@ msgstr "媒體庫"
 #: crates/tsukimi/resources/ui/home.ui:21
 #: crates/tsukimi/resources/ui/item.ui:298
 #: crates/tsukimi/src/ui/widgets/home.rs:226
+#: crates/tsukimi/src/ui/widgets/home.rs:304
 msgid "Continue Watching"
 msgstr "繼續觀看"
 
 #: crates/tsukimi/resources/ui/home.ui:29
 #: crates/tsukimi/src/ui/widgets/home.rs:228
+#: crates/tsukimi/src/ui/widgets/home.rs:314
 msgid "Next Up"
 msgstr "下一部"
 
-#: crates/tsukimi/resources/ui/identify_dialog_search_page.ui:4
 #: crates/tsukimi/resources/ui/identify_dialog.ui:6
 #: crates/tsukimi/resources/ui/identify_dialog.ui:14
+#: crates/tsukimi/resources/ui/identify_dialog_search_page.ui:4
 #: crates/tsukimi/resources/ui/pop-menu.ui:57
 #: crates/tsukimi/src/ui/widgets/identify/search_page.rs:125
 msgid "Identify"
@@ -830,24 +831,6 @@ msgstr "此頁面為唯讀，因為您沒有修改權限。"
 msgid "BackDrops"
 msgstr "背景"
 
-#: crates/tsukimi/resources/ui/item_actions.ui:40
-#: crates/tsukimi/resources/ui/pop-menu.ui:29
-msgid "Mark as Played"
-msgstr "標記為已觀看"
-
-#: crates/tsukimi/resources/ui/item_actions.ui:46
-#: crates/tsukimi/resources/ui/pop-menu.ui:35
-msgid "Mark as Unplayed"
-msgstr "標記為未觀看"
-
-#: crates/tsukimi/resources/ui/item_actions.ui:53
-#: crates/tsukimi/resources/ui/metadata_dialog.ui:18
-#: crates/tsukimi/resources/ui/metadata_dialog.ui:26
-#: crates/tsukimi/resources/ui/pop-menu.ui:43
-#: crates/tsukimi/resources/ui/song_widget.ui:156
-msgid "Edit Metadata"
-msgstr "編輯元資料"
-
 #: crates/tsukimi/resources/ui/item.ui:218
 msgid "Video: "
 msgstr "影片： "
@@ -895,6 +878,24 @@ msgstr "連結"
 #: crates/tsukimi/resources/ui/item.ui:506
 msgid "MediaInfo"
 msgstr "媒體訊息"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:40
+#: crates/tsukimi/resources/ui/pop-menu.ui:29
+msgid "Mark as Played"
+msgstr "標記為已觀看"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:46
+#: crates/tsukimi/resources/ui/pop-menu.ui:35
+msgid "Mark as Unplayed"
+msgstr "標記為未觀看"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:53
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:18
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:26
+#: crates/tsukimi/resources/ui/pop-menu.ui:43
+#: crates/tsukimi/resources/ui/song_widget.ui:156
+msgid "Edit Metadata"
+msgstr "編輯元資料"
 
 #: crates/tsukimi/resources/ui/liked.ui:70
 msgid "Your favorite items will be placed here"
@@ -1246,16 +1247,6 @@ msgstr "無（預設）"
 msgid "Not all settings will be saved"
 msgstr "並非所有設定都會被保存"
 
-#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:12
-#: crates/tsukimi/resources/ui/mpvpage.ui:255
-msgid "Backward"
-msgstr "快退"
-
-#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:42
-#: crates/tsukimi/resources/ui/mpvpage.ui:298
-msgid "Forward"
-msgstr "快進"
-
 #: crates/tsukimi/resources/ui/mpv_menu.ui:11
 msgid "_Next"
 msgstr "下一集"
@@ -1294,26 +1285,15 @@ msgstr "媒體訊息"
 msgid "_Keyboard shortcuts"
 msgstr "鍵盤快捷鍵"
 
-#: crates/tsukimi/resources/ui/mpvpage.ui:108
-msgid "Stop and quit"
-msgstr "停止並結束"
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:12
+#: crates/tsukimi/resources/ui/mpvpage.ui:255
+msgid "Backward"
+msgstr "快退"
 
-#: crates/tsukimi/resources/ui/mpvpage.ui:165
-msgid "Shortcuts"
-msgstr "快捷鍵"
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:193
-msgid "Media info (MPV)"
-msgstr "媒體訊息（MPV）"
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:279
-#: crates/tsukimi/src/ui/mpv/page.rs:419 crates/tsukimi/src/ui/mpv/page.rs:421
-msgid "Pause"
-msgstr "暫停"
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:383
-msgid "Adjust Volume"
-msgstr "調整音量"
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:42
+#: crates/tsukimi/resources/ui/mpvpage.ui:298
+msgid "Forward"
+msgstr "快進"
 
 #: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:9
 msgid "Pause / Resume"
@@ -1486,6 +1466,27 @@ msgstr "結束"
 #: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:261
 msgid "Quit and Save Position"
 msgstr "結束並記錄播放位置"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:108
+msgid "Stop and quit"
+msgstr "停止並結束"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:165
+msgid "Shortcuts"
+msgstr "快捷鍵"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:193
+msgid "Media info (MPV)"
+msgstr "媒體訊息（MPV）"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:279
+#: crates/tsukimi/src/ui/mpv/page.rs:419 crates/tsukimi/src/ui/mpv/page.rs:421
+msgid "Pause"
+msgstr "暫停"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:383
+msgid "Adjust Volume"
+msgstr "調整音量"
 
 #: crates/tsukimi/resources/ui/other.ui:113
 #: crates/tsukimi/src/ui/widgets/tu_overview_item.rs:239
@@ -1681,21 +1682,6 @@ msgstr "背景圖"
 msgid "Banner"
 msgstr "橫幅"
 
-#: crates/tsukimi/resources/ui/theme_switcher.ui:25
-#: crates/tsukimi/resources/ui/theme_switcher.ui:27
-msgid "Follow system style"
-msgstr "跟隨系統樣式"
-
-#: crates/tsukimi/resources/ui/theme_switcher.ui:43
-#: crates/tsukimi/resources/ui/theme_switcher.ui:45
-msgid "Light style"
-msgstr "淺色樣式"
-
-#: crates/tsukimi/resources/ui/theme_switcher.ui:61
-#: crates/tsukimi/resources/ui/theme_switcher.ui:63
-msgid "Dark style"
-msgstr "深色樣式"
-
 #: crates/tsukimi/resources/ui/window.ui:11
 msgid "Sign out"
 msgstr "登出"
@@ -1774,7 +1760,6 @@ msgid "Deband settings cleared."
 msgstr "去除色帶設定已清除。"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:37
-#, rust-format
 msgid "{count} Danmaku Loaded"
 msgstr ""
 
@@ -1789,6 +1774,7 @@ msgid "Loading"
 msgstr "載入中..."
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:49
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:276
 #, fuzzy
 msgid "No danmaku found"
 msgstr "未找到媒體來源"
@@ -1806,11 +1792,11 @@ msgid "Maybe there is something wrong"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:60
-msgid "From play (Auto Matched)"
+msgid "From 弹弹play开放弹幕网络 (Auto Matched)"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:62
-msgid "From play (Manually Matched)"
+msgid "From 弹弹play开放弹幕网络 (Manually Matched)"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:185
@@ -1832,6 +1818,34 @@ msgstr "搜尋"
 msgid "Invalid episode ID"
 msgstr "無效的規則運算式"
 
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:278
+#, fuzzy
+#| msgid "Failed to load image"
+msgid "Failed to load danmaku"
+msgstr "載入影片失敗"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:339
+#, fuzzy
+#| msgid "No media sources found"
+msgid "No episodes found"
+msgstr "暂未找到媒體源"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:343
+#, fuzzy
+#| msgid "Failed to load image"
+msgid "Failed to load episodes"
+msgstr "載入影片失敗"
+
+#: crates/tsukimi/src/ui/mpv/page.rs:883
+msgid "Initializing..."
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/page.rs:930 crates/tsukimi/src/ui/mpv/page.rs:999
+#, fuzzy
+#| msgid "No media sources found"
+msgid "No media source found"
+msgstr "暂未找到媒體源"
+
 #: crates/tsukimi/src/ui/mpv/page.rs:1079
 msgid "Skip Intro"
 msgstr "跳過片頭"
@@ -1851,6 +1865,17 @@ msgid ""
 msgstr ""
 "MPV 已關閉，應用程式即將結束。\n"
 "Tsukimi 無法重新啟動 MPV。"
+
+#: crates/tsukimi/src/ui/provider/actions.rs:56
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:162
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:181
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:121
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:187
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:220
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:313
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:98
+msgid "Success"
+msgstr "成功"
 
 #: crates/tsukimi/src/ui/provider/tu_item.rs:638
 msgid "No next up video found"
@@ -1983,11 +2008,6 @@ msgstr "圖像載入錯誤"
 msgid "Replace Image"
 msgstr "取代圖片"
 
-#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:121
-#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:98
-msgid "Success"
-msgstr "成功"
-
 #: crates/tsukimi/src/ui/widgets/item.rs:356
 #, fuzzy
 msgid "No episode selected"
@@ -2087,6 +2107,7 @@ msgid "More From"
 msgstr "更多來自"
 
 #: crates/tsukimi/src/ui/widgets/refresh_dialog.rs:94
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:278
 msgid "Scanning..."
 msgstr "正在掃描..."
 
@@ -2171,6 +2192,11 @@ msgstr ""
 "刪除此項目將會從檔案系統和媒體庫中刪除。\n"
 "下列檔案和資料夾將會被刪除："
 
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:522
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:582
+msgid "Item deleted"
+msgstr "項目已刪除"
+
 #: crates/tsukimi/src/ui/widgets/tu_item/action.rs:556
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "您確定要重設所有中介資料嗎？"
@@ -2193,6 +2219,15 @@ msgid "translator-credits"
 msgstr ""
 "Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "dyphire <qimoge@gmail.com>"
+
+#~ msgid "Follow system style"
+#~ msgstr "跟隨系統樣式"
+
+#~ msgid "Light style"
+#~ msgstr "淺色樣式"
+
+#~ msgid "Dark style"
+#~ msgstr "深色樣式"
 
 #, fuzzy
 #~| msgid "Contents"
@@ -2268,9 +2303,6 @@ msgstr ""
 #~ msgid "Font Cleared, Restart to take effect."
 #~ msgstr "已清除字體，重啟程式生效。"
 
-#~ msgid "Item deleted"
-#~ msgstr "項目已刪除"
-
 #~ msgid "Post Scale"
 #~ msgstr "海報縮放"
 
@@ -2288,9 +2320,6 @@ msgstr ""
 
 #~ msgid "Waiting for mediasource..."
 #~ msgstr "正在等待媒體源..."
-
-#~ msgid "No media sources found"
-#~ msgstr "暂未找到媒體源"
 
 #~ msgid "View Metadata"
 #~ msgstr "查看元數據"

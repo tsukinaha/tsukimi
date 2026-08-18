@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 20:35+0800\n"
+"Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
+"POT-Creation-Date: 2026-08-18 05:33+0200\n"
 "PO-Revision-Date: 2026-07-26 12:01+0000\n"
 "Last-Translator: Jonatan Nyberg <monalisa@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/tsukimi/main/sv/"
@@ -18,6 +18,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.8.dev0\n"
+
+#: crates/tsukimi/resources/ui/account.ui:6
+#: crates/tsukimi/resources/ui/account.ui:14
+msgid "Add a New Server"
+msgstr "Lägg till en ny server"
+
+#: crates/tsukimi/resources/ui/account.ui:45
+msgid "Enter the server details below."
+msgstr "Ange serveruppgifterna nedan."
+
+#: crates/tsukimi/resources/ui/account.ui:48
+#: crates/tsukimi/resources/ui/identify_dialog.ui:75
+#: crates/tsukimi/resources/ui/other.ui:73
+msgid "Name"
+msgstr "Namn"
+
+#: crates/tsukimi/resources/ui/account.ui:66
+msgid "Server Address"
+msgstr "Serveradress"
+
+#: crates/tsukimi/resources/ui/account.ui:85
+msgid "Port"
+msgstr "Port"
+
+#: crates/tsukimi/resources/ui/account.ui:92
+msgid "Username"
+msgstr "Användarnamn"
+
+#: crates/tsukimi/resources/ui/account.ui:97
+msgid "Password"
+msgstr "Lösenord"
+
+#: crates/tsukimi/resources/ui/account.ui:108
+#: crates/tsukimi/resources/ui/account_settings.ui:524
+msgid "Add"
+msgstr "Lägg till"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:4
 msgid "Settings"
@@ -177,11 +213,6 @@ msgstr "Föredragen videoversion"
 msgid "Account"
 msgstr "Konto"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:316
-#: crates/tsukimi/resources/ui/account_settings.ui:333
-msgid "Change Password"
-msgstr "Ändra lösenord"
-
 #: crates/tsukimi/resources/ui/account_settings.ui:319
 msgid "New Password"
 msgstr "Nytt lösenord"
@@ -189,6 +220,10 @@ msgstr "Nytt lösenord"
 #: crates/tsukimi/resources/ui/account_settings.ui:324
 msgid "Confirm Password"
 msgstr "Bekräfta lösenord"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "Ändra lösenord"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:347
 msgid "Media"
@@ -274,11 +309,6 @@ msgstr "Lägg till matchningsvillkor"
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:524
-#: crates/tsukimi/resources/ui/account.ui:108
-msgid "Add"
-msgstr "Lägg till"
-
 #: crates/tsukimi/resources/ui/account_settings.ui:549
 #: crates/tsukimi/resources/ui/account_settings.ui:659
 msgid "This will use exact matching to obtain a list"
@@ -335,37 +365,6 @@ msgstr "Byt mapp"
 #: crates/tsukimi/resources/ui/account_settings.ui:729
 msgid "Select new mpv config folder"
 msgstr "Välj en ny MPV-konfigurationsmapp"
-
-#: crates/tsukimi/resources/ui/account.ui:6
-#: crates/tsukimi/resources/ui/account.ui:14
-msgid "Add a New Server"
-msgstr "Lägg till en ny server"
-
-#: crates/tsukimi/resources/ui/account.ui:45
-msgid "Enter the server details below."
-msgstr "Ange serveruppgifterna nedan."
-
-#: crates/tsukimi/resources/ui/account.ui:48
-#: crates/tsukimi/resources/ui/identify_dialog.ui:75
-#: crates/tsukimi/resources/ui/other.ui:73
-msgid "Name"
-msgstr "Namn"
-
-#: crates/tsukimi/resources/ui/account.ui:66
-msgid "Server Address"
-msgstr "Serveradress"
-
-#: crates/tsukimi/resources/ui/account.ui:85
-msgid "Port"
-msgstr "Port"
-
-#: crates/tsukimi/resources/ui/account.ui:92
-msgid "Username"
-msgstr "Användarnamn"
-
-#: crates/tsukimi/resources/ui/account.ui:97
-msgid "Password"
-msgstr "Lösenord"
 
 #: crates/tsukimi/resources/ui/album_widget.ui:94
 #: crates/tsukimi/resources/ui/item.ui:184
@@ -695,17 +694,19 @@ msgstr "Bibliotek"
 #: crates/tsukimi/resources/ui/home.ui:21
 #: crates/tsukimi/resources/ui/item.ui:298
 #: crates/tsukimi/src/ui/widgets/home.rs:226
+#: crates/tsukimi/src/ui/widgets/home.rs:304
 msgid "Continue Watching"
 msgstr "Fortsätt titta"
 
 #: crates/tsukimi/resources/ui/home.ui:29
 #: crates/tsukimi/src/ui/widgets/home.rs:228
+#: crates/tsukimi/src/ui/widgets/home.rs:314
 msgid "Next Up"
 msgstr "Nästa på tur"
 
-#: crates/tsukimi/resources/ui/identify_dialog_search_page.ui:4
 #: crates/tsukimi/resources/ui/identify_dialog.ui:6
 #: crates/tsukimi/resources/ui/identify_dialog.ui:14
+#: crates/tsukimi/resources/ui/identify_dialog_search_page.ui:4
 #: crates/tsukimi/resources/ui/pop-menu.ui:57
 #: crates/tsukimi/src/ui/widgets/identify/search_page.rs:125
 msgid "Identify"
@@ -827,24 +828,6 @@ msgstr "Sidan är skrivskyddad eftersom du saknar behörighet att ändra den."
 msgid "BackDrops"
 msgstr "Bakgrundsbilder"
 
-#: crates/tsukimi/resources/ui/item_actions.ui:40
-#: crates/tsukimi/resources/ui/pop-menu.ui:29
-msgid "Mark as Played"
-msgstr "Markera som uppspelad"
-
-#: crates/tsukimi/resources/ui/item_actions.ui:46
-#: crates/tsukimi/resources/ui/pop-menu.ui:35
-msgid "Mark as Unplayed"
-msgstr "Markera som inte uppspelad"
-
-#: crates/tsukimi/resources/ui/item_actions.ui:53
-#: crates/tsukimi/resources/ui/metadata_dialog.ui:18
-#: crates/tsukimi/resources/ui/metadata_dialog.ui:26
-#: crates/tsukimi/resources/ui/pop-menu.ui:43
-#: crates/tsukimi/resources/ui/song_widget.ui:156
-msgid "Edit Metadata"
-msgstr "Redigera metadata"
-
 #: crates/tsukimi/resources/ui/item.ui:218
 msgid "Video: "
 msgstr "Video: "
@@ -892,6 +875,24 @@ msgstr "Länkar"
 #: crates/tsukimi/resources/ui/item.ui:506
 msgid "MediaInfo"
 msgstr "Medieinformation"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:40
+#: crates/tsukimi/resources/ui/pop-menu.ui:29
+msgid "Mark as Played"
+msgstr "Markera som uppspelad"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:46
+#: crates/tsukimi/resources/ui/pop-menu.ui:35
+msgid "Mark as Unplayed"
+msgstr "Markera som inte uppspelad"
+
+#: crates/tsukimi/resources/ui/item_actions.ui:53
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:18
+#: crates/tsukimi/resources/ui/metadata_dialog.ui:26
+#: crates/tsukimi/resources/ui/pop-menu.ui:43
+#: crates/tsukimi/resources/ui/song_widget.ui:156
+msgid "Edit Metadata"
+msgstr "Redigera metadata"
 
 #: crates/tsukimi/resources/ui/liked.ui:70
 msgid "Your favorite items will be placed here"
@@ -1245,16 +1246,6 @@ msgstr "nej (förvalt)"
 msgid "Not all settings will be saved"
 msgstr "Alla inställningar sparas inte"
 
-#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:12
-#: crates/tsukimi/resources/ui/mpvpage.ui:255
-msgid "Backward"
-msgstr "Bakåt"
-
-#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:42
-#: crates/tsukimi/resources/ui/mpvpage.ui:298
-msgid "Forward"
-msgstr "Framåt"
-
 #: crates/tsukimi/resources/ui/mpv_menu.ui:11
 msgid "_Next"
 msgstr "_Nästa"
@@ -1293,26 +1284,15 @@ msgstr "Medieinformation"
 msgid "_Keyboard shortcuts"
 msgstr "_Kortkommandon"
 
-#: crates/tsukimi/resources/ui/mpvpage.ui:108
-msgid "Stop and quit"
-msgstr "Stoppa och avsluta"
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:12
+#: crates/tsukimi/resources/ui/mpvpage.ui:255
+msgid "Backward"
+msgstr "Bakåt"
 
-#: crates/tsukimi/resources/ui/mpvpage.ui:165
-msgid "Shortcuts"
-msgstr "Kortkommandon"
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:193
-msgid "Media info (MPV)"
-msgstr "Medieinformation (MPV)"
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:279
-#: crates/tsukimi/src/ui/mpv/page.rs:419 crates/tsukimi/src/ui/mpv/page.rs:421
-msgid "Pause"
-msgstr "Pausa"
-
-#: crates/tsukimi/resources/ui/mpvpage.ui:383
-msgid "Adjust Volume"
-msgstr "Justera volymen"
+#: crates/tsukimi/resources/ui/mpv_menu_actions.ui:42
+#: crates/tsukimi/resources/ui/mpvpage.ui:298
+msgid "Forward"
+msgstr "Framåt"
 
 #: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:9
 msgid "Pause / Resume"
@@ -1485,6 +1465,27 @@ msgstr "Avsluta"
 #: crates/tsukimi/resources/ui/mpv_shortcuts_window.ui:261
 msgid "Quit and Save Position"
 msgstr "Avsluta och spara positionen"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:108
+msgid "Stop and quit"
+msgstr "Stoppa och avsluta"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:165
+msgid "Shortcuts"
+msgstr "Kortkommandon"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:193
+msgid "Media info (MPV)"
+msgstr "Medieinformation (MPV)"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:279
+#: crates/tsukimi/src/ui/mpv/page.rs:419 crates/tsukimi/src/ui/mpv/page.rs:421
+msgid "Pause"
+msgstr "Pausa"
+
+#: crates/tsukimi/resources/ui/mpvpage.ui:383
+msgid "Adjust Volume"
+msgstr "Justera volymen"
 
 #: crates/tsukimi/resources/ui/other.ui:113
 #: crates/tsukimi/src/ui/widgets/tu_overview_item.rs:239
@@ -1680,21 +1681,6 @@ msgstr "Bakgrundsbild"
 msgid "Banner"
 msgstr "Banderoll"
 
-#: crates/tsukimi/resources/ui/theme_switcher.ui:25
-#: crates/tsukimi/resources/ui/theme_switcher.ui:27
-msgid "Follow system style"
-msgstr "Följ systemets stil"
-
-#: crates/tsukimi/resources/ui/theme_switcher.ui:43
-#: crates/tsukimi/resources/ui/theme_switcher.ui:45
-msgid "Light style"
-msgstr "Ljus stil"
-
-#: crates/tsukimi/resources/ui/theme_switcher.ui:61
-#: crates/tsukimi/resources/ui/theme_switcher.ui:63
-msgid "Dark style"
-msgstr "Mörk stil"
-
 #: crates/tsukimi/resources/ui/window.ui:11
 msgid "Sign out"
 msgstr "Logga ut"
@@ -1773,7 +1759,6 @@ msgid "Deband settings cleared."
 msgstr "Inställningarna för färgbandsreducering har återställts."
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:37
-#, rust-format
 msgid "{count} Danmaku Loaded"
 msgstr ""
 
@@ -1788,6 +1773,7 @@ msgid "Loading"
 msgstr "Läser in…"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:49
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:276
 msgid "No danmaku found"
 msgstr ""
 
@@ -1804,11 +1790,11 @@ msgid "Maybe there is something wrong"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:60
-msgid "From play (Auto Matched)"
+msgid "From 弹弹play开放弹幕网络 (Auto Matched)"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:62
-msgid "From play (Manually Matched)"
+msgid "From 弹弹play开放弹幕网络 (Manually Matched)"
 msgstr ""
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:185
@@ -1830,6 +1816,34 @@ msgstr "Sök"
 msgid "Invalid episode ID"
 msgstr "Ogiltigt reguljärt uttryck"
 
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:278
+#, fuzzy
+#| msgid "Failed to load image"
+msgid "Failed to load danmaku"
+msgstr "Det gick inte att läsa in bilden"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:339
+#, fuzzy
+#| msgid "No more video found"
+msgid "No episodes found"
+msgstr "Ingen ytterligare video hittades"
+
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:343
+#, fuzzy
+#| msgid "Failed to load image"
+msgid "Failed to load episodes"
+msgstr "Det gick inte att läsa in bilden"
+
+#: crates/tsukimi/src/ui/mpv/page.rs:883
+msgid "Initializing..."
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/page.rs:930 crates/tsukimi/src/ui/mpv/page.rs:999
+#, fuzzy
+#| msgid "No video source found"
+msgid "No media source found"
+msgstr "Ingen videokälla hittades"
+
 #: crates/tsukimi/src/ui/mpv/page.rs:1079
 msgid "Skip Intro"
 msgstr "Hoppa över intro"
@@ -1849,6 +1863,17 @@ msgid ""
 msgstr ""
 "MPV har avslutats. Programmet stängs.\n"
 "Tsukimi kan inte starta om MPV."
+
+#: crates/tsukimi/src/ui/provider/actions.rs:56
+#: crates/tsukimi/src/ui/widgets/identify/search_page.rs:162
+#: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:181
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:121
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:187
+#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:220
+#: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:313
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:98
+msgid "Success"
+msgstr "Klart"
 
 #: crates/tsukimi/src/ui/provider/tu_item.rs:638
 msgid "No next up video found"
@@ -1981,11 +2006,6 @@ msgstr "Fel när bilden lästes in"
 msgid "Replace Image"
 msgstr "Ersätt bild"
 
-#: crates/tsukimi/src/ui/widgets/item_actionbox.rs:121
-#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:98
-msgid "Success"
-msgstr "Klart"
-
 #: crates/tsukimi/src/ui/widgets/item.rs:356
 msgid "No episode selected"
 msgstr "Inget avsnitt har valts"
@@ -2084,6 +2104,7 @@ msgid "More From"
 msgstr "Mer från"
 
 #: crates/tsukimi/src/ui/widgets/refresh_dialog.rs:94
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:278
 msgid "Scanning..."
 msgstr "Söker igenom…"
 
@@ -2169,6 +2190,13 @@ msgstr ""
 "mediebiblioteket.\n"
 "Följande filer och mappar tas bort:"
 
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:522
+#: crates/tsukimi/src/ui/widgets/tu_item/action.rs:582
+#, fuzzy
+#| msgid "Image deleted"
+msgid "Item deleted"
+msgstr "Bilden har tagits bort"
+
 #: crates/tsukimi/src/ui/widgets/tu_item/action.rs:556
 msgid "Are you sure you wish to reset all metadata?"
 msgstr "Vill du återställa all metadata?"
@@ -2189,6 +2217,15 @@ msgstr "Kopiera felmeddelandet och stäng"
 #: crates/tsukimi/src/ui/widgets/window.rs:998
 msgid "translator-credits"
 msgstr "Jonatan Nyberg"
+
+#~ msgid "Follow system style"
+#~ msgstr "Följ systemets stil"
+
+#~ msgid "Light style"
+#~ msgstr "Ljus stil"
+
+#~ msgid "Dark style"
+#~ msgstr "Mörk stil"
 
 #, fuzzy
 #~| msgid "Contents"
