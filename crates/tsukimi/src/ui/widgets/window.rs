@@ -18,6 +18,7 @@ mod imp {
     use gtk::{
         CompositeTemplate,
         glib,
+        prelude::WidgetExt,
         subclass::prelude::*,
     };
 
@@ -82,6 +83,8 @@ mod imp {
         pub selection: gtk::SingleSelection,
 
         #[template_child]
+        pub main_toolbar_view: TemplateChild<adw::ToolbarView>,
+        #[template_child]
         pub mainpage: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub mainview: TemplateChild<adw::NavigationView>,
@@ -112,6 +115,8 @@ mod imp {
         pub mpv_playlist_selection: gtk::SingleSelection,
 
         pub suspend_cookie: Cell<Option<u32>>,
+
+        pub player_content_inset_provider: OnceCell<gtk::CssProvider>,
 
         #[template_child]
         pub sidebar_breakpoint: TemplateChild<adw::Breakpoint>,
@@ -173,6 +178,23 @@ mod imp {
 
             let obj = self.obj();
 
+            let player_content_inset_provider = gtk::CssProvider::new();
+            gtk::style_context_add_provider_for_display(
+                &obj.display(),
+                &player_content_inset_provider,
+                gtk::STYLE_PROVIDER_PRIORITY_APPLICATION + 1,
+            );
+            self.player_content_inset_provider
+                .set(player_content_inset_provider)
+                .expect("player content inset provider must only be initialized once");
+            self.main_toolbar_view
+                .connect_bottom_bar_height_notify(glib::clone!(
+                    #[weak]
+                    obj,
+                    move |_| obj.update_player_content_inset()
+                ));
+            obj.update_player_content_inset();
+
             self.sidebar_breakpoint.connect_apply(glib::clone!(
                 #[weak]
                 obj,
@@ -202,6 +224,12 @@ mod imp {
                     obj.set_shortcuts();
                 },
             ));
+        }
+
+        fn dispose(&self) {
+            if let Some(provider) = self.player_content_inset_provider.get() {
+                gtk::style_context_remove_provider_for_display(&self.obj().display(), provider);
+            }
         }
     }
 
@@ -275,6 +303,36 @@ pub const PROGRESSBAR_FADE_ANIMATION_DURATION: u32 = 500;
 
 #[template_callbacks]
 impl Window {
+    fn update_player_content_inset(&self) {
+        let imp = self.imp();
+        let Some(provider) = imp.player_content_inset_provider.get() else {
+            return;
+        };
+        let inset = imp.main_toolbar_view.bottom_bar_height();
+
+        if inset == 0 {
+            provider.load_from_string("");
+            return;
+        }
+
+        const PLAYER_SCROLL_CONTENT_SELECTOR: &str = r#"
+        .player-toolbar-scroll-area scrolledwindow > viewport > box.vertical,
+        .player-toolbar-scroll-area scrolledwindow > viewport > clamp,
+        .player-toolbar-scroll-area scrolledwindow > viewport > stack,
+        .player-toolbar-scroll-area scrolledwindow > viewport > revealer,
+        .player-toolbar-scroll-area scrolledwindow > viewport > list,
+        .player-toolbar-scroll-area scrolledwindow > viewport > flowbox,
+        .player-toolbar-scroll-area scrolledwindow > listview:not(.horizontal-listview),
+        .player-toolbar-scroll-area scrolledwindow > gridview,
+        .player-toolbar-scroll-area scrolledwindow > columnview
+        "#;
+
+        provider.load_from_string(&format!(
+            "{PLAYER_SCROLL_CONTENT_SELECTOR} {{\n  padding-bottom: {inset}px;\n}}\n\
+             .player-toolbar-scroll-area scrolledwindow > scrollbar.vertical {{\n  margin-bottom: {inset}px;\n}}"
+        ));
+    }
+
     pub fn homepage(&self) {
         let imp = self.imp();
         if imp.homepage.child().is_none() {
