@@ -376,6 +376,22 @@ impl AccountSettings {
                 "selected",
             )
             .build();
+        let renderer_action_group = gio::SimpleActionGroup::new();
+        let renderer_action = gio::ActionEntry::builder("renderer")
+            .parameter_type(Some(&i32::static_variant_type()))
+            .state(SETTINGS.mpv_renderer().to_variant())
+            .activate(|_, action, parameter| {
+                let renderer = parameter
+                    .expect("Could not get renderer parameter.")
+                    .get::<i32>()
+                    .expect("The renderer parameter must be an i32.");
+                SETTINGS.set_mpv_renderer(renderer).unwrap();
+                action.set_state(&renderer.to_variant());
+            })
+            .build();
+        renderer_action_group.add_action_entries([renderer_action]);
+        self.insert_action_group("settings", Some(&renderer_action_group));
+
         SETTINGS
             .bind(
                 "is-auto-select-server",

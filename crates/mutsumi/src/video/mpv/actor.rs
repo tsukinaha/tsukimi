@@ -52,6 +52,19 @@ type MpvInitializer =
     dyn Fn(libmpv2::MpvInitializer) -> libmpv2::Result<()> + Send + Sync + 'static;
 
 static MPV_INITIALIZER: OnceLock<Box<MpvInitializer>> = OnceLock::new();
+static DEFAULT_MPV_SESSION_OPTIONS: OnceLock<MpvSessionOptions> = OnceLock::new();
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[error("the default mpv session options have already been set")]
+pub struct DefaultMpvSessionOptionsAlreadySet;
+
+pub fn set_default_mpv_session_options(
+    options: MpvSessionOptions,
+) -> Result<(), DefaultMpvSessionOptionsAlreadySet> {
+    DEFAULT_MPV_SESSION_OPTIONS
+        .set(options)
+        .map_err(|_| DefaultMpvSessionOptionsAlreadySet)
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
 #[error("the mpv initializer has already been set")]
@@ -353,8 +366,11 @@ impl Default for MpvActor {
 
 impl MpvActor {
     pub fn new() -> Self {
-        Self::with_session_options(MpvSessionOptions::default())
-            .expect("Failed to create mpv instance")
+        let options = DEFAULT_MPV_SESSION_OPTIONS
+            .get()
+            .cloned()
+            .unwrap_or_default();
+        Self::with_session_options(options).expect("Failed to create mpv instance")
     }
 
     pub fn with_session_options(options: MpvSessionOptions) -> libmpv2::Result<Self> {

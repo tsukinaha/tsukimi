@@ -73,6 +73,7 @@ mod imp {
                 ),
             );
 
+            configure_mpv_session();
             configure_mpv();
 
             let obj = self.obj();
@@ -152,6 +153,21 @@ mod imp {
                 self.accent_provider_added.set(true);
             }
         }
+    }
+
+    fn configure_mpv_session() {
+        let fallback_policy = match SETTINGS.mpv_renderer() {
+            1 => mutsumi::FallbackPolicy::Ordered(vec![mutsumi::RendererCandidate::VulkanDmabuf]),
+            2 => mutsumi::FallbackPolicy::Ordered(vec![mutsumi::RendererCandidate::OpenGlDmabuf]),
+            3 => mutsumi::FallbackPolicy::Ordered(vec![mutsumi::RendererCandidate::WlShm]),
+            _ => mutsumi::FallbackPolicy::Auto,
+        };
+
+        mutsumi::set_default_mpv_session_options(mutsumi::MpvSessionOptions {
+            fallback_policy,
+            ..Default::default()
+        })
+        .expect("Failed to set default mpv session options");
     }
 
     fn configure_mpv() {

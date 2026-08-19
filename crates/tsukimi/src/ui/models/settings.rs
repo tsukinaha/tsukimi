@@ -62,6 +62,7 @@ impl Settings {
     const KEY_MPV_SHOW_BUFFER_SPEED: &'static str = "mpv-show-buffer-speed"; // bool
     const KEY_MPV_ACTION_AFTER_VIDEO_END: &'static str = "mpv-action-after-video-end"; // i32
     const KEY_MPV_HWDEC: &'static str = "mpv-hwdec"; // i32
+    const KEY_MPV_RENDERER: &'static str = "mpv-renderer"; // i32
 
     const PREFERRED_VERSION_DESCRIPTORS: &'static str = "video-version-descriptors"; // String
     const ACCOUNTS: &'static str = "accounts"; // String
@@ -410,6 +411,14 @@ impl Settings {
 
     pub fn mpv_hwdec(&self) -> i32 {
         self.int(Self::KEY_MPV_HWDEC)
+    }
+
+    pub fn mpv_renderer(&self) -> i32 {
+        self.int(Self::KEY_MPV_RENDERER)
+    }
+
+    pub fn set_mpv_renderer(&self, renderer: i32) -> Result<(), glib::BoolError> {
+        self.set_int(Self::KEY_MPV_RENDERER, renderer)
     }
 
     pub fn set_list_sort_order(&self, list_sort_order: i32) -> Result<(), glib::BoolError> {
