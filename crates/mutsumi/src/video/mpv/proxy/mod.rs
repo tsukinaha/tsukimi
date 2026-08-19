@@ -1,5 +1,6 @@
 mod buffer_lifecycle;
 mod dmabuf;
+mod drm;
 
 #[cfg(feature = "profiling")]
 pub mod profiling;
@@ -45,6 +46,7 @@ use wl_proxy::{
     },
     protocols::{
         ObjectInterface,
+        drm::wl_drm::WlDrm,
         linux_dmabuf_v1::zwp_linux_dmabuf_v1::ZwpLinuxDmabufV1,
         viewporter::wp_viewporter::WpViewporter,
         wayland::{
@@ -89,6 +91,7 @@ use self::{
         BufferInfo,
         DmabufHandler,
     },
+    drm::DrmHandler,
     shm::ShmHandler,
     surface::{
         CompositorHandler,
@@ -138,6 +141,12 @@ pub struct MpvProxy {
 }
 
 pub fn create_mpv_proxy(format_pairs: Vec<(u32, u64)>) -> MpvProxy {
+    create_mpv_proxy_with_upstream(format_pairs, None)
+}
+
+pub fn create_mpv_proxy_with_upstream(
+    format_pairs: Vec<(u32, u64)>, upstream_display: Option<String>,
+) -> MpvProxy {
     let (frame_tx, frame_rx) = flume::unbounded();
     let (viewport_tx, viewport_rx) = flume::unbounded();
     let viewport = Arc::new(Mutex::new(Viewport::default()));
@@ -147,6 +156,7 @@ pub fn create_mpv_proxy(format_pairs: Vec<(u32, u64)>) -> MpvProxy {
         viewport_rx,
         viewport: Arc::clone(&viewport),
         load_id: Arc::new(AtomicU64::new(0)),
+        upstream_display: upstream_display.map(Arc::from),
     };
 
     MpvProxy {
@@ -184,6 +194,7 @@ pub(crate) struct ProxyConfig {
     viewport_rx: flume::Receiver<Viewport>,
     viewport: Arc<Mutex<Viewport>>,
     load_id: Arc<AtomicU64>,
+    upstream_display: Option<Arc<str>>,
 }
 
 impl ProxyConfig {
@@ -210,6 +221,7 @@ impl ProxyConfig {
             initial_viewport: *self.viewport.lock().unwrap(),
             connected_tx,
             load_id: Arc::clone(&self.load_id),
+            upstream_display: self.upstream_display.clone(),
         };
         let join = std::thread::Builder::new()
             .name(format!("wl-proxy-mpv-{generation}"))
@@ -292,6 +304,7 @@ struct SessionConfig {
     initial_viewport: Viewport,
     connected_tx: flume::Sender<()>,
     load_id: Arc<AtomicU64>,
+    upstream_display: Option<Arc<str>>,
 }
 
 enum ProxyEvent {
@@ -568,23 +581,33 @@ struct DisplayHandler {
     state: Rc<RefCell<SharedState>>,
     transport: BufferTransport,
     connected_tx: flume::Sender<()>,
+    has_upstream: bool,
 }
 
 impl WlDisplayHandler for DisplayHandler {
-    fn handle_sync(&mut self, _slf: &Rc<WlDisplay>, callback: &Rc<WlCallback>) {
-        callback.set_forward_to_server(false);
-        callback.send_done(0);
-        callback.delete_id();
+    fn handle_sync(&mut self, slf: &Rc<WlDisplay>, callback: &Rc<WlCallback>) {
+        if self.has_upstream {
+            slf.send_sync(callback);
+        } else {
+            callback.set_forward_to_server(false);
+            callback.send_done(0);
+            callback.delete_id();
+        }
     }
 
-    fn handle_get_registry(&mut self, _slf: &Rc<WlDisplay>, registry: &Rc<WlRegistry>) {
+    fn handle_get_registry(&mut self, slf: &Rc<WlDisplay>, registry: &Rc<WlRegistry>) {
         let _ = self.connected_tx.try_send(());
-        registry.set_forward_to_server(false);
+        registry.set_forward_to_server(self.has_upstream);
+        if self.has_upstream {
+            slf.send_get_registry(registry);
+        }
         let mut mapper = GlobalMapper::default();
         let has_dmabuf_formats = !self.state.borrow().allowed_format_pairs.is_empty();
         let mut names = GlobalNames::default();
 
-        for global in synthetic_global_policy(self.transport, has_dmabuf_formats) {
+        for global in
+            synthetic_global_policy(self.transport, has_dmabuf_formats && !self.has_upstream)
+        {
             let interface = match global.kind {
                 SyntheticGlobalKind::Compositor => ObjectInterface::WlCompositor,
                 SyntheticGlobalKind::Subcompositor => ObjectInterface::WlSubcompositor,
@@ -607,8 +630,10 @@ impl WlDisplayHandler for DisplayHandler {
         }
 
         registry.set_handler(RegistryHandler {
+            mapper,
             names,
             state: Rc::clone(&self.state),
+            transport: self.transport,
         });
     }
 }
@@ -625,19 +650,38 @@ struct GlobalNames {
 }
 
 struct RegistryHandler {
+    mapper: GlobalMapper,
     names: GlobalNames,
     state: Rc<RefCell<SharedState>>,
+    transport: BufferTransport,
 }
 
 impl WlRegistryHandler for RegistryHandler {
     fn handle_global(
-        &mut self, _slf: &Rc<WlRegistry>, _name: u32, _interface: ObjectInterface, _version: u32,
+        &mut self, slf: &Rc<WlRegistry>, name: u32, interface: ObjectInterface, version: u32,
     ) {
+        if self.transport == BufferTransport::Dmabuf
+            && matches!(
+                interface,
+                ObjectInterface::ZwpLinuxDmabufV1 | ObjectInterface::WlDrm
+            )
+        {
+            let version = if interface == ObjectInterface::ZwpLinuxDmabufV1 {
+                version.min(6)
+            } else {
+                version
+            };
+            self.mapper.forward_global(slf, name, interface, version);
+        } else {
+            self.mapper.ignore_global(name);
+        }
     }
 
-    fn handle_global_remove(&mut self, _slf: &Rc<WlRegistry>, _name: u32) {}
+    fn handle_global_remove(&mut self, slf: &Rc<WlRegistry>, name: u32) {
+        self.mapper.forward_global_remove(slf, name);
+    }
 
-    fn handle_bind(&mut self, _slf: &Rc<WlRegistry>, name: u32, id: Rc<dyn Object>) {
+    fn handle_bind(&mut self, slf: &Rc<WlRegistry>, name: u32, id: Rc<dyn Object>) {
         if name == self.names.compositor {
             let compositor = id.downcast::<WlCompositor>();
             compositor.set_forward_to_server(false);
@@ -685,9 +729,27 @@ impl WlRegistryHandler for RegistryHandler {
             dmabuf.set_forward_to_server(false);
             dmabuf.set_handler(DmabufHandler {
                 state: Rc::clone(&self.state),
+                forward_to_upstream: false,
             });
             dmabuf::advertise_formats(&dmabuf, &self.state.borrow().allowed_format_pairs);
         } else {
+            let dmabuf = id.try_downcast::<ZwpLinuxDmabufV1>();
+            let drm = id.try_downcast::<WlDrm>();
+            if dmabuf.is_some() || drm.is_some() {
+                self.mapper.forward_bind(slf, name, &id);
+                if let Some(dmabuf) = dmabuf {
+                    dmabuf.set_handler(DmabufHandler {
+                        state: Rc::clone(&self.state),
+                        forward_to_upstream: true,
+                    });
+                } else if let Some(drm) = drm {
+                    drm.set_handler(DrmHandler {
+                        state: Rc::clone(&self.state),
+                    });
+                }
+                return;
+            }
+
             id.core().set_forward_to_server(false);
             tracing::warn!(
                 name,
@@ -800,12 +862,19 @@ fn serve_client(
     ready_tx: std::sync::mpsc::SyncSender<io::Result<OwnedFd>>,
 ) {
     let setup = (|| -> io::Result<_> {
-        let state = State::builder(Baseline::V5)
-            .without_server()
-            .build()
-            .map_err(|error| {
-                io::Error::other(format!("failed to create Wayland state: {error}"))
-            })?;
+        let upstream_display = (session.transport == BufferTransport::Dmabuf)
+            .then_some(session.upstream_display.as_deref())
+            .flatten();
+        let has_upstream = upstream_display.is_some();
+        let builder = State::builder(Baseline::V5);
+        let builder = if let Some(upstream) = upstream_display {
+            builder.with_server_display_name(upstream)
+        } else {
+            builder.without_server()
+        };
+        let state = builder.build().map_err(|error| {
+            io::Error::other(format!("failed to create Wayland state: {error}"))
+        })?;
         let runtime = tokio::runtime::Builder::new_current_thread()
             .enable_io()
             .build()
@@ -840,11 +909,12 @@ fn serve_client(
             viewport_states: HashMap::new(),
         }));
         let display = client.display();
-        display.set_forward_to_server(false);
+        display.set_forward_to_server(has_upstream);
         display.set_handler(DisplayHandler {
             state: Rc::clone(&shared),
             transport: session.transport,
             connected_tx: session.connected_tx,
+            has_upstream,
         });
 
         Ok((

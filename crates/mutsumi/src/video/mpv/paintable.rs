@@ -27,7 +27,7 @@ mod imp {
         ShmMemoryFormat,
         SurfaceContentUpdate,
         SurfaceUpdate,
-        create_mpv_proxy,
+        create_mpv_proxy_with_upstream,
         video::{
             MutsumiMpvError,
             mpv::contexted::ContextedMPV,
@@ -309,7 +309,10 @@ mod imp {
                 .filter(|(fourcc, _)| !skip_packed_10bit || !PACKED_10BIT.contains(fourcc))
                 .collect();
 
-            create_mpv_proxy(format_pairs)
+            let upstream_display = display
+                .is::<gdk_wayland::WaylandDisplay>()
+                .then(|| display.name().to_string());
+            create_mpv_proxy_with_upstream(format_pairs, upstream_display)
         }
 
         pub fn throw_error(&self, code: MutsumiMpvError) {

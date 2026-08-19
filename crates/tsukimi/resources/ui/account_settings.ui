@@ -401,6 +401,69 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="description" translatable="yes">GPU Context</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Auto</property>
+                <property name="activatable-widget">renderer_group</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="renderer_group">
+                    <property name="valign">center</property>
+                    <property name="action-name">settings.renderer</property>
+                    <property name="action-target">0</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">waylandvk</property>
+                <property name="subtitle">vulkan + dmabuf</property>
+                <property name="activatable-widget">renderer_group2</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="renderer_group2">
+                    <property name="valign">center</property>
+                    <property name="group">renderer_group</property>
+                    <property name="action-name">settings.renderer</property>
+                    <property name="action-target">1</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">wayland</property>
+                <property name="subtitle">gl/egl drm prime buffer + dmabuf</property>
+                <property name="activatable-widget">renderer_group3</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="renderer_group3">
+                    <property name="valign">center</property>
+                    <property name="group">renderer_group</property>
+                    <property name="action-name">settings.renderer</property>
+                    <property name="action-target">2</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title">wlshm</property>
+                <property name="subtitle">CPU memory buffer</property>
+                <property name="activatable-widget">renderer_group4</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="renderer_group4">
+                    <property name="valign">center</property>
+                    <property name="group">renderer_group</property>
+                    <property name="action-name">settings.renderer</property>
+                    <property name="action-target">3</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
   </template>

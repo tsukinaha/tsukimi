@@ -183,6 +183,12 @@
       <summary>Hardware Decoding</summary>
       <description>0: no, 1: auto-safe, 2: vaapi</description>
     </key>
+    <key name="mpv-renderer" type="i">
+      <default>0</default>
+      <range min="0" max="3"/>
+      <summary>Video renderer</summary>
+      <description>0: automatic fallback, 1: Vulkan with linux-dmabuf, 2: OpenGL/EGL with linux-dmabuf, 3: wlshm</description>
+    </key>
     <key name="mpv-subtitle-preferred-lang" type="i">
       <summary>Preferred subtitle language</summary>
       <description>0: None, 1: English, 2: Chinese, 3: Japanese</description>
