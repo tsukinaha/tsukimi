@@ -1,0 +1,17 @@
+[package]
+name = "lycoric"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license = "MIT"
+description = "A GPU-oriented GTK4 lyrics renderer and immersive libadwaita player page"
+
+[dependencies]
+gtk = { version = "0.11", package = "gtk4", features = ["v4_22"] }
+adw = { version = "0.9", package = "libadwaita", features = ["v1_9"] }
+
+[build-dependencies]
+glib-build-tools = "0.22"
+
+[dev-dependencies]
+gst = { version = "0.25", package = "gstreamer" }

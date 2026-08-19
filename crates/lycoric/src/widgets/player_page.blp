@@ -1,0 +1,237 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $LycoricPlayerPage: Adw.BreakpointBin {
+    width-request: 320;
+    height-request: 480;
+
+    Adw.Breakpoint {
+        condition ("max-width: 760sp")
+        apply => $on_compact_breakpoint_apply() swapped;
+        unapply => $on_compact_breakpoint_unapply() swapped;
+
+        setters {
+            main_box.orientation: vertical;
+            main_box.spacing: 18;
+            main_box.margin-start: 18;
+            main_box.margin-end: 18;
+            main_box.margin-top: 10;
+            main_box.margin-bottom: 18;
+            left_panel.width-request: -1;
+            left_panel.valign: start;
+            identity_box.orientation: horizontal;
+            identity_box.spacing: 16;
+            cover_picture.width-request: 132;
+            cover_picture.height-request: 132;
+            metadata_box.valign: center;
+        }
+    }
+
+    child: Overlay {
+        $LycoricAnimatedBackdrop backdrop {
+            hexpand: true;
+            vexpand: true;
+        }
+
+        [overlay]
+        Box foreground {
+            orientation: vertical;
+            hexpand: true;
+            vexpand: true;
+
+            layout {
+                measure: true;
+                clip-overlay: true;
+            }
+
+            CenterBox {
+                margin-top: 18;
+                margin-start: 18;
+                margin-end: 18;
+
+                [start]
+                Button {
+                    icon-name: "go-previous-symbolic";
+                    tooltip-text: "Close lyrics";
+                    clicked => $on_close_clicked() swapped;
+
+                    styles [
+                        "flat",
+                        "osd",
+                    ]
+                }
+            }
+
+            Box main_box {
+                orientation: horizontal;
+                spacing: 56;
+                margin-start: 48;
+                margin-end: 48;
+                margin-top: 32;
+                margin-bottom: 48;
+                hexpand: true;
+                vexpand: true;
+
+                Adw.Clamp {
+                    maximum-size: 420;
+                    tightening-threshold: 360;
+                    hexpand: false;
+
+                    Box left_panel {
+                    orientation: vertical;
+                    spacing: 22;
+                    valign: center;
+                    width-request: 360;
+
+                    Box identity_box {
+                        orientation: vertical;
+                        spacing: 22;
+
+                        Picture cover_picture {
+                            width-request: 320;
+                            height-request: 320;
+                            content-fit: cover;
+                            can-shrink: true;
+                            overflow: hidden;
+
+                            styles ["card"]
+                        }
+
+                        Box metadata_box {
+                            orientation: vertical;
+                            spacing: 4;
+                            hexpand: true;
+
+                            styles ["lycoric-palette-foreground"]
+
+                            Label title_label {
+                                label: "Nothing playing";
+                                halign: start;
+                                xalign: 0;
+                                ellipsize: end;
+                                max-width-chars: 32;
+
+                                styles ["title-1"]
+                            }
+
+                            Label artist_label {
+                                halign: start;
+                                xalign: 0;
+                                ellipsize: end;
+                                max-width-chars: 32;
+
+                                styles ["title-3"]
+                            }
+
+                            Label album_label {
+                                visible: false;
+                                halign: start;
+                                xalign: 0;
+                                ellipsize: end;
+                                max-width-chars: 32;
+
+                                styles ["dim-label"]
+                            }
+                        }
+                    }
+
+                    Box controls_box {
+                        orientation: vertical;
+                        spacing: 8;
+
+                        styles ["lycoric-palette-foreground"]
+
+                        Scale seek_scale {
+                            orientation: horizontal;
+                            draw-value: false;
+                            hexpand: true;
+                            sensitive: false;
+                            tooltip-text: "Seek";
+
+                            adjustment: Adjustment {
+                                lower: 0;
+                                upper: 1;
+                                step-increment: 1;
+                                page-increment: 10;
+                            };
+                        }
+
+                        Box {
+                            orientation: horizontal;
+                            spacing: 8;
+
+                            Label position_label {
+                                label: "0:00";
+                                hexpand: true;
+                                halign: start;
+
+                                styles [
+                                    "caption",
+                                    "dim-label",
+                                ]
+                            }
+
+                            Label duration_label {
+                                label: "0:00";
+                                hexpand: true;
+                                halign: end;
+
+                                styles [
+                                    "caption",
+                                    "dim-label",
+                                ]
+                            }
+                        }
+
+                        Box {
+                            orientation: horizontal;
+                            spacing: 14;
+                            halign: center;
+
+                            Button {
+                                icon-name: "media-skip-backward-symbolic";
+                                tooltip-text: "Previous";
+                                clicked => $on_previous_clicked() swapped;
+
+                                styles ["flat"]
+                            }
+
+                            Button play_pause_button {
+                                icon-name: "media-playback-start-symbolic";
+                                tooltip-text: "Play";
+                                clicked => $on_play_pause_clicked() swapped;
+
+                                styles [
+                                    "flat",
+                                    "suggested-action",
+                                    "circular",
+                                ]
+                            }
+
+                            Button {
+                                icon-name: "media-skip-forward-symbolic";
+                                tooltip-text: "Next";
+                                clicked => $on_next_clicked() swapped;
+
+                                styles ["flat"]
+                            }
+                        }
+                    }
+                    }
+                }
+
+                Adw.Clamp {
+                    maximum-size: 1080;
+                    tightening-threshold: 720;
+                    hexpand: true;
+                    vexpand: true;
+
+                    $LycoricLyricsView lyrics_view {
+                        hexpand: true;
+                        vexpand: true;
+                    }
+                }
+            }
+        }
+    };
+}
