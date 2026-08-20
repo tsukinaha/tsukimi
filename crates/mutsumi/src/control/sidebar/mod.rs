@@ -1,13 +1,5 @@
-use adw::{
-    prelude::*,
-    subclass::prelude::*,
-};
-use gtk::{
-    CompositeTemplate,
-    gio,
-    glib,
-    template_callbacks,
-};
+use adw::{prelude::*, subclass::prelude::*};
+use gtk::{CompositeTemplate, gio, glib, template_callbacks};
 
 use crate::MutsumiVideoPlayer;
 

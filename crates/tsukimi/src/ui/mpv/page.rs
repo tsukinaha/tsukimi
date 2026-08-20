@@ -1267,12 +1267,11 @@ impl MPVPage {
     }
 
     fn listen_events(&self) {
-        let events = self.imp().video.mpv().mpv.subscribe();
         glib::spawn_future_local(glib::clone!(
             #[weak(rename_to = obj)]
             self,
             async move {
-                while let Ok(value) = events.recv_async().await {
+                while let Ok(value) = MPV_EVENT_CHANNEL.rx.recv_async().await {
                     match value {
                         ListenEvent::Duration(value) => {
                             obj.update_duration(value);

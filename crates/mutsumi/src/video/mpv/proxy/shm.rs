@@ -34,10 +34,7 @@ use wl_proxy::{
 };
 
 use super::{
-    SharedState,
-    ShmFrame,
-    ShmMemoryFormat,
-    surface_tree::BufferMetadata,
+    SharedState
 };
 use std::cell::RefCell;
 
@@ -45,6 +42,17 @@ struct ShmPoolState {
     file: File,
     size: Cell<u64>,
 }
+
+#[derive(Debug, Clone, Copy)]
+pub enum ShmMemoryFormat { Argb8888, Xrgb8888 }
+pub struct ShmFrame {
+    pub width: i32,
+    pub height: i32,
+    pub stride: usize,
+    pub format: ShmMemoryFormat,
+    pub data: Vec<u8>,
+}
+
 
 pub struct BufferInfo {
     pub buffer: Rc<WlBuffer>,
@@ -78,14 +86,6 @@ impl ShmSnapshot {
 }
 
 impl BufferInfo {
-    pub fn metadata(&self, buffer_id: u64) -> BufferMetadata {
-        BufferMetadata {
-            buffer_id,
-            width: self.width as u32,
-            height: self.height as u32,
-        }
-    }
-
     pub fn snapshot(&self) -> Option<ShmSnapshot> {
         self.copy_snapshot()
             .map_err(|error| {
@@ -279,7 +279,6 @@ impl WlShmPoolHandler for ShmPoolHandler {
         });
         let buffer_id = id.unique_id();
         let mut state = self.state.borrow_mut();
-        state.register_buffer(buffer_id);
         state.shm_buffer_info.insert(
             buffer_id,
             BufferInfo {
@@ -338,7 +337,10 @@ struct ShmBufferHandler {
 
 impl WlBufferHandler for ShmBufferHandler {
     fn handle_destroy(&mut self, slf: &Rc<WlBuffer>) {
-        self.state.borrow_mut().buffer_destroyed(slf.unique_id());
+        self.state
+            .borrow_mut()
+            .shm_buffer_info
+            .remove(&slf.unique_id());
         slf.delete_id();
     }
 }

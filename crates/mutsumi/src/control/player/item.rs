@@ -1,14 +1,9 @@
-use gtk::{
-    glib,
-    prelude::*,
-    subclass::prelude::*,
-};
+use gtk::glib;
+use gtk::prelude::*;
+use gtk::subclass::prelude::*;
 
 mod imp {
-    use std::cell::{
-        Cell,
-        RefCell,
-    };
+    use std::cell::{Cell, RefCell};
 
     use super::*;
 

@@ -1,18 +1,9 @@
-use std::{
-    collections::{
-        BTreeMap,
-        BTreeSet,
-        HashMap,
-    },
-    env,
-    ffi::OsStr,
-    fs,
-    path::{
-        Path,
-        PathBuf,
-    },
-    process::Command,
-};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::env;
+use std::ffi::OsStr;
+use std::fs;
+use std::path::{Path, PathBuf};
+use std::process::Command;
 
 const APP_RESOURCE_PREFIX: &str = "/io/github/mutsumiuniverse/mutsumi";
 
@@ -277,7 +268,10 @@ fn write_icon_gresources(xml: &mut String, resources_root: &Path, icon_inputs: &
 }
 
 fn write_ui_gresource(
-    xml: &mut String, project_root: &Path, resources_root: &Path, blp_inputs: &[PathBuf],
+    xml: &mut String,
+    project_root: &Path,
+    resources_root: &Path,
+    blp_inputs: &[PathBuf],
 ) {
     xml.push_str(&format!(
         "  <gresource prefix=\"{}/ui/\">\n",

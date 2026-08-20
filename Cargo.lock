@@ -984,6 +984,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "danmakw"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cb73f6048a9d8b5ad397ca2702358878b3797840cfac58e1624d7983bfd774d0"
+dependencies = [
+ "glib",
+ "gtk4",
+ "pango",
+ "quick-xml",
+ "thiserror 2.0.19",
+]
+
+[[package]]
 name = "darling"
 version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3162,11 +3175,11 @@ checksum = "956787520e75e9bd233246045d19f42fb73242759cc57fba9611d940ae96d4b0"
 
 [[package]]
 name = "mutsumi"
-version = "0.7.0"
+version = "0.6.0"
 dependencies = [
  "ash",
  "atomic-wait",
- "danmakw",
+ "danmakw 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "epoxy",
  "flume",
  "gdk4-wayland",
@@ -3180,7 +3193,7 @@ dependencies = [
  "libloading 0.9.0",
  "libmpv2",
  "libmpv2-sys",
- "mutsumi-prelude",
+ "mutsumi-prelude 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "once_cell",
  "plotly",
  "quick-xml",
@@ -3196,6 +3209,16 @@ dependencies = [
 [[package]]
 name = "mutsumi-prelude"
 version = "0.1.0"
+dependencies = [
+ "glib",
+ "tokio",
+]
+
+[[package]]
+name = "mutsumi-prelude"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9f7431598159eb70bb0165618b40928b7482474d3db2a99912ff83d09c8f5642"
 dependencies = [
  "glib",
  "tokio",

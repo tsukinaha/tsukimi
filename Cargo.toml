@@ -10,7 +10,7 @@ rust-version = "1.91"
 [workspace.dependencies]
 mutsumi-prelude = { version = "0.1.0", path = "crates/mutsumi-prelude" }
 danmakw = { version = "0.3.0", path = "crates/danmakw" }
-mutsumi = { version = "0.7.0", path = "crates/mutsumi" }
+mutsumi = { version = "0.6.0", path = "crates/mutsumi" }
 dandanapi = { version = "0.2.0", path = "crates/dandanapi" }
 dandanapi-client = { version = "0.1.0", path = "crates/dandanapi-client" }
 

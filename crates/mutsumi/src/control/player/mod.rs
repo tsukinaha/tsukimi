@@ -1,52 +1,22 @@
 use std::rc::Rc;
 
-use adw::{
-    prelude::*,
-    subclass::prelude::*,
-};
+use adw::{prelude::*, subclass::prelude::*};
 use glib::spawn_future_local;
-use gtk::{
-    Builder,
-    CompositeTemplate,
-    PopoverMenu,
-    gdk::Rectangle,
-    gio,
-    glib,
-};
+use gtk::{Builder, CompositeTemplate, PopoverMenu, gdk::Rectangle, gio, glib};
 
 mod item;
 mod playlistop;
 
-pub use item::{
-    PlaylistItem,
-    title_from_uri,
-};
+pub use item::PlaylistItem;
+pub use item::title_from_uri;
 use playlistop::*;
 
 use crate::{
-    ChapterList,
-    Color,
-    Danmaku,
-    DanmakuMode,
-    DanmakuTrack,
-    ListenEvent,
-    MpvActor,
-    MpvTrack,
-    MpvTracks,
-    MutsumiVideoPlayer,
-    ParseError,
-    PlayParams,
-    Playlist,
-    TrackKind,
+    ChapterList, Color, Danmaku, DanmakuMode, DanmakuTrack, ListenEvent, MPV_EVENT_CHANNEL,
+    MpvActor, MpvTrack, MpvTracks, MutsumiVideoPlayer, ParseError, PlayParams, Playlist, TrackKind,
     TrackSelection,
     control::{
-        ControlSidebar,
-        GlobalToast,
-        MenuActions,
-        ScaleRow,
-        VideoScale,
-        VolumeBar,
-        format_duration,
+        ControlSidebar, GlobalToast, MenuActions, ScaleRow, VideoScale, VolumeBar, format_duration,
     },
 };
 
@@ -93,15 +63,9 @@ pub enum DanmakuLoadError {
 }
 
 mod imp {
-    use std::{
-        cell::{
-            Cell,
-            OnceCell,
-            RefCell,
-        },
-        rc::Rc,
-        sync::OnceLock,
-    };
+    use std::cell::{Cell, OnceCell, RefCell};
+    use std::rc::Rc;
+    use std::sync::OnceLock;
 
     use glib::subclass::InitializingObject;
 
@@ -188,8 +152,6 @@ mod imp {
 
         #[template_child]
         pub danmakw: TemplateChild<crate::Danmakw>,
-        #[template_child]
-        pub intensity_row: TemplateChild<ScaleRow>,
 
         #[template_child]
         pub danmaku_switch: TemplateChild<gtk::Switch>,
@@ -311,15 +273,6 @@ mod imp {
             self.control_sidebar.set_player(Some(&self.video.get()));
             self.video_scale.set_player(Some(&self.video.get()));
 
-            self.intensity_row
-                .bind_property("value", &self.danmakw.get(), "intensity")
-                .sync_create()
-                .transform_to(|_, value: f64| {
-                    let index = value.round().clamp(0.0, 3.0) as u32;
-                    Some(crate::Intensity::from(index))
-                })
-                .build();
-
             obj.setup_context_menu();
 
             obj.connect_root_notify(|obj| {
@@ -410,7 +363,7 @@ impl MutsumiPlayer {
     }
 
     pub fn mpv(&self) -> MpvActor {
-        self.imp().video.get().backend_ref().mpv().mpv.clone()
+        self.imp().video.get().backend_ref().mpv().mpv
     }
 
     pub fn overlay_status(&self) -> adw::Bin {
@@ -497,12 +450,11 @@ impl MutsumiPlayer {
     }
 
     fn listen_events(&self) {
-        let events = self.mpv().subscribe();
         glib::spawn_future_local(glib::clone!(
             #[weak(rename_to = obj)]
             self,
             async move {
-                while let Ok(value) = events.recv_async().await {
+                while let Ok(value) = MPV_EVENT_CHANNEL.rx.recv_async().await {
                     match value {
                         ListenEvent::Duration(value) => {
                             obj.update_duration(value);
@@ -799,8 +751,13 @@ impl MutsumiPlayer {
     }
 
     fn append_track_row(
-        &self, listbox: &gtk::ListBox, title: &str, subtitle: &str, active: bool,
-        group: Option<&gtk::CheckButton>, on_activated: impl Fn() + 'static,
+        &self,
+        listbox: &gtk::ListBox,
+        title: &str,
+        subtitle: &str,
+        active: bool,
+        group: Option<&gtk::CheckButton>,
+        on_activated: impl Fn() + 'static,
     ) -> gtk::CheckButton {
         let check = gtk::CheckButton::builder()
             .valign(gtk::Align::Center)
@@ -1084,7 +1041,10 @@ impl MutsumiPlayer {
     }
 
     fn apply_danmaku(
-        &self, danmaku: Vec<Danmaku>, source: DanmakuSource, attribution: Option<String>,
+        &self,
+        danmaku: Vec<Danmaku>,
+        source: DanmakuSource,
+        attribution: Option<String>,
     ) {
         let imp = self.imp();
         let count = danmaku.len();
@@ -1098,7 +1058,10 @@ impl MutsumiPlayer {
     }
 
     async fn load_danmaku_uri_for_source(
-        &self, uri: &str, source: DanmakuSource, attribution: Option<String>,
+        &self,
+        uri: &str,
+        source: DanmakuSource,
+        attribution: Option<String>,
     ) -> Result<(), DanmakuLoadError> {
         let generation = self.next_danmaku_generation();
         self.imp().danmaku_loading_source.set(source);
@@ -1168,7 +1131,9 @@ impl MutsumiPlayer {
     }
 
     pub fn load_bilibili_danmaku_xml_from(
-        &self, provider: impl Into<String>, xml: &str,
+        &self,
+        provider: impl Into<String>,
+        xml: &str,
     ) -> Result<(), DanmakuLoadError> {
         self.next_danmaku_generation();
         let danmaku = crate::parse_bilibili_xml(xml)?;
@@ -1186,7 +1151,9 @@ impl MutsumiPlayer {
     }
 
     pub async fn load_bilibili_danmaku_uri_from(
-        &self, provider: impl Into<String>, uri: &str,
+        &self,
+        provider: impl Into<String>,
+        uri: &str,
     ) -> Result<(), DanmakuLoadError> {
         self.load_danmaku_uri_for_source(
             uri,
