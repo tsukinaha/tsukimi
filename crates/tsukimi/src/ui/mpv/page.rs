@@ -273,6 +273,7 @@ mod imp {
         pub danmaku_count: Cell<usize>,
         pub danmaku_generation: Cell<u64>,
         pub file_loaded: Cell<bool>,
+        pub duration: Cell<f64>,
     }
 
     #[glib::object_subclass]
@@ -1355,9 +1356,16 @@ impl MPVPage {
 
     fn update_duration(&self, value: f64) {
         let imp = self.imp();
-        let duration = format_duration(value as i64);
-        let width_chars = duration.chars().count() as i32;
+        imp.duration.set(value);
         imp.video_scale.set_range(0.0, value);
+        self.render_duration();
+    }
+
+    fn render_duration(&self) {
+        let imp = self.imp();
+        let speed = imp.playback_speed_adj.value().max(1.0);
+        let duration = format_duration((imp.duration.get() / speed) as i64);
+        let width_chars = duration.chars().count() as i32;
         imp.progress_time_label.set_width_chars(width_chars);
         imp.duration_label.set_width_chars(width_chars);
         imp.duration_label.set_text(&duration);
@@ -1370,6 +1378,7 @@ impl MPVPage {
             .set_label(&format!("{value:.2}x"));
         imp.playback_speed_indicator
             .set_visible((value * 100.0).round() as i64 != 100);
+        self.render_duration();
         if let Some(window) = self.root().and_downcast_ref::<Window>() {
             window.imp().mpv_control_sidebar.set_playback_speed(value);
         }
