@@ -1,33 +1,14 @@
 use std::{
-    collections::{
-        BTreeMap,
-        VecDeque,
-    },
+    collections::{BTreeMap, VecDeque},
     path::PathBuf,
     sync::{
-        LazyLock,
-        Mutex,
-        atomic::{
-            AtomicBool,
-            AtomicU64,
-            Ordering,
-        },
+        LazyLock, Mutex,
+        atomic::{AtomicBool, AtomicU64, Ordering},
     },
-    time::{
-        Instant,
-        SystemTime,
-        UNIX_EPOCH,
-    },
+    time::{Instant, SystemTime, UNIX_EPOCH},
 };
 
-use plotly::{
-    Configuration,
-    Layout,
-    Plot,
-    Trace,
-    common::Title,
-    layout::Axis,
-};
+use plotly::{Configuration, Layout, Plot, Trace, common::Title, layout::Axis};
 use serde::Serialize;
 
 static ACTIVE: AtomicBool = AtomicBool::new(false);

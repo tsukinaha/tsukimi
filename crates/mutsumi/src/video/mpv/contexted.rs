@@ -1,5 +1,5 @@
-// Stable handle to a per-instance MPV session supervisor.
-#[derive(Clone)]
+//This struct is actually noting, so it can be safely sent across threads without synchronization.
+#[derive(Clone, Copy)]
 pub struct ContextedMPV {
     pub mpv: MpvActor,
 }
@@ -7,10 +7,7 @@ pub struct ContextedMPV {
 impl Default for ContextedMPV {
     fn default() -> Self {
         unsafe {
-            use libc::{
-                LC_NUMERIC,
-                setlocale,
-            };
+            use libc::{LC_NUMERIC, setlocale};
             setlocale(LC_NUMERIC, c"C".as_ptr() as *const _);
         }
 
@@ -35,26 +32,14 @@ impl Default for ContextedMPV {
     }
 }
 
-impl ContextedMPV {
-    pub fn new_libmpv() -> libmpv2::Result<Self> {
-        Ok(Self {
-            mpv: MpvActor::new_libmpv()?,
-        })
-    }
-}
-
 use crate::{
-    TrackSelection,
-    video::{
-        MpvActor,
-        MpvValue,
-        MpvValueType,
-    },
+    TrackSelection, arm_mpv_proxy,
+    video::{MpvActor, MpvValue, MpvValueType},
 };
 
 impl ContextedMPV {
     pub fn shutdown(&self) {
-        self.mpv.shutdown();
+        self.mpv.command("quit", &[]);
     }
 
     pub fn set_position(&self, value: f64) {
@@ -124,14 +109,32 @@ impl ContextedMPV {
     }
 
     pub fn load_video(&self, url: &str) {
-        self.mpv.replace_playlist(vec![url.to_owned()]);
+        // mpv will read "WAYLAND_DISPLAY" everytime on loading file
+        arm_mpv_proxy();
+
+        self.mpv.command("loadfile", &[url, "replace"]);
     }
 
     pub fn set_playlist(&self, urls: &[String]) {
-        self.mpv.replace_playlist(urls.to_vec());
+        if urls.is_empty() {
+            self.mpv.command("playlist-clear", &[]);
+            self.mpv.command("stop", &[]);
+            return;
+        }
+
+        arm_mpv_proxy();
+
+        let mut iter = urls.iter();
+        if let Some(first) = iter.next() {
+            self.mpv.command("loadfile", &[first, "replace"]);
+        }
+        for url in iter {
+            self.mpv.command("loadfile", &[url, "append"]);
+        }
     }
 
     pub fn set_playlist_pos(&self, pos: i64) {
+        arm_mpv_proxy();
         self.mpv.set_property("playlist-pos", pos);
     }
 
@@ -152,15 +155,18 @@ impl ContextedMPV {
     }
 
     pub fn playlist_add(&self, url: &str, index: i64) {
-        self.mpv.playlist_add(url.to_owned(), index);
+        arm_mpv_proxy();
+        self.mpv
+            .command("loadfile", &[url, "insert-at", &index.to_string()]);
     }
 
     pub fn playlist_remove(&self, index: i64) {
-        self.mpv.playlist_remove(index);
+        self.mpv.command("playlist-remove", &[&index.to_string()]);
     }
 
     pub fn playlist_move(&self, from: i64, to: i64) {
-        self.mpv.playlist_move(from, to);
+        self.mpv
+            .command("playlist-move", &[&from.to_string(), &to.to_string()]);
     }
 
     pub fn set_start_time(&self, second: u64) {

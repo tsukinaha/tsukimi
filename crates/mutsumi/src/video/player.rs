@@ -1,33 +1,18 @@
 use glib::Object;
-use gtk::{
-    gdk::ModifierType,
-    glib,
-    subclass::prelude::*,
-};
+use gtk::{gdk::ModifierType, glib, subclass::prelude::*};
 
-use crate::{
-    ContextedMPV,
-    MpvValue,
-    MutsumiVideoSink,
-    PlayParams,
-};
+use crate::{ContextedMPV, MpvValue, MutsumiVideoSink, PlayParams};
 
-use super::backend::{
-    BoxedFuture,
-    TrackKind,
-    TrackSelection,
-};
+use super::backend::{BoxedFuture, TrackKind, TrackSelection};
 
 mod imp {
     use std::cell::Cell;
 
-    use adw::{
-        prelude::*,
-        subclass::prelude::*,
-    };
+    use adw::prelude::*;
+    use adw::subclass::prelude::*;
     use gtk::CssProvider;
 
-    use crate::MutsumiVideoSink;
+    use crate::{MutsumiVideoSink, VIEWPORT_CHANNEL};
 
     use super::*;
     #[derive(Default, glib::Properties)]
@@ -99,8 +84,7 @@ mod imp {
 
             let viewport = (width, height, surface.scale());
             if self.last_viewport.replace(viewport) != viewport {
-                self.backend
-                    .update_viewport(viewport.0, viewport.1, viewport.2);
+                let _ = VIEWPORT_CHANNEL.tx.send(viewport);
             }
         }
     }

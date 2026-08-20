@@ -1,17 +1,10 @@
 use glib::Object;
-use gtk::{
-    gdk::prelude::PaintableExt,
-    glib,
-    subclass::prelude::*,
-};
+use gtk::{gdk::prelude::PaintableExt, glib, subclass::prelude::*};
 
 use crate::{
     PlayParams,
     video::{
-        backend::{
-            TrackKind,
-            TrackSelection,
-        },
+        backend::{TrackKind, TrackSelection},
         mpv::contexted::ContextedMPV,
     },
 };
@@ -20,51 +13,27 @@ use gtk::gdk;
 
 mod imp {
     use crate::{
-        BufferTransport,
-        CapturedFrame,
-        FrameCallbacks,
-        MpvProxy,
-        ShmMemoryFormat,
-        SurfaceContentUpdate,
-        SurfaceUpdate,
-        create_mpv_proxy_with_upstream,
-        video::{
-            MutsumiMpvError,
-            mpv::contexted::ContextedMPV,
-        },
+        FRAME_CHANNEL, FrameCallbacks, ShmMemoryFormat, SurfaceContentUpdate, SurfaceUpdate,
+        create_mpv_proxy,
+        video::{MutsumiMpvError, mpv::contexted::ContextedMPV},
     };
-    use std::{
-        cell::{
-            Cell,
-            RefCell,
-        },
-        collections::HashSet,
-        os::fd::AsRawFd,
-        sync::OnceLock,
-    };
+    #[cfg(feature = "profiling")]
+    use std::cell::Cell;
+    use std::{cell::RefCell, os::fd::AsRawFd, sync::OnceLock};
 
     #[cfg(feature = "profiling")]
-    use crate::video::mpv::proxy::profiling::{
-        self,
-        Stage,
-    };
+    use crate::video::mpv::proxy::profiling::{self, Stage};
 
     use super::*;
 
     use glib::subclass::Signal;
-    use gtk::{
-        glib,
-        prelude::*,
-    };
+    use gtk::{glib, prelude::*};
 
     #[derive(Default)]
     pub struct MutsumiVideoSink {
         pub mpv: ContextedMPV,
-        pub proxy: RefCell<Option<MpvProxy>>,
         pub texture: RefCell<Option<gdk::Texture>>,
         pub frame_callbacks: RefCell<Vec<FrameCallbacks>>,
-        pub validated_pairs: RefCell<HashSet<(u64, u64, u32, u64)>>,
-        pub validated_generation: Cell<Option<u64>>,
         #[cfg(feature = "profiling")]
         pub pending_snapshot_frame_id: Cell<Option<u64>>,
     }
@@ -82,49 +51,27 @@ mod imp {
 
             let obj = self.obj();
 
-            let proxy = self.create_proxy();
-            let frame_rx = proxy.frame_receiver();
-            self.mpv.mpv.configure_proxy(proxy.config());
-            self.proxy.replace(Some(proxy));
+            self.setup_mpv();
 
             glib::spawn_future_local(glib::clone!(
                 #[weak]
                 obj,
                 async move {
-                    while let Ok(update) = frame_rx.recv_async().await {
+                    while let Ok(update) = FRAME_CHANNEL.rx.recv_async().await {
                         let SurfaceUpdate {
-                            generation,
-                            load_id,
-                            surface_id,
                             content,
                             frame_callbacks,
                         } = update;
 
-                        if generation != obj.mpv().mpv.current_generation()
-                            || load_id != obj.mpv().mpv.current_load_id()
-                        {
-                            if let Some(callbacks) = frame_callbacks {
-                                callbacks.done(0);
-                            }
-                            continue;
-                        }
-
-                        tracing::trace!(
-                            generation,
-                            load_id,
-                            surface_id,
-                            "received synthetic Wayland surface update"
-                        );
-
                         match content {
-                            SurfaceContentUpdate::Frame(CapturedFrame::Dmabuf(frame)) => {
+                            SurfaceContentUpdate::Frame(frame) => {
                                 #[cfg(feature = "profiling")]
                                 let profile_frame_id = frame.profile_frame_id;
                                 #[cfg(feature = "profiling")]
                                 profiling::mark(profile_frame_id, Stage::TextureBuildStarted);
 
-                                let fourcc = frame.format;
-                                let modifier = frame.modifier;
+                                let previous = obj.imp().texture.borrow();
+
                                 let mut builder = gdk::DmabufTextureBuilder::new()
                                     .set_display(
                                         &gdk::Display::default()
@@ -132,37 +79,23 @@ mod imp {
                                     )
                                     .set_width(frame.width)
                                     .set_height(frame.height)
-                                    .set_fourcc(fourcc)
-                                    .set_modifier(modifier)
+                                    .set_fourcc(frame.format)
+                                    .set_modifier(frame.modifier)
                                     .set_n_planes(frame.planes.len() as u32);
 
-                                for (index, plane) in frame.planes.iter().enumerate() {
-                                    builder = unsafe {
-                                        builder.set_fd(index as u32, plane.fd.as_raw_fd())
-                                    }
-                                    .set_offset(index as u32, plane.offset)
-                                    .set_stride(index as u32, plane.stride);
+                                drop(previous);
+
+                                for (i, plane) in frame.planes.iter().enumerate() {
+                                    builder =
+                                        unsafe { builder.set_fd(i as u32, plane.fd.as_raw_fd()) }
+                                            .set_offset(i as u32, plane.offset)
+                                            .set_stride(i as u32, plane.stride);
                                 }
 
                                 match unsafe {
                                     builder.build_with_release_func(move || drop(frame))
                                 } {
                                     Ok(texture) => {
-                                        let validation_key =
-                                            (generation, load_id, fourcc, modifier);
-                                        if obj
-                                            .imp()
-                                            .validated_pairs
-                                            .borrow_mut()
-                                            .insert(validation_key)
-                                        {
-                                            // Force the first import through GDK's downloader. A
-                                            // successful builder alone may defer the real import.
-                                            let downloader = gdk::TextureDownloader::new(&texture);
-                                            let _ = downloader.download_bytes();
-                                            obj.imp().validated_generation.set(Some(generation));
-                                        }
-
                                         #[cfg(feature = "profiling")]
                                         {
                                             profiling::mark(profile_frame_id, Stage::TextureBuilt);
@@ -171,39 +104,20 @@ mod imp {
                                                 .set(profile_frame_id);
                                         }
                                         obj.imp().texture.replace(Some(texture));
-                                        obj.mpv().mpv.report_frame_imported(
-                                            generation,
-                                            load_id,
-                                            BufferTransport::Dmabuf,
-                                        );
                                     }
-                                    Err(error) => {
-                                        tracing::error!(
-                                            generation,
-                                            surface_id,
-                                            fourcc,
-                                            modifier,
-                                            %error,
-                                            "dmabuf import failed"
-                                        );
-                                        obj.mpv().mpv.report_dmabuf_import_failed(
-                                            generation,
-                                            load_id,
-                                            fourcc,
-                                            modifier,
-                                            error.to_string(),
-                                        );
+                                    Err(e) => {
+                                        tracing::error!("dmabuf build failed: {e}");
                                     }
                                 }
                             }
-                            SurfaceContentUpdate::Frame(CapturedFrame::Shm(frame)) => {
+                            SurfaceContentUpdate::Shm(frame) => {
+                                let bytes = glib::Bytes::from_owned(frame.data);
                                 let format = match frame.format {
-                                    ShmMemoryFormat::Argb8888 => {
+                                    ShmMemoryFormat::Argb8888
+                                    | ShmMemoryFormat::Xrgb8888 => {
                                         gdk::MemoryFormat::B8g8r8a8Premultiplied
                                     }
-                                    ShmMemoryFormat::Xrgb8888 => gdk::MemoryFormat::B8g8r8x8,
                                 };
-                                let bytes = glib::Bytes::from_owned(frame.data);
                                 let texture = gdk::MemoryTexture::new(
                                     frame.width,
                                     frame.height,
@@ -211,22 +125,12 @@ mod imp {
                                     &bytes,
                                     frame.stride,
                                 );
-                                obj.imp().validated_generation.set(Some(generation));
                                 obj.imp().texture.replace(Some(gdk::Texture::from(texture)));
-                                obj.mpv().mpv.report_frame_imported(
-                                    generation,
-                                    load_id,
-                                    BufferTransport::Shm,
-                                );
                             }
                             SurfaceContentUpdate::Clear => {
-                                // Keep the last valid frame visible while a replacement
-                                // candidate is bootstrapping.
-                                if obj.imp().validated_generation.get() == Some(generation) {
-                                    #[cfg(feature = "profiling")]
-                                    obj.imp().pending_snapshot_frame_id.set(None);
-                                    obj.imp().texture.take();
-                                }
+                                #[cfg(feature = "profiling")]
+                                obj.imp().pending_snapshot_frame_id.set(None);
+                                obj.imp().texture.take();
                             }
                             SurfaceContentUpdate::Unchanged => {}
                         }
@@ -245,7 +149,6 @@ mod imp {
             self.texture.take();
             self.frame_callbacks.take();
             self.mpv.shutdown();
-            self.proxy.take();
         }
 
         fn signals() -> &'static [Signal] {
@@ -288,7 +191,7 @@ mod imp {
     }
 
     impl MutsumiVideoSink {
-        fn create_proxy(&self) -> MpvProxy {
+        fn setup_mpv(&self) {
             let display = gdk::Display::default().expect("Could not connect to display");
             let formats = display.dmabuf_formats();
 
@@ -309,10 +212,7 @@ mod imp {
                 .filter(|(fourcc, _)| !skip_packed_10bit || !PACKED_10BIT.contains(fourcc))
                 .collect();
 
-            let upstream_display = display
-                .is::<gdk_wayland::WaylandDisplay>()
-                .then(|| display.name().to_string());
-            create_mpv_proxy_with_upstream(format_pairs, upstream_display)
+            create_mpv_proxy(format_pairs);
         }
 
         pub fn throw_error(&self, code: MutsumiMpvError) {
@@ -339,12 +239,6 @@ impl MutsumiVideoSink {
 
     pub fn mpv(&self) -> &ContextedMPV {
         &self.imp().mpv
-    }
-
-    pub fn update_viewport(&self, width: i32, height: i32, scale: f64) {
-        if let Some(proxy) = self.imp().proxy.borrow().as_ref() {
-            proxy.update_viewport(width, height, scale);
-        }
     }
 
     pub fn play(&self, source: &PlayParams) {

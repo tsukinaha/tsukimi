@@ -111,6 +111,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                     <property name="speed-factor" bind-source="danmaku_speed_spin" bind-property="value" bind-flags="sync-create"/>
                     <property name="font-size" bind-source="font_size_spin" bind-property="value" bind-flags="sync-create"/>
                     <property name="font-weight" bind-source="font_weight_row" bind-property="value" bind-flags="sync-create"/>
+                    <property name="intensity" bind-source="intensity_row" bind-property="value" bind-flags="sync-create"/>
                     <property name="spacing-factor" bind-source="spacing_spin" bind-property="value" bind-flags="sync-create"/>
                     <property name="outline-px" bind-source="outline_spin" bind-property="value" bind-flags="sync-create"/>
                     <property name="shadow-offset" bind-source="shadow_spin" bind-property="value" bind-flags="sync-create"/>

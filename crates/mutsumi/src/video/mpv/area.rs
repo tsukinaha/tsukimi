@@ -1,73 +1,45 @@
 use glib::Object;
-use gtk::{
-    gio,
-    glib,
-    subclass::prelude::*,
-};
+use gtk::{gio, glib, subclass::prelude::*};
 
 use crate::{
     PlayParams,
     video::{
-        backend::{
-            TrackKind,
-            TrackSelection,
-        },
+        backend::{TrackKind, TrackSelection},
         mpv::contexted::ContextedMPV,
     },
 };
 
+use super::RENDER_UPDATE;
+
 mod imp {
-    use crate::video::{
-        MutsumiMpvError,
-        mpv::contexted::ContextedMPV,
-    };
+    use crate::video::{MPV_CTRL, MpvMessage, MutsumiMpvError, mpv::contexted::ContextedMPV};
+    use libmpv2::Mpv;
     use std::{
-        cell::RefCell,
         ffi::c_void,
-        sync::OnceLock,
+        sync::{Arc, OnceLock},
     };
 
     use super::*;
+
+    use tokio::sync::oneshot;
 
     use gdk_x11::X11Display;
 
     use glib::subclass::Signal;
     use glow::HasContext;
     use gtk::{
-        gdk::{
-            Display,
-            GLContext,
-        },
+        gdk::{Display, GLContext},
         glib,
         prelude::*,
     };
-    use libmpv2::render::{
-        OpenGLInitParams,
-        RenderContext,
-        RenderParam,
-        RenderParamApiType,
-    };
+    use libmpv2::render::{OpenGLInitParams, RenderContext, RenderParam, RenderParamApiType};
     use once_cell::sync::OnceCell;
 
+    #[derive(Default)]
     pub struct MPVGLArea {
         pub mpv: ContextedMPV,
-        pub mpv_ctx: RefCell<Option<RenderContext<'static>>>,
+        pub mpv_ctx: OnceCell<RenderContext<'static>>,
         pub gl_ctx: OnceCell<glow::Context>,
-        pub render_update_tx: flume::Sender<()>,
-        pub render_update_rx: flume::Receiver<()>,
-    }
-
-    impl Default for MPVGLArea {
-        fn default() -> Self {
-            let (render_update_tx, render_update_rx) = flume::unbounded();
-            Self {
-                mpv: ContextedMPV::new_libmpv().expect("Failed to create libmpv instance"),
-                mpv_ctx: RefCell::default(),
-                gl_ctx: OnceCell::new(),
-                render_update_tx,
-                render_update_rx,
-            }
-        }
     }
 
     #[glib::object_subclass]
@@ -86,7 +58,6 @@ mod imp {
         }
 
         fn dispose(&self) {
-            self.mpv_ctx.take();
             self.mpv.shutdown();
         }
 
@@ -120,12 +91,11 @@ mod imp {
 
             self.setup_mpv(gl_context, obj.display());
 
-            let render_update_rx = self.render_update_rx.clone();
             glib::spawn_future_local(glib::clone!(
                 #[weak]
                 obj,
                 async move {
-                    while render_update_rx.recv_async().await.is_ok() {
+                    while RENDER_UPDATE.rx.recv_async().await.is_ok() {
                         obj.queue_render();
                     }
                 }
@@ -139,8 +109,7 @@ mod imp {
 
     impl GLAreaImpl for MPVGLArea {
         fn render(&self, _context: &GLContext) -> glib::Propagation {
-            let mpv_ctx = self.mpv_ctx.borrow();
-            let Some(ctx) = mpv_ctx.as_ref() else {
+            let Some(ctx) = self.mpv_ctx.get() else {
                 return glib::Propagation::Stop;
             };
 
@@ -176,26 +145,32 @@ mod imp {
                 ));
             }
 
-            let render_update_tx = self.render_update_tx.clone();
-            let actor = self.mpv.mpv.clone();
+            let (arc_tx, arc_rx) = oneshot::channel::<Arc<Mpv>>();
+
+            MPV_CTRL
+                .tx
+                .send(MpvMessage::InitRenderContext(arc_tx))
+                .expect("Init render context failed");
 
             glib::spawn_future_local(glib::clone!(
                 #[weak(rename_to = imp)]
                 self,
                 async move {
-                    let mpv = actor.mpv_handle().await.expect("Actor dropped sender");
+                    let mpv = arc_rx.await.expect("Actor dropped sender");
                     let mut ctx = mpv
                         .create_render_context(render_params)
                         .expect("Failed creating render context");
-                    ctx.set_update_callback(move || {
-                        let _ = render_update_tx.send(());
+                    ctx.set_update_callback(|| {
+                        let _ = RENDER_UPDATE.tx.send(true);
                     });
-                    // SAFETY: the per-area actor owns the MPV Arc until dispose,
-                    // where the render context is dropped before actor shutdown.
+                    //SAFETY: Mpv is kept alive by the actor's Arc for the program lifetime
                     let ctx = unsafe {
                         std::mem::transmute::<RenderContext<'_>, RenderContext<'static>>(ctx)
                     };
-                    imp.mpv_ctx.replace(Some(ctx));
+                    imp.mpv_ctx
+                        .set(ctx)
+                        .ok()
+                        .expect("MPV render context already set???");
                 }
             ));
         }

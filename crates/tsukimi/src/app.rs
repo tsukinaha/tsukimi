@@ -73,7 +73,6 @@ mod imp {
                 ),
             );
 
-            configure_mpv_session();
             configure_mpv();
 
             let obj = self.obj();
@@ -155,21 +154,6 @@ mod imp {
         }
     }
 
-    fn configure_mpv_session() {
-        let fallback_policy = match SETTINGS.mpv_renderer() {
-            1 => mutsumi::FallbackPolicy::Ordered(vec![mutsumi::RendererCandidate::VulkanDmabuf]),
-            2 => mutsumi::FallbackPolicy::Ordered(vec![mutsumi::RendererCandidate::OpenGlDmabuf]),
-            3 => mutsumi::FallbackPolicy::Ordered(vec![mutsumi::RendererCandidate::WlShm]),
-            _ => mutsumi::FallbackPolicy::Auto,
-        };
-
-        mutsumi::set_default_mpv_session_options(mutsumi::MpvSessionOptions {
-            fallback_policy,
-            ..Default::default()
-        })
-        .expect("Failed to set default mpv session options");
-    }
-
     fn configure_mpv() {
         mutsumi::set_mpv_initializer(|init| {
             init.set_option("input-vo-keyboard", true)?;
@@ -178,6 +162,22 @@ mod imp {
             if SETTINGS.mpv_config() {
                 init.set_option("config", true)?;
                 init.set_option("config-dir", SETTINGS.mpv_config_dir().as_str())?;
+            }
+
+            init.set_option("hwdec", match_hwdec_interop(SETTINGS.mpv_hwdec()))?;
+
+            match SETTINGS.mpv_renderer() {
+                1 => {
+                    init.set_option("gpu-context", "waylandvk")?;
+                }
+                2 => {
+                    init.set_option("gpu-context", "wayland")?;
+                }
+                3 => {
+                    init.set_option("vo", "wlshm")?;
+                    init.set_option("hwdec", "auto-copy-safe")?;
+                }
+                _ => ()
             }
 
             init.set_option("user-agent", crate::USER_AGENT.as_str())?;
@@ -235,7 +235,6 @@ mod imp {
             init.set_option("sub-border-color", sub_border_color.as_str())?;
             init.set_option("sub-back-color", sub_back_color.as_str())?;
 
-            init.set_option("hwdec", match_hwdec_interop(SETTINGS.mpv_hwdec()))?;
             init.set_option("scale", match_video_upscale(SETTINGS.mpv_video_scale()))?;
             init.set_option(
                 "loop-file",

@@ -1,8 +1,7 @@
 [package]
 name = "mutsumi"
-version = "0.7.0"
-edition.workspace = true
-rust-version.workspace = true
+version = "0.6.0"
+edition = "2024"
 license = "MIT"
 description = "wl-proxy based GTK MPV embedder"
 
@@ -28,8 +27,8 @@ ash = { version = "0.38" }
 glib = "0.22"
 tracing-subscriber = "0.3"
 glow = "0.18"
-mutsumi-prelude.workspace = true
-danmakw.workspace = true
+mutsumi-prelude = "0.1"
+danmakw = "0.3"
 libmpv2-sys = "4.0.1"
 quick-xml = { version = "0.41", features = ["serialize"] }
 thiserror = "2.0"

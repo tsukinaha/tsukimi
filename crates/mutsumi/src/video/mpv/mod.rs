@@ -4,18 +4,18 @@ mod contexted;
 mod logging;
 mod paintable;
 mod proxy;
-mod session;
 
 pub use actor::*;
 pub use area::*;
 pub use contexted::*;
 pub use paintable::*;
 pub use proxy::*;
-pub use session::*;
+
+use flume::{Receiver, Sender, unbounded};
+use once_cell::sync::Lazy;
 
 type TimeMillis = f64;
 
-#[derive(Debug, Clone)]
 pub enum ListenEvent {
     Seek(TimeMillis),
     PlaybackRestart(TimeMillis),
@@ -38,3 +38,26 @@ pub enum ListenEvent {
     ChapterList(ChapterList),
     Playlist(Playlist),
 }
+
+pub struct MPVEventChannel {
+    pub tx: Sender<ListenEvent>,
+    pub rx: Receiver<ListenEvent>,
+}
+
+pub static MPV_EVENT_CHANNEL: Lazy<MPVEventChannel> = Lazy::new(|| {
+    let (tx, rx) = unbounded::<ListenEvent>();
+
+    MPVEventChannel { tx, rx }
+});
+
+pub struct RenderUpdate {
+    pub tx: Sender<bool>,
+    pub rx: Receiver<bool>,
+}
+
+// Give render update a unique channel
+pub static RENDER_UPDATE: Lazy<RenderUpdate> = Lazy::new(|| {
+    let (tx, rx) = unbounded::<bool>();
+
+    RenderUpdate { tx, rx }
+});
