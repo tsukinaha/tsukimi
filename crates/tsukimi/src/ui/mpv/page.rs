@@ -274,6 +274,7 @@ mod imp {
         pub danmaku_generation: Cell<u64>,
         pub file_loaded: Cell<bool>,
         pub duration: Cell<f64>,
+        pub finish_popover: RefCell<Option<gtk::Popover>>,
     }
 
     #[glib::object_subclass]
@@ -372,6 +373,7 @@ mod imp {
             });
 
             obj.listen_events();
+            obj.setup_finish_at_popup();
 
             // Initialize MPRIS server
 
@@ -1382,6 +1384,73 @@ impl MPVPage {
         if let Some(window) = self.root().and_downcast_ref::<Window>() {
             window.imp().mpv_control_sidebar.set_playback_speed(value);
         }
+    }
+
+    fn setup_finish_at_popup(&self) {
+        let imp = self.imp();
+        let popover = gtk::Popover::new();
+        let label = gtk::Label::new(None);
+        label.set_margin_top(6);
+        label.set_margin_bottom(6);
+        label.set_margin_start(9);
+        label.set_margin_end(9);
+        popover.set_child(Some(&label));
+        popover.set_position(gtk::PositionType::Top);
+        popover.set_parent(&imp.duration_label.get());
+        imp.finish_popover.replace(Some(popover));
+
+        let controller = gtk::EventControllerMotion::new();
+        controller.connect_enter(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_, _, _| {
+                obj.show_finish_at_popup();
+            }
+        ));
+        controller.connect_motion(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_, _, _| {
+                obj.show_finish_at_popup();
+            }
+        ));
+        controller.connect_leave(glib::clone!(
+            #[weak(rename_to = obj)]
+            self,
+            move |_| {
+                if let Some(popover) = obj.imp().finish_popover.borrow().as_ref() {
+                    popover.popdown();
+                }
+            }
+        ));
+        imp.duration_label.get().add_controller(controller);
+    }
+
+    fn show_finish_at_popup(&self) {
+        let imp = self.imp();
+        let popover_guard = imp.finish_popover.borrow();
+        let Some(popover) = popover_guard.as_ref() else {
+            return;
+        };
+        let duration = imp.duration.get();
+        if duration <= 0.0 {
+            return;
+        }
+        let speed = imp.playback_speed_adj.value().max(0.1);
+        let remaining_secs = ((duration - imp.video_scale.value()) / speed).max(0.0);
+        let Ok(now) = glib::DateTime::now_local() else {
+            return;
+        };
+        let Ok(finish) = now.add_seconds(remaining_secs) else {
+            return;
+        };
+        let Ok(finish_text) = finish.format("%H:%M") else {
+            return;
+        };
+        if let Some(label) = popover.child().and_downcast::<gtk::Label>() {
+            label.set_text(&format!("{} {finish_text}", gettext("Finishes at")));
+        }
+        popover.popup();
     }
 
     fn volume_cb(&self, value: i64) {
