@@ -178,11 +178,25 @@
                                                 <property name="height-request">55</property>
                                                 <property name="sensitive">false</property>
                                                 <signal name="clicked" handler="play_cb" swapped="yes"/>
+                                                <child>
+                                                  <object class="GtkEventControllerMotion">
+                                                    <signal name="enter" handler="on_playbutton_motion_enter" swapped="yes"/>
+                                                    <signal name="leave" handler="on_playbutton_motion_leave" swapped="yes"/>
+                                                  </object>
+                                                </child>
                                                 <property name="child">
-                                                  <object class="AdwButtonContent" id="buttoncontent">
-                                                    <property name="icon-name">media-playback-start-symbolic</property>
-                                                    <property name="label" translatable="yes">Play</property>
-                                                    <property name="use-underline">True</property>
+                                                  <object class="GtkStack" id="playbutton_stack">
+                                                    <property name="transition-type">crossfade</property>
+                                                    <child>
+                                                      <object class="AdwButtonContent" id="buttoncontent">
+                                                        <property name="icon-name">media-playback-start-symbolic</property>
+                                                        <property name="label" translatable="yes">Play</property>
+                                                        <property name="use-underline">True</property>
+                                                      </object>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="finishes_at"/>
+                                                    </child>
                                                   </object>
                                                 </property>
                                                 <style>
