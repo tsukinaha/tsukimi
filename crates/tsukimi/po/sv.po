@@ -2019,6 +2019,10 @@ msgstr "Välj ett avsnitt"
 msgid "Resume"
 msgstr "Fortsätt"
 
+#: crates/tsukimi/src/ui/widgets/item.rs:1088
+msgid "Finishes at {time}"
+msgstr ""
+
 #: crates/tsukimi/src/ui/widgets/item.rs:1099
 msgid "Codec"
 msgstr "Kodek"
