@@ -161,6 +161,8 @@ pub(crate) mod imp {
         #[template_child]
         pub line2: TemplateChild<gtk::Label>,
         #[template_child]
+        pub finishes_at: TemplateChild<gtk::Label>,
+        #[template_child]
         pub crating: TemplateChild<gtk::Label>,
         #[template_child]
         pub orating: TemplateChild<gtk::Label>,
@@ -169,6 +171,8 @@ pub(crate) mod imp {
 
         #[template_child]
         pub playbutton: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub playbutton_stack: TemplateChild<gtk::Stack>,
         #[template_child]
         pub namedropdown: TemplateChild<gtk::DropDown>,
         #[template_child]
@@ -196,6 +200,8 @@ pub(crate) mod imp {
         pub selection: gtk::SingleSelection,
         pub seasonselection: gtk::SingleSelection,
         pub playbuttonhandlerid: RefCell<Option<glib::SignalHandlerId>>,
+        pub run_time_ticks: Cell<u64>,
+        pub position_ticks: Cell<u64>,
 
         #[property(get, set, construct_only)]
         pub name: RefCell<Option<String>>,
@@ -957,6 +963,12 @@ impl ItemPage {
                                 let time_string = run_time_ticks_to_label(runtime);
                                 str.push_str(&time_string);
                                 str.push_str("  ");
+                                let position = item
+                                    .user_data
+                                    .as_ref()
+                                    .and_then(|user_data| user_data.playback_position_ticks)
+                                    .unwrap_or_default();
+                                obj.set_finishes_at(runtime, position);
                             }
                             if let Some(genres) = &item.genres {
                                 for genre in genres {
@@ -1013,6 +1025,49 @@ impl ItemPage {
                 }
             }
         }
+    }
+
+    fn set_finishes_at(&self, run_time_ticks: u64, position_ticks: u64) {
+        let imp = self.imp();
+        imp.run_time_ticks.set(run_time_ticks);
+        imp.position_ticks.set(position_ticks);
+    }
+
+    #[template_callback]
+    fn on_playbutton_motion_enter(&self) {
+        self.show_finishes_at();
+    }
+
+    #[template_callback]
+    fn on_playbutton_motion_leave(&self) {
+        let imp = self.imp();
+        imp.playbutton_stack
+            .set_visible_child(&imp.buttoncontent.get());
+    }
+
+    // Shows a "Finishes at" tip over the play button while it is hovered,
+    // computed at hover time so no polling is needed.
+    fn show_finishes_at(&self) {
+        let imp = self.imp();
+        let run_time_ticks = imp.run_time_ticks.get();
+        let position_ticks = imp.position_ticks.get();
+        if run_time_ticks == 0 || run_time_ticks <= position_ticks {
+            return;
+        }
+        let Some(remaining_ns) = (run_time_ticks - position_ticks)
+            .checked_mul(100)
+            .and_then(|ns| i64::try_from(ns).ok())
+        else {
+            return;
+        };
+        let remaining_seconds = chrono::Duration::nanoseconds(remaining_ns).num_seconds();
+        let finishes_at = chrono::Local::now() + chrono::Duration::seconds(remaining_seconds);
+        imp.finishes_at.set_text(
+            &gettext("Finishes at {time}")
+                .replace("{time}", &finishes_at.format("%H:%M").to_string()),
+        );
+        let finishes_at_label = imp.finishes_at.get();
+        imp.playbutton_stack.set_visible_child(&finishes_at_label);
     }
 
     pub async fn createmediabox(
