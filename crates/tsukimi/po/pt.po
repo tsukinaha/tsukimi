@@ -2020,6 +2020,10 @@ msgstr "Selecione a nova pasta de configuração do mpv"
 msgid "Resume"
 msgstr "Resumo"
 
+#: crates/tsukimi/src/ui/widgets/item.rs:1088
+msgid "Finishes at {time}"
+msgstr ""
+
 #: crates/tsukimi/src/ui/widgets/item.rs:1099
 msgid "Codec"
 msgstr "Codec"

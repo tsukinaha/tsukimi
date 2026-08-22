@@ -2057,6 +2057,10 @@ msgstr "புதிய MPV கட்டமைப்பு கோப்புற
 msgid "Resume"
 msgstr "மீண்டும் தொடங்குங்கள்"
 
+#: crates/tsukimi/src/ui/widgets/item.rs:1088
+msgid "Finishes at {time}"
+msgstr ""
+
 #: crates/tsukimi/src/ui/widgets/item.rs:1099
 msgid "Codec"
 msgstr "புரிப்பு"
