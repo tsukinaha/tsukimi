@@ -33,7 +33,18 @@ use crate::{
     fraction_reset,
     ui::{
         SETTINGS,
-        provider::tu_item::TuItem,
+        provider::tu_item::{
+            TuItem,
+            collection_type::{
+                BOOKS,
+                HOME_VIDEOS,
+                LIVE_TV,
+                MOVIES,
+                MUSIC,
+                TV_SHOWS,
+            },
+            item_type::CHANNEL,
+        },
     },
     utils::{
         CacheEvent,
@@ -44,6 +55,17 @@ use crate::{
         spawn_g_timeout,
     },
 };
+
+fn latest_card_shape(item_type: &str, collection_type: Option<&str>) -> CardShape {
+    if item_type == CHANNEL {
+        return CardShape::Portrait;
+    }
+    match collection_type {
+        Some(MOVIES | BOOKS | TV_SHOWS) => CardShape::Portrait,
+        Some(MUSIC | HOME_VIDEOS) => CardShape::Square,
+        _ => CardShape::Backdrop,
+    }
+}
 
 mod imp {
 
@@ -388,6 +410,7 @@ impl HomePage {
         hortu.set_moreview(true);
 
         hortu.set_card_options(CardOptions {
+            shape: latest_card_shape(&ac_view.item_type, ac_view.collection_type.as_deref()),
             prefer_parent_poster: true,
             ..Default::default()
         });
@@ -440,7 +463,7 @@ impl HomePage {
                 CachePolicy::RefreshIfChanged
             },
             async move {
-                if collection_type.as_deref() == Some("livetv") {
+                if collection_type.as_deref() == Some(LIVE_TV) {
                     JELLYFIN_CLIENT.get_channels().await.map(|x| x.items)
                 } else {
                     JELLYFIN_CLIENT.get_latest(&view_id).await
