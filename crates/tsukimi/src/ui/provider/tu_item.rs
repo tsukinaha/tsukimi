@@ -25,6 +25,7 @@ pub mod item_type {
     pub const VIDEO: &str = "Video";
     pub const MUSIC_VIDEO: &str = "MusicVideo";
     pub const ADULT_VIDEO: &str = "AdultVideo";
+    pub const CHANNEL: &str = "Channel";
     pub const TV_CHANNEL: &str = "TvChannel";
     pub const COLLECTION_FOLDER: &str = "CollectionFolder";
     pub const USER_VIEW: &str = "UserView";
@@ -49,6 +50,15 @@ pub mod item_type {
     pub const SEASON: &str = "Season";
     pub const DANMAKU_ANIME: &str = "DanmakuAnime";
     pub const DANMAKU_EPISODE: &str = "DanmakuEpisode";
+}
+
+pub mod collection_type {
+    pub const MOVIES: &str = "movies";
+    pub const TV_SHOWS: &str = "tvshows";
+    pub const MUSIC: &str = "music";
+    pub const HOME_VIDEOS: &str = "homevideos";
+    pub const BOOKS: &str = "books";
+    pub const LIVE_TV: &str = "livetv";
 }
 
 pub mod image_type {

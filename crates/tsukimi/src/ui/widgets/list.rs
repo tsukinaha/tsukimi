@@ -18,7 +18,10 @@ use super::{
 };
 use crate::{
     client::jellyfin_client::JELLYFIN_CLIENT,
-    ui::provider::tu_item::TuItem,
+    ui::provider::tu_item::{
+        TuItem,
+        collection_type::LIVE_TV,
+    },
 };
 mod imp {
 
@@ -110,7 +113,7 @@ impl ListPage {
 
         let stack = imp.stack.get();
 
-        if &collection_type == "livetv" {
+        if collection_type == LIVE_TV {
             let page = SingleGrid::new();
             page.connect_sort_changed_tokio(move |_, _, _| async move {
                 JELLYFIN_CLIENT.get_channels_list(0).await
