@@ -14,9 +14,13 @@
         <property name="content">
           <object class="GtkOverlay">
             <child>
-              <object class="MPVPlaySink" id="video">
+              <object class="GtkWindowHandle">
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
+                <child>
+                  <object class="MPVPlaySink" id="video">
+                    <property name="hexpand">true</property>
+                    <property name="vexpand">true</property>
               
 <child>
               <object class="GtkGestureClick">
@@ -36,6 +40,8 @@
                 <signal name="scroll" handler="video_scroll_cb" swapped="yes"/>
               </object>
             </child>
+                  </object>
+                </child>
               </object>
             </child>
             <child type="overlay">
