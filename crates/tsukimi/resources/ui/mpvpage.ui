@@ -17,19 +17,11 @@
               <object class="MPVPlaySink" id="video">
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
-              </object>
-            </child>
-            <child type="overlay">
-              <object class="Danmakw" id="danmakw">
-                <property name="hexpand">true</property>
-                <property name="vexpand">true</property>
-                <property name="visible">false</property>
-              </object>
-            </child>
-            <child>
+              
+<child>
               <object class="GtkGestureClick">
                 <property name="button">1</property>
-                <signal name="released" handler="left_click_cb" swapped="yes"/>
+                <signal name="pressed" handler="left_click_cb" swapped="yes"/>
               </object>
             </child>
             <child>
@@ -44,6 +36,16 @@
                 <signal name="scroll" handler="video_scroll_cb" swapped="yes"/>
               </object>
             </child>
+              </object>
+            </child>
+            <child type="overlay">
+              <object class="Danmakw" id="danmakw">
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="visible">false</property>
+              </object>
+            </child>
+            
             <child type="overlay">
               <object class="VolumeBar" id="volume_bar">
                 <property name="halign">start</property>
@@ -94,7 +96,7 @@
                 <child>
                   <object class="AdwHeaderBar">
                     <property name="show-start-title-buttons">false</property>
-                    <property name="show-end-title-buttons">false</property>
+                    <property name="show-end-title-buttons">true</property>
                     <property name="title-widget">
                       <object class="GtkBox"/>
                     </property>
@@ -198,14 +200,7 @@
                             </style>
                           </object>
                         </child>
-                        <child>
-                          <object class="GtkWindowControls">
-                            <property name="side">end</property>
-                            <style>
-                              <class name="flat"/>
-                            </style>
-                          </object>
-                        </child>
+
                       </object>
                     </child>
                     <style>
@@ -233,6 +228,49 @@
                     <property name="margin-bottom">0</property>
                     <property name="margin-start">0</property>
                     <property name="margin-end">0</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">8</property>
+                        <child>
+                          <object class="GtkLabel" id="progress_time_label">
+                            <property name="focusable">False</property>
+                            <property name="halign">start</property>
+                            <property name="valign">center</property>
+                            <property name="label">0:00</property>
+                            <attributes>
+                              <attribute name="font-features" value="tnum=1"/>
+                            </attributes>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="VideoScale" id="video_scale">
+                            <property name="focusable">True</property>
+                            <property name="valign">center</property>
+                            <property name="hexpand">True</property>
+                            <property name="draw_value">False</property>
+                            <property name="restrict-to-fill-level">False</property>
+                            <property name="show-fill-level">True</property>
+                            <signal name="value-changed" handler="on_progress_value_changed" swapped="yes"/>
+                            <style>
+                              <class name="accent"/>
+                              <class name="mpv-seekbar"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="duration_label">
+                            <property name="focusable">False</property>
+                            <property name="halign">start</property>
+                            <property name="valign">center</property>
+                            <property name="label">0:00</property>
+                            <attributes>
+                              <attribute name="font-features" value="tnum=1"/>
+                            </attributes>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                     <child>
                       <object class="GtkCenterBox">
                         <child type="start">
@@ -446,49 +484,6 @@
                                 </child>
                               </object>
                             </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">horizontal</property>
-                        <property name="spacing">8</property>
-                        <child>
-                          <object class="GtkLabel" id="progress_time_label">
-                            <property name="focusable">False</property>
-                            <property name="halign">start</property>
-                            <property name="valign">center</property>
-                            <property name="label">0:00</property>
-                            <attributes>
-                              <attribute name="font-features" value="tnum=1"/>
-                            </attributes>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="VideoScale" id="video_scale">
-                            <property name="focusable">True</property>
-                            <property name="valign">center</property>
-                            <property name="hexpand">True</property>
-                            <property name="draw_value">False</property>
-                            <property name="restrict-to-fill-level">False</property>
-                            <property name="show-fill-level">True</property>
-                            <signal name="value-changed" handler="on_progress_value_changed" swapped="yes"/>
-                            <style>
-                              <class name="accent"/>
-                              <class name="mpv-seekbar"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="duration_label">
-                            <property name="focusable">False</property>
-                            <property name="halign">start</property>
-                            <property name="valign">center</property>
-                            <property name="label">0:00</property>
-                            <attributes>
-                              <attribute name="font-features" value="tnum=1"/>
-                            </attributes>
                           </object>
                         </child>
                       </object>

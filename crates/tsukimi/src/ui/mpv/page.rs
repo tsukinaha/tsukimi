@@ -1789,8 +1789,19 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn left_click_cb(&self) {
-        self.imp().video.pause();
+    fn left_click_cb(&self, n_press: i32, _x: f64, _y: f64) {
+        if n_press == 1 {
+            self.imp().video.pause();
+        } else if n_press == 2 {
+            let binding = self.root();
+            if let Some(window) = binding.and_downcast_ref::<Window>() {
+                if window.is_fullscreen() {
+                    window.unfullscreen();
+                } else {
+                    window.fullscreen();
+                }
+            }
+        }
     }
 
     #[template_callback]
