@@ -209,6 +209,8 @@ mod imp {
         #[template_child]
         pub network_speed_label_2: TemplateChild<gtk::Button>,
         #[template_child]
+        pub danmaku_button: TemplateChild<gtk::MenuButton>,
+        #[template_child]
         pub playback_speed_indicator: TemplateChild<gtk::Button>,
         #[template_child]
         pub playback_speed_button_content: TemplateChild<adw::ButtonContent>,
@@ -353,6 +355,15 @@ mod imp {
             SETTINGS
                 .bind("mpv-default-volume", &self.volume_adj.get(), "value")
                 .build();
+
+            SETTINGS
+                .bind(
+                    "is-danmaku-enabled",
+                    &self.danmaku_button.get(),
+                    "visible"
+                )
+                .build();
+
 
             self.video_scale.set_player(Some(&self.video.get()));
 

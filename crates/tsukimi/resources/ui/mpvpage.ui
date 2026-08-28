@@ -427,7 +427,7 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkMenuButton">
+                                  <object class="GtkMenuButton" id="danmaku_button">
                                     <property name="popover">danmaku_popover</property>
                                     <property name="icon-name">card-bulleted-symbolic</property>
                                     <property name="tooltip-text" translatable="yes">Danmaku</property>
