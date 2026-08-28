@@ -109,7 +109,7 @@ mod imp {
             self.diffview
                 .scroll()
                 .fix()
-                .set_hscrollbar_policy(gtk::PolicyType::Never);
+                .set_hscrollbar_policy(gtk::PolicyType::External);
             let weak_obj = obj.downgrade();
             self.diffview.configure(
                 |tu_obj: &TuObject| tu_obj.item().key(),
