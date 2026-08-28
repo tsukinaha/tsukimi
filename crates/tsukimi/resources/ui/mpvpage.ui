@@ -167,43 +167,68 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkToggleButton">
+                          <object class="GtkMenuButton">
                             <property name="valign">center</property>
-                            <property name="icon-name">keyboard-shortcuts-symbolic</property>
-                            <property name="tooltip_text" translatable="yes">Shortcuts</property>
-                            <property name="action-name">win.show-help-overlay</property>
+                            <property name="icon-name">view-more-symbolic</property>
+                            <property name="tooltip_text" translatable="yes">More options</property>
                             <style>
                               <class name="flat"/>
                               <class name="circular"/>
                             </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="_playlist_button">
-                            <property name="valign">center</property>
-                            <property name="icon-name">view-dual-symbolic</property>
-                            <property name="focusable">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="tooltip_text" translatable="yes">Playlist</property>
-                            <signal name="clicked" handler="on_playlist_clicked" swapped="yes"/>
-                            <style>
-                              <class name="flat"/>
-                              <class name="circular"/>
-                            </style>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="_media_info_button">
-                            <property name="valign">center</property>
-                            <property name="icon-name">help-about-symbolic</property>
-                            <property name="focusable">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="tooltip_text" translatable="yes">Media info (MPV)</property>
-                            <signal name="clicked" handler="on_info_clicked" swapped="yes"/>
-                            <style>
-                              <class name="flat"/>
-                              <class name="circular"/>
-                            </style>
+                            <property name="popover">
+                              <object class="GtkPopover">
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="orientation">vertical</property>
+                                    <property name="spacing">4</property>
+                                    <property name="margin-start">4</property>
+                                    <property name="margin-end">4</property>
+                                    <property name="margin-top">4</property>
+                                    <property name="margin-bottom">4</property>
+                                    <child>
+                                      <object class="GtkButton">
+                                        <property name="action-name">win.show-help-overlay</property>
+                                        <style><class name="flat"/></style>
+                                        <property name="child">
+                                          <object class="AdwButtonContent">
+                                            <property name="icon-name">keyboard-shortcuts-symbolic</property>
+                                            <property name="label" translatable="yes">Shortcuts</property>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="_playlist_button">
+                                        <property name="focusable">True</property>
+                                        <property name="receives_default">True</property>
+                                        <signal name="clicked" handler="on_playlist_clicked" swapped="yes"/>
+                                        <style><class name="flat"/></style>
+                                        <property name="child">
+                                          <object class="AdwButtonContent">
+                                            <property name="icon-name">view-dual-symbolic</property>
+                                            <property name="label" translatable="yes">Playlist</property>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="_media_info_button">
+                                        <property name="focusable">True</property>
+                                        <property name="receives_default">True</property>
+                                        <signal name="clicked" handler="on_info_clicked" swapped="yes"/>
+                                        <style><class name="flat"/></style>
+                                        <property name="child">
+                                          <object class="AdwButtonContent">
+                                            <property name="icon-name">help-about-symbolic</property>
+                                            <property name="label" translatable="yes">Media info</property>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
                           </object>
                         </child>
 
