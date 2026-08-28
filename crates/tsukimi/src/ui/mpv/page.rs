@@ -1793,6 +1793,7 @@ impl MPVPage {
         if n_press == 1 {
             self.imp().video.pause();
         } else if n_press == 2 {
+            self.imp().video.pause(); // Revert the pause from the first click
             let binding = self.root();
             if let Some(window) = binding.and_downcast_ref::<Window>() {
                 if window.is_fullscreen() {
