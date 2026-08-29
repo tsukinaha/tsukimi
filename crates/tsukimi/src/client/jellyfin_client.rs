@@ -780,7 +780,6 @@ impl JellyfinClient {
             ("IsPlayback", &is_playback.to_string()),
             ("MediaSourceId", &media_source_id.unwrap_or_default()),
             ("SubtitleStreamIndex", &subtitle_stream_index),
-            ("MaxStreamingBitrate", "2147483647"),
         ];
         let profile: Value = serde_json::from_str(PROFILE).expect("Failed to parse profile");
         self.post_json(&path, &params, profile).await
