@@ -12,10 +12,7 @@ use crate::{
         ServerType,
         build_url,
     },
-    ui::{
-        PlaybackDirectMode,
-        provider::tu_item::image_type::BACKDROP,
-    },
+    ui::provider::tu_item::image_type::BACKDROP,
 };
 use anyhow::{
     Context,
@@ -771,7 +768,7 @@ impl JellyfinClient {
 
     pub async fn get_playbackinfo(
         &self, id: &str, sub_stream_index: Option<i64>, media_source_id: Option<String>,
-        is_playback: bool, direct_mode: PlaybackDirectMode,
+        is_playback: bool,
     ) -> Result<Media> {
         let s = self.session();
         let path = format!("Items/{id}/PlaybackInfo");
@@ -784,14 +781,6 @@ impl JellyfinClient {
             ("MediaSourceId", &media_source_id.unwrap_or_default()),
             ("SubtitleStreamIndex", &subtitle_stream_index),
             ("MaxStreamingBitrate", "2147483647"),
-            (
-                "EnableDirectPlay",
-                &direct_mode.enable_direct_play.to_string(),
-            ),
-            (
-                "EnableDirectStream",
-                &direct_mode.enable_direct_stream.to_string(),
-            ),
         ];
         let profile: Value = serde_json::from_str(PROFILE).expect("Failed to parse profile");
         self.post_json(&path, &params, profile).await
