@@ -153,16 +153,16 @@
                         <property name="orientation">horizontal</property>
                         <property name="spacing">6</property>
                         <child>
-                          <object class="GtkButton" id="network_speed_label_2">
+                          <object class="GtkButton" id="_playlist_button">
                             <property name="valign">center</property>
-                            <property name="child">
-                              <object class="AdwButtonContent">
-                                <property name="icon-name">speedometer5-symbolic</property>
-                                <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create"/>
-                              </object>
-                            </property>
+                            <property name="icon-name">view-dual-symbolic</property>
+                            <property name="focusable">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="tooltip_text" translatable="yes">Playlist</property>
+                            <signal name="clicked" handler="on_playlist_clicked" swapped="yes"/>
                             <style>
-                              <class name="accent"/>
+                              <class name="flat"/>
+                              <class name="circular"/>
                             </style>
                           </object>
                         </child>
@@ -198,15 +198,12 @@
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkButton" id="_playlist_button">
-                                        <property name="focusable">True</property>
-                                        <property name="receives_default">True</property>
-                                        <signal name="clicked" handler="on_playlist_clicked" swapped="yes"/>
+                                      <object class="GtkButton" id="network_speed_label_2">
                                         <style><class name="flat"/></style>
                                         <property name="child">
                                           <object class="AdwButtonContent">
-                                            <property name="icon-name">view-dual-symbolic</property>
-                                            <property name="label" translatable="yes">Playlist</property>
+                                            <property name="icon-name">speedometer5-symbolic</property>
+                                            <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create"/>
                                           </object>
                                         </property>
                                       </object>
