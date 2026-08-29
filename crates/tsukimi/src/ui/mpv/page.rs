@@ -217,7 +217,7 @@ mod imp {
         #[template_child]
         pub network_speed_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub network_speed_label_2: TemplateChild<gtk::Button>,
+        pub network_speed_label_2: TemplateChild<gtk::Box>,
         #[template_child]
         pub danmaku_button: TemplateChild<gtk::MenuButton>,
         #[template_child]

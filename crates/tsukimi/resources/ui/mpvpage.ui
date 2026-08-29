@@ -132,7 +132,7 @@
                               <object class="GtkLabel" id="title_label1">
                                 <property name="halign">start</property>
                                 <property name="ellipsize">middle</property>
-                              </object>
+                              <property name="max-width-chars">25</property></object>
                             </child>
                             <child>
                               <object class="GtkLabel" id="title_label2">
@@ -142,7 +142,7 @@
                                   <class name="dimmed" />
                                   <class name="caption" />
                                 </style>
-                              </object>
+                              <property name="max-width-chars">25</property></object>
                             </child>
                           </object>
                         </child>
@@ -179,7 +179,11 @@
                               <object class="GtkPopover">
                                 <child>
                                   <object class="GtkBox">
-                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <object class="GtkBox" id="network_speed_label_2">
+                                        <property name="orientation">horizontal</property><property name="spacing">8</property><property name="margin-start">12</property><property name="margin-end">12</property><property name="margin-top">6</property><property name="margin-bottom">6</property><property name="halign">center</property><child><object class="GtkImage"><property name="icon-name">speedometer5-symbolic</property><style><class name="dimmed" /></style></object></child><child><object class="GtkLabel"><property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" /><style><class name="dimmed" /><class name="numeric" /></style></object></child></object>
+                                    </child>
+                                    <child><object class="GtkSeparator"><property name="margin-top">2</property><property name="margin-bottom">2</property></object></child><property name="orientation">vertical</property>
                                     <property name="spacing">4</property>
                                     <property name="margin-start">4</property>
                                     <property name="margin-end">4</property>
@@ -193,17 +197,6 @@
                                           <object class="AdwButtonContent">
                                             <property name="icon-name">keyboard-shortcuts-symbolic</property>
                                             <property name="label" translatable="yes">Shortcuts</property>
-                                          </object>
-                                        </property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkButton" id="network_speed_label_2">
-                                        <style><class name="flat" /></style>
-                                        <property name="child">
-                                          <object class="AdwButtonContent">
-                                            <property name="icon-name">speedometer5-symbolic</property>
-                                            <property name="label" bind-source="network_speed_label" bind-property="label" bind-flags="sync-create" />
                                           </object>
                                         </property>
                                       </object>
