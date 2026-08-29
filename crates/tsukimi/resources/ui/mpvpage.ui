@@ -103,9 +103,6 @@
                   <object class="AdwHeaderBar">
                     <property name="show-start-title-buttons">false</property>
                     <property name="show-end-title-buttons">true</property>
-                    <property name="title-widget">
-                      <object class="GtkBox" />
-                    </property>
                     <child type="start">
                       <object class="GtkBox">
                         <property name="orientation">horizontal</property>
@@ -123,30 +120,7 @@
                             </style>
                           </object>
                         </child>
-                        <child>
-                          <object class="GtkBox" id="title_box">
-                            <property name="orientation">vertical</property>
-                            <property name="valign">center</property>
-                            <property name="spacing">0</property>
-                            <child>
-                              <object class="GtkLabel" id="title_label1">
-                                <property name="halign">start</property>
-                                <property name="ellipsize">middle</property>
-                              <property name="max-width-chars">25</property></object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="title_label2">
-                                <property name="halign">start</property>
-                                <property name="ellipsize">middle</property>
-                                <style>
-                                  <class name="dimmed" />
-                                  <class name="caption" />
-                                </style>
-                              <property name="max-width-chars">25</property></object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
+                        </object>
                     </child>
                     <child type="end">
                       <object class="GtkBox">
@@ -228,7 +202,28 @@
                       <class name="flat" />
                       <class name="mpv-top-bar" />
                     </style>
-                  </object>
+                  <property name="title-widget"><object class="GtkBox" id="title_box">
+                            <property name="orientation">vertical</property>
+                            <property name="valign">center</property>
+                            <property name="spacing">0</property>
+                            <child>
+                              <object class="GtkLabel" id="title_label1">
+                                <property name="halign">center</property>
+                                <property name="ellipsize">middle</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="title_label2">
+                                <property name="halign">center</property>
+                                <property name="ellipsize">middle</property>
+                                <style>
+                                  <class name="dimmed" />
+                                  <class name="caption" />
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </property></object>
                 </child>
               </object>
             </child>
