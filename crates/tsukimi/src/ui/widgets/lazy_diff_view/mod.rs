@@ -699,7 +699,7 @@ impl LazyDiffView {
         let orientation = self.orientation();
         let scroll = self.scroll();
         scroll.set_hscrollbar_policy(match orientation {
-            Orientation::Horizontal => gtk::PolicyType::Automatic,
+            Orientation::Horizontal => gtk::PolicyType::External,
             _ => gtk::PolicyType::Never,
         });
         scroll.set_vscrollbar_policy(match orientation {
