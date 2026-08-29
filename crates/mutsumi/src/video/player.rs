@@ -42,6 +42,7 @@ mod imp {
             let picture = gtk::Picture::new();
             picture.set_hexpand(true);
             picture.set_vexpand(true);
+            picture.set_content_fit(gtk::ContentFit::Contain);
             picture.set_paintable(Some(&self.backend));
             graphics_offload.set_child(Some(&picture));
             obj.set_child(Some(&graphics_offload));
