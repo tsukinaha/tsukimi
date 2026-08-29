@@ -198,7 +198,7 @@
                                   <object class="AdwToolbarView">
                                     <child type="top">
                                       <object class="AdwHeaderBar">
-                                        <property name="show-start-title-buttons">false</property>
+                                        <property name="show-start-title-buttons">true</property>
                                         <child type="start">
                                           <object class="GtkToggleButton" id="backbutton">
                                             <property name="icon-name">system-log-out-symbolic</property>
@@ -402,7 +402,7 @@
                                   <object class="AdwToolbarView">
                                     <child type="top">
                                       <object class="AdwHeaderBar">
-                                        <property name="show-end-title-buttons">false</property>
+                                        <property name="show-end-title-buttons">true</property>
                                         <property name="title-widget">
                                           <object class="AdwViewSwitcher">
                                             <property name="stack">mpv_view_stack</property>
