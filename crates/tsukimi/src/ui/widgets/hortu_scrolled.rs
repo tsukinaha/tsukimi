@@ -13,7 +13,6 @@ use crate::{
     ui::{
         provider::tu_object::TuObject,
         widgets::{
-            fix::ScrolledWindowFixExt,
             hor_controls::HorControlsExt,
             lazy_diff_view::LazyDiffView,
             tu_item::{
@@ -106,10 +105,6 @@ mod imp {
             let obj = self.obj();
 
             self.diffview.set_orientation(gtk::Orientation::Horizontal);
-            self.diffview
-                .scroll()
-                .fix()
-                .set_hscrollbar_policy(gtk::PolicyType::External);
             let weak_obj = obj.downgrade();
             self.diffview.configure(
                 |tu_obj: &TuObject| tu_obj.item().key(),
