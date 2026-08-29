@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
-  <child><object class="AdwBreakpoint"><condition>max-width: 650px</condition><setter object="MPVPage" property="compact-mode">true</setter></object></child><template parent="AdwNavigationPage" class="MPVPage">
+  <template parent="AdwNavigationPage" class="MPVPage">
     <property name="title">Tsukimi</property>
     <child>
       <object class="GtkEventControllerMotion">
@@ -10,7 +10,7 @@
       </object>
     </child>
     <child>
-      <object class="AdwToolbarView">
+      <object class="AdwBreakpointBin"><child><object class="AdwBreakpoint"><condition>max-width: 650px</condition><setter object="MPVPage" property="compact-mode">true</setter></object></child><property name="child"><object class="AdwToolbarView">
         <property name="content">
           <object class="GtkOverlay">
             <child>
@@ -545,7 +545,7 @@
           </object>
         </property>
       </object>
-    </child>
+    </property></object></child>
   </template>
   <object class="GtkPopover" id="subtitle_tracks_popover">
     <property name="height-request">300</property>
