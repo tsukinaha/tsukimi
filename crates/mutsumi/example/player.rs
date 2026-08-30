@@ -1,5 +1,9 @@
 use adw::prelude::*;
-use mutsumi::{MutsumiPlayer, PlayParams, PlaySource};
+use mutsumi::{
+    MutsumiPlayer,
+    PlayParams,
+    PlaySource,
+};
 
 const DEFAULT_URL: &str = "https://www.bilibili.com/video/BV19X9eBpEfS";
 

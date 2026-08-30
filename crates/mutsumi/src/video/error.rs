@@ -1,7 +1,11 @@
 use glib::prelude::*;
 use std::{
     error::Error,
-    fmt::{Display, Formatter, Result},
+    fmt::{
+        Display,
+        Formatter,
+        Result,
+    },
 };
 
 macro_rules! mpv_error {

@@ -1,15 +1,29 @@
 use std::{
     ops::Deref,
-    sync::{Arc, OnceLock},
+    sync::{
+        Arc,
+        OnceLock,
+    },
 };
 
 use crate::MutsumiMpvError;
 
-use super::{logging, *};
-use flume::{Receiver, Sender, unbounded};
+use super::{
+    logging,
+    *,
+};
+use flume::{
+    Receiver,
+    Sender,
+    unbounded,
+};
 use libmpv2::{
-    Format, Mpv,
-    events::{Event, PropertyData},
+    Format,
+    Mpv,
+    events::{
+        Event,
+        PropertyData,
+    },
 };
 use mutsumi_prelude::spawn_tokio_blocking;
 use once_cell::sync::Lazy;
@@ -259,9 +273,7 @@ impl MpvActor {
     }
 
     pub async fn get_property(
-        &self,
-        property: &str,
-        value_type: MpvValueType,
+        &self, property: &str, value_type: MpvValueType,
     ) -> Result<MpvValue, tokio::sync::oneshot::error::RecvError> {
         let (tx, rx) = tokio::sync::oneshot::channel::<MpvValue>();
         if let Err(error) = MPV_CTRL.tx.send(MpvMessage::GetProperty {
@@ -424,9 +436,7 @@ impl SendMpv {
     }
 
     fn get_property_value(
-        &self,
-        property: &str,
-        value_type: MpvValueType,
+        &self, property: &str, value_type: MpvValueType,
     ) -> libmpv2::Result<MpvValue> {
         match value_type {
             MpvValueType::Bool => self.get_property::<bool>(property).map(MpvValue::Bool),

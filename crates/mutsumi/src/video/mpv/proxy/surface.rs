@@ -1,31 +1,61 @@
-use std::{cell::RefCell, rc::Rc};
+use std::{
+    cell::RefCell,
+    rc::Rc,
+};
 
 use wl_proxy::{
     object::ObjectCoreApi,
     protocols::{
         fractional_scale_v1::{
             wp_fractional_scale_manager_v1::{
-                WpFractionalScaleManagerV1, WpFractionalScaleManagerV1Handler,
+                WpFractionalScaleManagerV1,
+                WpFractionalScaleManagerV1Handler,
             },
-            wp_fractional_scale_v1::{WpFractionalScaleV1, WpFractionalScaleV1Handler},
+            wp_fractional_scale_v1::{
+                WpFractionalScaleV1,
+                WpFractionalScaleV1Handler,
+            },
         },
         viewporter::{
-            wp_viewport::{WpViewport, WpViewportHandler},
-            wp_viewporter::{WpViewporter, WpViewporterHandler},
+            wp_viewport::{
+                WpViewport,
+                WpViewportHandler,
+            },
+            wp_viewporter::{
+                WpViewporter,
+                WpViewporterHandler,
+            },
         },
         wayland::{
             wl_buffer::WlBuffer,
             wl_callback::WlCallback,
-            wl_compositor::{WlCompositor, WlCompositorHandler},
-            wl_subcompositor::{WlSubcompositor, WlSubcompositorHandler},
-            wl_subsurface::{WlSubsurface, WlSubsurfaceHandler},
-            wl_surface::{WlSurface, WlSurfaceHandler},
+            wl_compositor::{
+                WlCompositor,
+                WlCompositorHandler,
+            },
+            wl_subcompositor::{
+                WlSubcompositor,
+                WlSubcompositorHandler,
+            },
+            wl_subsurface::{
+                WlSubsurface,
+                WlSubsurfaceHandler,
+            },
+            wl_surface::{
+                WlSurface,
+                WlSurfaceHandler,
+            },
         },
     },
 };
 
 use super::{
-    CURRENT_SCALE, FRAME_CHANNEL, FrameCallbacks, SharedState, SurfaceContentUpdate, SurfaceUpdate,
+    CURRENT_SCALE,
+    FRAME_CHANNEL,
+    FrameCallbacks,
+    SharedState,
+    SurfaceContentUpdate,
+    SurfaceUpdate,
 };
 
 pub struct CompositorHandler {
@@ -54,10 +84,7 @@ pub struct SubcompositorHandler;
 
 impl WlSubcompositorHandler for SubcompositorHandler {
     fn handle_get_subsurface(
-        &mut self,
-        _slf: &Rc<WlSubcompositor>,
-        id: &Rc<WlSubsurface>,
-        _surface: &Rc<WlSurface>,
+        &mut self, _slf: &Rc<WlSubcompositor>, id: &Rc<WlSubsurface>, _surface: &Rc<WlSurface>,
         _parent: &Rc<WlSurface>,
     ) {
         id.set_forward_to_server(false);
@@ -81,10 +108,7 @@ impl WpViewporterHandler for ViewporterHandler {
     }
 
     fn handle_get_viewport(
-        &mut self,
-        _slf: &Rc<WpViewporter>,
-        id: &Rc<WpViewport>,
-        _surface: &Rc<WlSurface>,
+        &mut self, _slf: &Rc<WpViewporter>, id: &Rc<WpViewport>, _surface: &Rc<WlSurface>,
     ) {
         id.set_forward_to_server(false);
         id.set_handler(ViewportHandler);
@@ -109,9 +133,7 @@ impl WpFractionalScaleManagerV1Handler for FractionalScaleManagerHandler {
     }
 
     fn handle_get_fractional_scale(
-        &mut self,
-        _slf: &Rc<WpFractionalScaleManagerV1>,
-        id: &Rc<WpFractionalScaleV1>,
+        &mut self, _slf: &Rc<WpFractionalScaleManagerV1>, id: &Rc<WpFractionalScaleV1>,
         _surface: &Rc<WlSurface>,
     ) {
         id.set_forward_to_server(false);
@@ -158,11 +180,7 @@ impl WlSurfaceHandler for SurfaceHandler {
     }
 
     fn handle_attach(
-        &mut self,
-        _slf: &Rc<WlSurface>,
-        buffer: Option<&Rc<WlBuffer>>,
-        _x: i32,
-        _y: i32,
+        &mut self, _slf: &Rc<WlSurface>, buffer: Option<&Rc<WlBuffer>>, _x: i32, _y: i32,
     ) {
         self.pending_buffer = Some(buffer.map(Rc::clone));
     }

@@ -1,4 +1,7 @@
-use std::{borrow::Cow, path::PathBuf};
+use std::{
+    borrow::Cow,
+    path::PathBuf,
+};
 
 pub struct PlayParams {
     pub title: Option<String>,

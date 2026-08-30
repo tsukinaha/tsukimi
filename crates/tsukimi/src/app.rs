@@ -177,7 +177,7 @@ mod imp {
                     init.set_option("vo", "wlshm")?;
                     init.set_option("hwdec", "auto-copy-safe")?;
                 }
-                _ => ()
+                _ => (),
             }
 
             init.set_option("user-agent", crate::USER_AGENT.as_str())?;

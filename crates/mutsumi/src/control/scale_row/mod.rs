@@ -1,8 +1,15 @@
 use adw::subclass::prelude::*;
-use gtk::{CompositeTemplate, glib, prelude::*};
+use gtk::{
+    CompositeTemplate,
+    glib,
+    prelude::*,
+};
 
 mod imp {
-    use std::cell::{Cell, RefCell};
+    use std::cell::{
+        Cell,
+        RefCell,
+    };
 
     use glib::subclass::InitializingObject;
 

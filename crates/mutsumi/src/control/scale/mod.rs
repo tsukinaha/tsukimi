@@ -1,5 +1,12 @@
-use crate::{ChapterList, MutsumiVideoPlayer};
-use gtk::{glib, prelude::*, subclass::prelude::*};
+use crate::{
+    ChapterList,
+    MutsumiVideoPlayer,
+};
+use gtk::{
+    glib,
+    prelude::*,
+    subclass::prelude::*,
+};
 
 mod imp {
     use std::cell::Cell;

@@ -33,9 +33,7 @@ use wl_proxy::{
     },
 };
 
-use super::{
-    SharedState
-};
+use super::SharedState;
 use std::cell::RefCell;
 
 struct ShmPoolState {
@@ -44,7 +42,10 @@ struct ShmPoolState {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub enum ShmMemoryFormat { Argb8888, Xrgb8888 }
+pub enum ShmMemoryFormat {
+    Argb8888,
+    Xrgb8888,
+}
 pub struct ShmFrame {
     pub width: i32,
     pub height: i32,
@@ -52,7 +53,6 @@ pub struct ShmFrame {
     pub format: ShmMemoryFormat,
     pub data: Vec<u8>,
 }
-
 
 pub struct BufferInfo {
     pub buffer: Rc<WlBuffer>,

@@ -1,8 +1,6 @@
 use std::cell::Cell;
 
-use crate::{
-    client::jellyfin_client::JELLYFIN_CLIENT,
-};
+use crate::client::jellyfin_client::JELLYFIN_CLIENT;
 
 use adw::{
     prelude::*,
