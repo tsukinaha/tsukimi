@@ -1,10 +1,17 @@
 use glib::Object;
-use gtk::{gdk::prelude::PaintableExt, glib, subclass::prelude::*};
+use gtk::{
+    gdk::prelude::PaintableExt,
+    glib,
+    subclass::prelude::*,
+};
 
 use crate::{
     PlayParams,
     video::{
-        backend::{TrackKind, TrackSelection},
+        backend::{
+            TrackKind,
+            TrackSelection,
+        },
         mpv::contexted::ContextedMPV,
     },
 };
@@ -13,21 +20,38 @@ use gtk::gdk;
 
 mod imp {
     use crate::{
-        FRAME_CHANNEL, FrameCallbacks, ShmMemoryFormat, SurfaceContentUpdate, SurfaceUpdate,
+        FRAME_CHANNEL,
+        FrameCallbacks,
+        ShmMemoryFormat,
+        SurfaceContentUpdate,
+        SurfaceUpdate,
         create_mpv_proxy,
-        video::{MutsumiMpvError, mpv::contexted::ContextedMPV},
+        video::{
+            MutsumiMpvError,
+            mpv::contexted::ContextedMPV,
+        },
     };
     #[cfg(feature = "profiling")]
     use std::cell::Cell;
-    use std::{cell::RefCell, os::fd::AsRawFd, sync::OnceLock};
+    use std::{
+        cell::RefCell,
+        os::fd::AsRawFd,
+        sync::OnceLock,
+    };
 
     #[cfg(feature = "profiling")]
-    use crate::video::mpv::proxy::profiling::{self, Stage};
+    use crate::video::mpv::proxy::profiling::{
+        self,
+        Stage,
+    };
 
     use super::*;
 
     use glib::subclass::Signal;
-    use gtk::{glib, prelude::*};
+    use gtk::{
+        glib,
+        prelude::*,
+    };
 
     #[derive(Default)]
     pub struct MutsumiVideoSink {
@@ -113,8 +137,7 @@ mod imp {
                             SurfaceContentUpdate::Shm(frame) => {
                                 let bytes = glib::Bytes::from_owned(frame.data);
                                 let format = match frame.format {
-                                    ShmMemoryFormat::Argb8888
-                                    | ShmMemoryFormat::Xrgb8888 => {
+                                    ShmMemoryFormat::Argb8888 | ShmMemoryFormat::Xrgb8888 => {
                                         gdk::MemoryFormat::B8g8r8a8Premultiplied
                                     }
                                 };

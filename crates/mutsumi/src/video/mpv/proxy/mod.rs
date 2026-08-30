@@ -2,18 +2,27 @@ mod dmabuf;
 mod drm;
 #[cfg(feature = "profiling")]
 pub mod profiling;
+mod shm;
 mod surface;
 mod xdg;
-mod shm;
 
 #[cfg(feature = "profiling")]
-pub use profiling::{ProxyProfilingGuard, start_proxy_profiling};
-pub use shm::{ShmFrame, ShmMemoryFormat};
+pub use profiling::{
+    ProxyProfilingGuard,
+    start_proxy_profiling,
+};
+pub use shm::{
+    ShmFrame,
+    ShmMemoryFormat,
+};
 
 use std::{
     cell::RefCell,
     collections::HashMap,
-    os::fd::{IntoRawFd, OwnedFd},
+    os::fd::{
+        IntoRawFd,
+        OwnedFd,
+    },
     rc::Rc,
     sync::Mutex,
 };
@@ -23,7 +32,11 @@ use wl_proxy::{
     baseline::Baseline,
     client::ClientHandler,
     global_mapper::GlobalMapper,
-    object::{Object, ObjectCoreApi, ObjectRcUtils},
+    object::{
+        Object,
+        ObjectCoreApi,
+        ObjectRcUtils,
+    },
     protocols::{
         ObjectInterface,
         drm::wl_drm::WlDrm,
@@ -36,25 +49,47 @@ use wl_proxy::{
         wayland::{
             wl_callback::WlCallback,
             wl_compositor::WlCompositor,
-            wl_display::{WlDisplay, WlDisplayHandler},
-            wl_registry::{WlRegistry, WlRegistryHandler},
-            wl_shm::{WlShm, WlShmFormat},
+            wl_display::{
+                WlDisplay,
+                WlDisplayHandler,
+            },
+            wl_registry::{
+                WlRegistry,
+                WlRegistryHandler,
+            },
+            wl_shm::{
+                WlShm,
+                WlShmFormat,
+            },
             wl_subcompositor::WlSubcompositor,
             wl_surface::WlSurface,
         },
         xdg_shell::xdg_wm_base::XdgWmBase,
     },
-    state::{Destructor, State},
+    state::{
+        Destructor,
+        State,
+    },
 };
 
 use self::{
-    dmabuf::{ALLOWED_FORMAT_PAIRS, BufferInfo, DmabufHandler},
+    dmabuf::{
+        ALLOWED_FORMAT_PAIRS,
+        BufferInfo,
+        DmabufHandler,
+    },
     drm::DrmHandler,
     shm::ShmHandler,
     surface::{
-        CompositorHandler, FractionalScaleManagerHandler, SubcompositorHandler, ViewporterHandler,
+        CompositorHandler,
+        FractionalScaleManagerHandler,
+        SubcompositorHandler,
+        ViewporterHandler,
     },
-    xdg::{ToplevelEntry, WmBaseHandler},
+    xdg::{
+        ToplevelEntry,
+        WmBaseHandler,
+    },
 };
 
 enum ProxyEvent {
@@ -218,11 +253,7 @@ struct RegistryHandler {
 
 impl WlRegistryHandler for RegistryHandler {
     fn handle_global(
-        &mut self,
-        slf: &Rc<WlRegistry>,
-        name: u32,
-        interface: ObjectInterface,
-        version: u32,
+        &mut self, slf: &Rc<WlRegistry>, name: u32, interface: ObjectInterface, version: u32,
     ) {
         if interface == ObjectInterface::XdgWmBase
             || interface == ObjectInterface::WpViewporter
@@ -338,9 +369,7 @@ fn handle_viewport_update(shared: &Rc<RefCell<SharedState>>, width: i32, height:
 }
 
 async fn run_client(
-    state: Rc<State>,
-    shared: Rc<RefCell<SharedState>>,
-    event_rx: flume::Receiver<ProxyEvent>,
+    state: Rc<State>, shared: Rc<RefCell<SharedState>>, event_rx: flume::Receiver<ProxyEvent>,
 ) {
     let poll_fd = match tokio::io::unix::AsyncFd::new(Rc::clone(state.poll_fd())) {
         Ok(fd) => fd,

@@ -1,10 +1,17 @@
 use glib::Object;
-use gtk::{gio, glib, subclass::prelude::*};
+use gtk::{
+    gio,
+    glib,
+    subclass::prelude::*,
+};
 
 use crate::{
     PlayParams,
     video::{
-        backend::{TrackKind, TrackSelection},
+        backend::{
+            TrackKind,
+            TrackSelection,
+        },
         mpv::contexted::ContextedMPV,
     },
 };
@@ -12,11 +19,19 @@ use crate::{
 use super::RENDER_UPDATE;
 
 mod imp {
-    use crate::video::{MPV_CTRL, MpvMessage, MutsumiMpvError, mpv::contexted::ContextedMPV};
+    use crate::video::{
+        MPV_CTRL,
+        MpvMessage,
+        MutsumiMpvError,
+        mpv::contexted::ContextedMPV,
+    };
     use libmpv2::Mpv;
     use std::{
         ffi::c_void,
-        sync::{Arc, OnceLock},
+        sync::{
+            Arc,
+            OnceLock,
+        },
     };
 
     use super::*;
@@ -28,11 +43,19 @@ mod imp {
     use glib::subclass::Signal;
     use glow::HasContext;
     use gtk::{
-        gdk::{Display, GLContext},
+        gdk::{
+            Display,
+            GLContext,
+        },
         glib,
         prelude::*,
     };
-    use libmpv2::render::{OpenGLInitParams, RenderContext, RenderParam, RenderParamApiType};
+    use libmpv2::render::{
+        OpenGLInitParams,
+        RenderContext,
+        RenderParam,
+        RenderParamApiType,
+    };
     use once_cell::sync::OnceCell;
 
     #[derive(Default)]

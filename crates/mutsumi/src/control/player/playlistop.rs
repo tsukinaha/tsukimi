@@ -1,7 +1,12 @@
-use gtk::gio;
-use gtk::prelude::*;
+use gtk::{
+    gio,
+    prelude::*,
+};
 
-use crate::{PlaylistEntry, PlaylistItem};
+use crate::{
+    PlaylistEntry,
+    PlaylistItem,
+};
 
 pub enum PlaylistOp {
     Move { from: i64, to: i64 },

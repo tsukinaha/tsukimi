@@ -1,5 +1,12 @@
-use mutsumi::{Color, Danmaku, DanmakuMode};
-use quick_xml::{Reader, events::Event};
+use mutsumi::{
+    Color,
+    Danmaku,
+    DanmakuMode,
+};
+use quick_xml::{
+    Reader,
+    events::Event,
+};
 use thiserror::Error;
 
 #[derive(Error, Debug)]

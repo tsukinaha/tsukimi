@@ -11,7 +11,11 @@ pub use contexted::*;
 pub use paintable::*;
 pub use proxy::*;
 
-use flume::{Receiver, Sender, unbounded};
+use flume::{
+    Receiver,
+    Sender,
+    unbounded,
+};
 use once_cell::sync::Lazy;
 
 type TimeMillis = f64;

@@ -7,7 +7,10 @@ pub struct ContextedMPV {
 impl Default for ContextedMPV {
     fn default() -> Self {
         unsafe {
-            use libc::{LC_NUMERIC, setlocale};
+            use libc::{
+                LC_NUMERIC,
+                setlocale,
+            };
             setlocale(LC_NUMERIC, c"C".as_ptr() as *const _);
         }
 
@@ -33,8 +36,13 @@ impl Default for ContextedMPV {
 }
 
 use crate::{
-    TrackSelection, arm_mpv_proxy,
-    video::{MpvActor, MpvValue, MpvValueType},
+    TrackSelection,
+    arm_mpv_proxy,
+    video::{
+        MpvActor,
+        MpvValue,
+        MpvValueType,
+    },
 };
 
 impl ContextedMPV {

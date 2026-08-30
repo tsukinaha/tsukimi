@@ -1,8 +1,18 @@
-use gtk::glib;
-use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, Box as GtkBox, Button, Entry, Orientation};
-use mutsumi::video::MutsumiVideoPlayer;
-use mutsumi::{PlayParams, PlaySource};
+use gtk::{
+    Application,
+    ApplicationWindow,
+    Box as GtkBox,
+    Button,
+    Entry,
+    Orientation,
+    glib,
+    prelude::*,
+};
+use mutsumi::{
+    PlayParams,
+    PlaySource,
+    video::MutsumiVideoPlayer,
+};
 
 fn main() {
     #[cfg(feature = "profiling")]

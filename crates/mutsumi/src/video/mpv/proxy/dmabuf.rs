@@ -1,7 +1,11 @@
 use std::{
     cell::RefCell,
     collections::HashSet,
-    os::fd::{AsRawFd, FromRawFd, OwnedFd},
+    os::fd::{
+        AsRawFd,
+        FromRawFd,
+        OwnedFd,
+    },
     rc::Rc,
     sync::OnceLock,
 };
@@ -11,22 +15,36 @@ use wl_proxy::{
     protocols::{
         linux_dmabuf_v1::{
             zwp_linux_buffer_params_v1::{
-                ZwpLinuxBufferParamsV1, ZwpLinuxBufferParamsV1Flags, ZwpLinuxBufferParamsV1Handler,
+                ZwpLinuxBufferParamsV1,
+                ZwpLinuxBufferParamsV1Flags,
+                ZwpLinuxBufferParamsV1Handler,
             },
             zwp_linux_dmabuf_feedback_v1::{
-                ZwpLinuxDmabufFeedbackV1, ZwpLinuxDmabufFeedbackV1Handler,
+                ZwpLinuxDmabufFeedbackV1,
+                ZwpLinuxDmabufFeedbackV1Handler,
                 ZwpLinuxDmabufFeedbackV1TrancheFlags,
             },
-            zwp_linux_dmabuf_v1::{ZwpLinuxDmabufV1, ZwpLinuxDmabufV1Handler},
+            zwp_linux_dmabuf_v1::{
+                ZwpLinuxDmabufV1,
+                ZwpLinuxDmabufV1Handler,
+            },
         },
         wayland::{
-            wl_buffer::{WlBuffer, WlBufferHandler},
+            wl_buffer::{
+                WlBuffer,
+                WlBufferHandler,
+            },
             wl_surface::WlSurface,
         },
     },
 };
 
-use super::{DmabufFrame, DmabufPlane, ProxyEvent, SharedState};
+use super::{
+    DmabufFrame,
+    DmabufPlane,
+    ProxyEvent,
+    SharedState,
+};
 
 pub static ALLOWED_FORMAT_PAIRS: OnceLock<HashSet<(u32, u64)>> = OnceLock::new();
 
@@ -37,13 +55,8 @@ struct StoredPlane {
 }
 
 pub fn register_implicit_dmabuf(
-    state: &Rc<RefCell<SharedState>>,
-    buffer: &Rc<WlBuffer>,
-    fd: &OwnedFd,
-    width: i32,
-    height: i32,
-    format: u32,
-    planes: &[(i32, i32)],
+    state: &Rc<RefCell<SharedState>>, buffer: &Rc<WlBuffer>, fd: &OwnedFd, width: i32, height: i32,
+    format: u32, planes: &[(i32, i32)],
 ) {
     if width <= 0 || height <= 0 {
         tracing::error!("wl-proxy-mpv: invalid wl_drm buffer dimensions: {width}x{height}");
@@ -108,9 +121,7 @@ pub struct BufferInfo {
 
 impl BufferInfo {
     pub fn to_frame(
-        &self,
-        buffer_id: u64,
-        event_tx: flume::Sender<ProxyEvent>,
+        &self, buffer_id: u64, event_tx: flume::Sender<ProxyEvent>,
     ) -> Option<DmabufFrame> {
         let planes = self
             .planes
@@ -153,11 +164,7 @@ impl ZwpLinuxDmabufV1Handler for DmabufHandler {
     }
 
     fn handle_modifier(
-        &mut self,
-        slf: &Rc<ZwpLinuxDmabufV1>,
-        format: u32,
-        modifier_hi: u32,
-        modifier_lo: u32,
+        &mut self, slf: &Rc<ZwpLinuxDmabufV1>, format: u32, modifier_hi: u32, modifier_lo: u32,
     ) {
         let modifier = ((modifier_hi as u64) << 32) | (modifier_lo as u64);
         let allowed = ALLOWED_FORMAT_PAIRS.get();
@@ -167,9 +174,7 @@ impl ZwpLinuxDmabufV1Handler for DmabufHandler {
     }
 
     fn handle_create_params(
-        &mut self,
-        _slf: &Rc<ZwpLinuxDmabufV1>,
-        params_id: &Rc<ZwpLinuxBufferParamsV1>,
+        &mut self, _slf: &Rc<ZwpLinuxDmabufV1>, params_id: &Rc<ZwpLinuxBufferParamsV1>,
     ) {
         params_id.set_forward_to_server(false);
         params_id.set_handler(BufferParamsHandler {
@@ -180,9 +185,7 @@ impl ZwpLinuxDmabufV1Handler for DmabufHandler {
     }
 
     fn handle_get_default_feedback(
-        &mut self,
-        slf: &Rc<ZwpLinuxDmabufV1>,
-        id: &Rc<ZwpLinuxDmabufFeedbackV1>,
+        &mut self, slf: &Rc<ZwpLinuxDmabufV1>, id: &Rc<ZwpLinuxDmabufFeedbackV1>,
     ) {
         let allowed = ALLOWED_FORMAT_PAIRS.get().cloned().unwrap_or_default();
         id.set_handler(FeedbackHandler::new(allowed));
@@ -190,9 +193,7 @@ impl ZwpLinuxDmabufV1Handler for DmabufHandler {
     }
 
     fn handle_get_surface_feedback(
-        &mut self,
-        slf: &Rc<ZwpLinuxDmabufV1>,
-        id: &Rc<ZwpLinuxDmabufFeedbackV1>,
+        &mut self, slf: &Rc<ZwpLinuxDmabufV1>, id: &Rc<ZwpLinuxDmabufFeedbackV1>,
         _surface: &Rc<WlSurface>,
     ) {
         let allowed = ALLOWED_FORMAT_PAIRS.get().cloned().unwrap_or_default();
@@ -223,10 +224,7 @@ impl FeedbackHandler {
 
 impl ZwpLinuxDmabufFeedbackV1Handler for FeedbackHandler {
     fn handle_format_table(
-        &mut self,
-        slf: &Rc<ZwpLinuxDmabufFeedbackV1>,
-        fd: &Rc<OwnedFd>,
-        size: u32,
+        &mut self, slf: &Rc<ZwpLinuxDmabufFeedbackV1>, fd: &Rc<OwnedFd>, size: u32,
     ) {
         let num_entries = size as usize / 16;
         let ptr = unsafe {
@@ -288,9 +286,7 @@ impl ZwpLinuxDmabufFeedbackV1Handler for FeedbackHandler {
     }
 
     fn handle_tranche_flags(
-        &mut self,
-        _slf: &Rc<ZwpLinuxDmabufFeedbackV1>,
-        flags: ZwpLinuxDmabufFeedbackV1TrancheFlags,
+        &mut self, _slf: &Rc<ZwpLinuxDmabufFeedbackV1>, flags: ZwpLinuxDmabufFeedbackV1TrancheFlags,
     ) {
         self.pending_flags = Some(flags);
     }
@@ -336,11 +332,7 @@ struct BufferParamsHandler {
 
 impl BufferParamsHandler {
     fn register_buffer(
-        &mut self,
-        buffer: &Rc<WlBuffer>,
-        width: i32,
-        height: i32,
-        format: u32,
+        &mut self, buffer: &Rc<WlBuffer>, width: i32, height: i32, format: u32,
     ) -> bool {
         let Some(planes): Option<Vec<_>> = std::mem::take(&mut self.planes).into_iter().collect()
         else {
@@ -381,14 +373,8 @@ impl ZwpLinuxBufferParamsV1Handler for BufferParamsHandler {
     }
 
     fn handle_add(
-        &mut self,
-        _slf: &Rc<ZwpLinuxBufferParamsV1>,
-        fd: &Rc<OwnedFd>,
-        plane_idx: u32,
-        offset: u32,
-        stride: u32,
-        modifier_hi: u32,
-        modifier_lo: u32,
+        &mut self, _slf: &Rc<ZwpLinuxBufferParamsV1>, fd: &Rc<OwnedFd>, plane_idx: u32,
+        offset: u32, stride: u32, modifier_hi: u32, modifier_lo: u32,
     ) {
         let plane_idx = plane_idx as usize;
         if plane_idx >= 4 {
@@ -425,11 +411,7 @@ impl ZwpLinuxBufferParamsV1Handler for BufferParamsHandler {
     }
 
     fn handle_create(
-        &mut self,
-        slf: &Rc<ZwpLinuxBufferParamsV1>,
-        width: i32,
-        height: i32,
-        format: u32,
+        &mut self, slf: &Rc<ZwpLinuxBufferParamsV1>, width: i32, height: i32, format: u32,
         _flags: ZwpLinuxBufferParamsV1Flags,
     ) {
         let valid = width > 0
@@ -451,13 +433,8 @@ impl ZwpLinuxBufferParamsV1Handler for BufferParamsHandler {
     }
 
     fn handle_create_immed(
-        &mut self,
-        _slf: &Rc<ZwpLinuxBufferParamsV1>,
-        buffer_id: &Rc<WlBuffer>,
-        width: i32,
-        height: i32,
-        format: u32,
-        _flags: ZwpLinuxBufferParamsV1Flags,
+        &mut self, _slf: &Rc<ZwpLinuxBufferParamsV1>, buffer_id: &Rc<WlBuffer>, width: i32,
+        height: i32, format: u32, _flags: ZwpLinuxBufferParamsV1Flags,
     ) {
         self.register_buffer(buffer_id, width, height, format);
     }

@@ -1,18 +1,36 @@
 use glib::Object;
-use gtk::{gdk::ModifierType, glib, subclass::prelude::*};
+use gtk::{
+    gdk::ModifierType,
+    glib,
+    subclass::prelude::*,
+};
 
-use crate::{ContextedMPV, MpvValue, MutsumiVideoSink, PlayParams};
+use crate::{
+    ContextedMPV,
+    MpvValue,
+    MutsumiVideoSink,
+    PlayParams,
+};
 
-use super::backend::{BoxedFuture, TrackKind, TrackSelection};
+use super::backend::{
+    BoxedFuture,
+    TrackKind,
+    TrackSelection,
+};
 
 mod imp {
     use std::cell::Cell;
 
-    use adw::prelude::*;
-    use adw::subclass::prelude::*;
+    use adw::{
+        prelude::*,
+        subclass::prelude::*,
+    };
     use gtk::CssProvider;
 
-    use crate::{MutsumiVideoSink, VIEWPORT_CHANNEL};
+    use crate::{
+        MutsumiVideoSink,
+        VIEWPORT_CHANNEL,
+    };
 
     use super::*;
     #[derive(Default, glib::Properties)]

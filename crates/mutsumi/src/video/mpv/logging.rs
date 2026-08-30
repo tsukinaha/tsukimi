@@ -1,5 +1,8 @@
 use libmpv2::Mpv;
-use libmpv2_sys::{self as mpv, mpv_log_level};
+use libmpv2_sys::{
+    self as mpv,
+    mpv_log_level,
+};
 use tracing::level_filters::LevelFilter;
 
 pub fn request_logs(mpv: &Mpv) {

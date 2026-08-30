@@ -1,13 +1,25 @@
-use std::{cell::RefCell, rc::Rc};
+use std::{
+    cell::RefCell,
+    rc::Rc,
+};
 
 use wl_proxy::{
     object::ObjectCoreApi,
     protocols::{
         wayland::wl_surface::WlSurface,
         xdg_shell::{
-            xdg_surface::{XdgSurface, XdgSurfaceHandler},
-            xdg_toplevel::{XdgToplevel, XdgToplevelHandler},
-            xdg_wm_base::{XdgWmBase, XdgWmBaseHandler},
+            xdg_surface::{
+                XdgSurface,
+                XdgSurfaceHandler,
+            },
+            xdg_toplevel::{
+                XdgToplevel,
+                XdgToplevelHandler,
+            },
+            xdg_wm_base::{
+                XdgWmBase,
+                XdgWmBaseHandler,
+            },
         },
     },
 };
@@ -29,10 +41,7 @@ impl XdgWmBaseHandler for WmBaseHandler {
     }
 
     fn handle_get_xdg_surface(
-        &mut self,
-        _slf: &Rc<XdgWmBase>,
-        id: &Rc<XdgSurface>,
-        _surface: &Rc<WlSurface>,
+        &mut self, _slf: &Rc<XdgWmBase>, id: &Rc<XdgSurface>, _surface: &Rc<WlSurface>,
     ) {
         id.set_forward_to_server(false);
         id.set_handler(XdgSurfaceHandlerImpl {
