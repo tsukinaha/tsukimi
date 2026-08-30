@@ -166,6 +166,15 @@ pub(crate) mod imp {
 
             self.actionbox.set_id(Some(obj.item().id()));
             self.actionbox.set_item_type(obj.item().item_type());
+            self.play_button.connect_clicked(glib::clone!(
+                #[weak]
+                obj,
+                move |_| match obj.item().item_type().as_str() {
+                    "Audio" => obj.item().play_single_audio(&obj),
+                    "TvChannel" => obj.item().play_tvchannel(&obj),
+                    _ => {}
+                }
+            ));
             self.selection.set_model(Some(&store));
             self.episode_list.set_factory(Some(
                 SignalListItemFactory::new()
@@ -280,28 +289,9 @@ impl OtherPage {
             "BoxSet" | "Playlist" => {
                 self.hortu_set_boxset_list().await;
             }
-            "Audio" => {
-                self.imp().play_button.set_visible(true);
-                self.imp().play_button.connect_clicked(glib::clone!(
-                    #[weak(rename_to = obj)]
-                    self,
-                    move |_| {
-                        obj.item().play_single_audio(&obj);
-                    }
-                ));
-            }
+            "Audio" | "TvChannel" => self.imp().play_button.set_visible(true),
             "Season" => {
                 self.hortu_set_season_episode_list().await;
-            }
-            "TvChannel" => {
-                self.imp().play_button.set_visible(true);
-                self.imp().play_button.connect_clicked(glib::clone!(
-                    #[weak(rename_to = obj)]
-                    self,
-                    move |_| {
-                        obj.item().play_tvchannel(&obj);
-                    }
-                ));
             }
             _ => {}
         }
