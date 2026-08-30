@@ -15,6 +15,7 @@ use gtk::{
 };
 use itertools::Itertools;
 use mutsumi::*;
+use url::Url;
 
 use super::{
     DanmakuPopoverStatus,
@@ -64,48 +65,6 @@ const MIN_MOTION_TIME: i64 = 100000;
 const PREV_CHAPTER_KEY: gtk::gdk::Key = gtk::gdk::Key::Page_Down;
 const NEXT_CHAPTER_KEY: gtk::gdk::Key = gtk::gdk::Key::Page_Up;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub struct PlaybackDirectMode {
-    pub enable_direct_play: bool,
-    pub enable_direct_stream: bool,
-}
-
-impl Default for PlaybackDirectMode {
-    fn default() -> Self {
-        Self::direct()
-    }
-}
-
-impl PlaybackDirectMode {
-    pub const fn direct() -> Self {
-        Self {
-            enable_direct_play: true,
-            enable_direct_stream: true,
-        }
-    }
-
-    fn fallback(self) -> Option<Self> {
-        match (self.enable_direct_play, self.enable_direct_stream) {
-            (true, true) => Some(Self {
-                enable_direct_play: false,
-                enable_direct_stream: true,
-            }),
-            (false, true) => Some(Self {
-                enable_direct_play: false,
-                enable_direct_stream: false,
-            }),
-            (false, false) => None,
-            _ => unreachable!(),
-        }
-    }
-}
-
-#[derive(Clone)]
-pub struct FallbackContext {
-    selected: Option<SelectedVideoSubInfo>,
-    start_seconds: f64,
-}
-
 #[derive(Clone, Copy)]
 enum MpvTrackKind {
     Audio,
@@ -128,6 +87,11 @@ impl MpvTrackKind {
     }
 }
 
+enum MediaSourceFallback {
+    DirectPlay(String),
+    PlaybackInfo,
+}
+
 mod imp {
 
     use std::cell::{
@@ -147,6 +111,8 @@ mod imp {
 
     use mpris_server::LocalServer;
     use once_cell::sync::OnceCell;
+
+    use super::MediaSourceFallback;
 
     use crate::{
         APP_ID,
@@ -234,6 +200,7 @@ mod imp {
         pub y: Cell<f64>,
         pub last_motion_time: Cell<i64>,
         pub suburl: RefCell<Option<String>>,
+        pub(super) media_source_fallback: RefCell<Option<MediaSourceFallback>>,
         pub skippable_segments: RefCell<Option<Vec<MediaSegment>>>,
         pub current_segment_end: Cell<Option<f64>>,
         pub popover: RefCell<Option<PopoverMenu>>,
@@ -264,11 +231,6 @@ mod imp {
         pub key_vaild: Cell<bool>,
 
         pub video_version_matcher: RefCell<Option<String>>,
-        pub fallback_context: RefCell<Option<super::FallbackContext>>,
-        pub playback_direct_mode: RefCell<super::PlaybackDirectMode>,
-        pub queued_playback_direct_mode: RefCell<Option<super::PlaybackDirectMode>>,
-        pub retrying_playback: Cell<bool>,
-        pub allow_fallback: Cell<bool>,
         pub last_nonzero_volume: Cell<i64>,
         pub danmaku_count: Cell<usize>,
         pub danmaku_generation: Cell<u64>,
@@ -719,67 +681,18 @@ impl MPVPage {
     fn mark_stream_failed(&self) {
         let imp = self.imp();
         imp.file_loaded.set(false);
+        imp.media_source_fallback.take();
         imp.danmaku_sync.reset();
         imp.danmakw.stop_rendering();
         imp.danmakw.set_visible(false);
-        imp.allow_fallback.set(false);
         imp.loading_box.set_visible(false);
         imp.spinner.set_visible(false);
     }
 
-    fn is_loading_failed(value: &str) -> bool {
-        value.contains("-13")
-    }
-
-    fn retry_fallback_playback(&self) -> bool {
-        let next_mode = {
-            let imp = self.imp();
-            if imp.retrying_playback.get() {
-                return true;
-            }
-            let Some(next_mode) = imp.playback_direct_mode.borrow().fallback() else {
-                return false;
-            };
-            imp.retrying_playback.set(true);
-            next_mode
-        };
-
-        let Some(context) = self.imp().fallback_context.take() else {
-            self.imp().retrying_playback.set(false);
-            return false;
-        };
-        let Some(item) = self.current_video() else {
-            self.imp().retrying_playback.set(false);
-            return false;
-        };
-
-        tracing::info!(
-            "Retrying playback with EnableDirectPlay={}, EnableDirectStream={}",
-            next_mode.enable_direct_play,
-            next_mode.enable_direct_stream
-        );
-
-        let episode_list = self.imp().current_episode_list.take();
-        self.imp()
-            .queued_playback_direct_mode
-            .replace(Some(next_mode));
-        self.mpv().stop();
-
-        spawn_g_timeout(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            async move {
-                obj.play(
-                    context.selected,
-                    item,
-                    episode_list,
-                    None,
-                    context.start_seconds,
-                );
-            }
-        ));
-
-        true
+    fn fail_playback(&self, message: impl Into<String>) {
+        self.mark_stream_failed();
+        self.toast(message);
+        self.notify_stopped();
     }
 
     pub fn play(
@@ -792,6 +705,7 @@ impl MPVPage {
             .is_none_or(|current| current.id() != item.id());
         let imp = self.imp();
         imp.file_loaded.set(false);
+        imp.media_source_fallback.take();
         imp.danmaku_sync.reset();
         imp.danmakw.stop_rendering();
         imp.danmakw.set_visible(false);
@@ -856,20 +770,6 @@ impl MPVPage {
                 self.clear_danmaku();
             }
         }
-        self.imp().fallback_context.replace(Some(FallbackContext {
-            selected: selected.to_owned(),
-            start_seconds,
-        }));
-        let direct_mode = self
-            .imp()
-            .queued_playback_direct_mode
-            .borrow_mut()
-            .take()
-            .unwrap_or_else(PlaybackDirectMode::direct);
-        self.imp().playback_direct_mode.replace(direct_mode);
-        self.imp().retrying_playback.set(false);
-        self.imp().allow_fallback.set(true);
-
         self.load_skippable_segments(id.to_owned());
 
         spawn_g_timeout(glib::clone!(
@@ -887,22 +787,14 @@ impl MPVPage {
                 let id_clone = id.to_owned();
                 let playback_info = match spawn_tokio(async move {
                     JELLYFIN_CLIENT
-                        .get_playbackinfo(
-                            &id_clone,
-                            sub_stream_index,
-                            media_source_id,
-                            true,
-                            direct_mode,
-                        )
+                        .get_playbackinfo(&id_clone, sub_stream_index, media_source_id, true)
                         .await
                 })
                 .await
                 {
                     Ok(playback_info) => playback_info,
                     Err(e) => {
-                        obj.mark_stream_failed();
-                        obj.toast(e.to_user_facing());
-                        obj.notify_stopped();
+                        obj.fail_playback(e.to_user_facing());
                         return;
                     }
                 };
@@ -926,9 +818,7 @@ impl MPVPage {
                     };
 
                 let Some(media_source) = media_source else {
-                    obj.mark_stream_failed();
-                    obj.toast(gettext("No media source found"));
-                    obj.notify_stopped();
+                    obj.fail_playback(gettext("No media source found"));
                     return;
                 };
 
@@ -938,7 +828,7 @@ impl MPVPage {
                     playsessionid: playback_info.play_session_id.to_owned(),
                     mediasourceid: media_source.id.to_owned(),
                     livestreamid: media_source.live_stream_id.to_owned(),
-                    playmethod: media_source_play_method(media_source),
+                    playmethod: "DirectPlay",
                     tick: media_source.run_time_ticks.unwrap_or(0),
                     start_tick: glib::real_time() as u64 * 10,
                 };
@@ -974,7 +864,7 @@ impl MPVPage {
 
                 let sub_url = match media_stream {
                     Some(stream) if stream.is_external => match &stream.delivery_url {
-                        Some(url) => Some(JELLYFIN_CLIENT.get_streaming_url(url).await),
+                        Some(url) => Some(JELLYFIN_CLIENT.resolve_url(url)),
                         None => {
                             println!("External Subtitle without selected source");
                             imp.obj()
@@ -982,7 +872,6 @@ impl MPVPage {
                                     id.to_owned(),
                                     stream,
                                     media_source.id.to_owned(),
-                                    direct_mode,
                                 )
                                 .await
                         }
@@ -992,17 +881,15 @@ impl MPVPage {
 
                 imp.suburl.replace(sub_url);
 
-                let video_url = match media_source_stream_url(media_source).await {
-                    Some(video_url) => video_url,
-                    None => {
-                        obj.mark_stream_failed();
-                        obj.toast(gettext("No media source found"));
-                        obj.notify_stopped();
-                        return;
-                    }
+                let Some((primary_url, fallback)) =
+                    media_source_url(media_source, playback_info.play_session_id.as_deref()).await
+                else {
+                    obj.fail_playback(gettext("No media source found"));
+                    return;
                 };
 
-                imp.video.play(&video_url, start_seconds);
+                imp.media_source_fallback.replace(fallback);
+                imp.video.play(&primary_url, start_seconds);
             }
         ));
     }
@@ -1102,19 +989,12 @@ impl MPVPage {
 
     async fn external_sub_url_without_selected_source(
         &self, id: String, media_stream: &MediaStream, media_source_id: String,
-        direct_mode: PlaybackDirectMode,
     ) -> Option<String> {
         let stream_index = media_stream.index;
         let media_source_id_clone = media_source_id.to_owned();
         let playback_info = spawn_tokio(async move {
             JELLYFIN_CLIENT
-                .get_playbackinfo(
-                    &id,
-                    Some(stream_index),
-                    Some(media_source_id),
-                    true,
-                    direct_mode,
-                )
+                .get_playbackinfo(&id, Some(stream_index), Some(media_source_id), true)
                 .await
         })
         .await
@@ -1131,7 +1011,7 @@ impl MPVPage {
             .delivery_url
             .to_owned()?;
 
-        Some(JELLYFIN_CLIENT.get_streaming_url(&url).await)
+        Some(JELLYFIN_CLIENT.resolve_url(&url))
     }
 
     async fn set_audio_and_video_tracks_dropdown(&self, value: MpvTracks) {
@@ -1447,12 +1327,12 @@ impl MPVPage {
     fn on_file_loaded(&self) {
         let imp = self.imp();
         imp.file_loaded.set(true);
+        imp.media_source_fallback.take();
 
         if imp.danmaku_popover_content.is_enabled() && self.has_danmaku() {
             imp.danmakw.set_visible(true);
         }
 
-        imp.allow_fallback.set(false);
         if let Some(suburl) = imp.suburl.borrow().as_ref() {
             imp.video.add_sub(suburl);
         }
@@ -1505,16 +1385,93 @@ impl MPVPage {
     }
 
     fn on_error(&self, value: &str) {
-        if self.imp().allow_fallback.get()
-            && Self::is_loading_failed(value)
-            && self.retry_fallback_playback()
+        if value.contains("-13")
+            && let Some(fallback) = self.imp().media_source_fallback.take()
+        {
+            tracing::info!("Direct media path failed; retrying through the media server");
+            match fallback {
+                MediaSourceFallback::DirectPlay(url) => self
+                    .imp()
+                    .video
+                    .play(&url, self.imp().last_playback_position.get()),
+                MediaSourceFallback::PlaybackInfo => {
+                    let error = value.to_owned();
+                    spawn(glib::clone!(
+                        #[weak(rename_to = obj)]
+                        self,
+                        async move {
+                            obj.retry_fallback(error).await;
+                        }
+                    ));
+                }
+            }
+            return;
+        }
+        self.fail_playback(value);
+    }
+
+    async fn retry_fallback(&self, original_error: String) {
+        let Some(back) = self.imp().back.borrow().as_ref().cloned() else {
+            self.fail_playback(&original_error);
+            return;
+        };
+        let item_id = back.id;
+        let requested_item_id = item_id.to_owned();
+        let media_source_id = back.mediasourceid;
+        let requested_media_source_id = media_source_id.to_owned();
+        let live_stream_id = back.livestreamid;
+        let playback_info = spawn_tokio(async move {
+            JELLYFIN_CLIENT
+                .get_fallback_playbackinfo(&item_id, &media_source_id, live_stream_id.as_deref())
+                .await
+        })
+        .await;
+        if self
+            .current_video()
+            .as_ref()
+            .is_none_or(|item| item.id() != requested_item_id)
         {
             return;
         }
-
-        self.mark_stream_failed();
-        self.toast(value);
-        self.notify_stopped();
+        let playback_info = match playback_info {
+            Ok(playback_info) => playback_info,
+            Err(error) => {
+                tracing::warn!(%error, "Fallback playback negotiation failed");
+                self.fail_playback(error.to_user_facing());
+                return;
+            }
+        };
+        let Some(media_source) = playback_info
+            .media_sources
+            .into_iter()
+            .find(|source| source.id == requested_media_source_id)
+        else {
+            self.fail_playback(&original_error);
+            return;
+        };
+        let fallback = media_source
+            .transcoding_url
+            .as_deref()
+            .map(|url| (url, "Transcode"))
+            .or_else(|| {
+                media_source
+                    .direct_stream_url
+                    .as_deref()
+                    .map(|url| (url, "DirectStream"))
+            });
+        let Some((fallback_url, playmethod)) = fallback else {
+            self.fail_playback(&original_error);
+            return;
+        };
+        if let Some(back) = self.imp().back.borrow_mut().as_mut() {
+            back.playsessionid = playback_info.play_session_id;
+            back.mediasourceid = media_source.id;
+            back.livestreamid = media_source.live_stream_id;
+            back.playmethod = playmethod;
+        }
+        self.imp()
+            .video
+            .play(fallback_url, self.imp().last_playback_position.get());
     }
 
     pub fn on_pause_update(&self, value: bool) {
@@ -1693,6 +1650,7 @@ impl MPVPage {
     #[template_callback]
     pub fn on_stop_clicked(&self) {
         self.imp().file_loaded.set(false);
+        self.imp().media_source_fallback.take();
         self.imp().danmakw.set_visible(false);
         self.remove_timeout();
         self.reset_skippable_segments();
@@ -1964,50 +1922,35 @@ impl MPVPage {
     }
 }
 
-pub async fn direct_stream_url(source: &MediaSource) -> Option<String> {
+async fn direct_play_url(source: &MediaSource, play_session_id: Option<&str>) -> Option<String> {
     let container = source.container.as_deref()?;
     JELLYFIN_CLIENT
-        .get_item_stream_url(
+        .get_item_direct_play_url(
             container,
             source.item_id.as_ref().unwrap_or(&source.id),
             &source.id,
+            play_session_id,
         )
         .await
         .ok()
 }
 
-fn playable_media_source_path(source: &MediaSource) -> Option<String> {
-    let path = source.path.as_deref()?;
-
-    if path.starts_with("http://") || path.starts_with("https://") {
-        return Some(path.to_owned());
+async fn media_source_url(
+    source: &MediaSource, play_session_id: Option<&str>,
+) -> Option<(String, Option<MediaSourceFallback>)> {
+    if let Some(path) = source.path.as_deref()
+        && Url::parse(path).is_ok()
+    {
+        let fallback = if source.live_stream_id.is_some() {
+            Some(MediaSourceFallback::PlaybackInfo)
+        } else {
+            direct_play_url(source, play_session_id)
+                .await
+                .map(MediaSourceFallback::DirectPlay)
+        };
+        return Some((path.to_owned(), fallback));
     }
-
-    None
-}
-
-fn media_source_play_method(source: &MediaSource) -> &'static str {
-    if source.direct_stream_url.is_some() {
-        return "DirectStream";
-    }
-    if source.transcoding_url.is_some() {
-        return "Transcode";
-    }
-    "DirectPlay"
-}
-
-pub async fn media_source_stream_url(source: &MediaSource) -> Option<String> {
-    if let Some(direct_url) = source.direct_stream_url.to_owned() {
-        return Some(direct_url);
-    }
-
-    if let Some(transcoding_url) = source.transcoding_url.to_owned() {
-        return Some(transcoding_url);
-    }
-
-    if let Some(path) = playable_media_source_path(source) {
-        return Some(path);
-    }
-
-    direct_stream_url(source).await
+    direct_play_url(source, play_session_id)
+        .await
+        .map(|url| (url, None))
 }

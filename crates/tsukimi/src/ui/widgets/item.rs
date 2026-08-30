@@ -21,10 +21,6 @@ use crate::{
         structs::*,
     },
     ui::{
-        mpv::page::{
-            PlaybackDirectMode,
-            media_source_stream_url,
-        },
         provider::{
             dropdown_factory::{
                 DropdownList,
@@ -454,13 +450,7 @@ impl ItemPage {
         let intro_id_clone = intro_id.to_owned();
         let playback = match spawn_tokio(async move {
             JELLYFIN_CLIENT
-                .get_playbackinfo(
-                    &intro_id_clone,
-                    None,
-                    None,
-                    false,
-                    PlaybackDirectMode::direct(),
-                )
+                .get_playbackinfo(&intro_id_clone, None, None, false)
                 .await
         })
         .await
@@ -473,7 +463,7 @@ impl ItemPage {
         };
 
         self.set_current_item(Some(intro));
-        self.set_dropdown(&playback).await;
+        self.set_dropdown(&playback);
         self.set_play_session_id(playback.play_session_id.to_owned());
 
         play_button.set_sensitive(true);
@@ -711,7 +701,7 @@ impl ItemPage {
         }
     }
 
-    pub async fn set_dropdown(&self, playbackinfo: &Media) {
+    pub fn set_dropdown(&self, playbackinfo: &Media) {
         let imp = self.imp();
         let namedropdown = imp.namedropdown.get();
         let subdropdown = imp.subdropdown.get();
@@ -757,8 +747,6 @@ impl ItemPage {
                                     .line2(stream.title.to_owned())
                                     .sub_lang(stream.language.to_owned())
                                     .index(Some(stream.index))
-                                    .url(stream.delivery_url.to_owned())
-                                    .is_external(Some(stream.is_external))
                                     .build()
                                 else {
                                     continue;
@@ -789,11 +777,9 @@ impl ItemPage {
                 .bit_rate
                 .map(|bit_rate| format!("{:.2} Kbps", bit_rate as f64 / 1_000.0))
                 .unwrap_or_default();
-            let play_url = media_source_stream_url(media).await;
             let Ok(dl) = DropdownListBuilder::default()
                 .line1(Some(media.name.to_owned()))
                 .line2(Some(line2))
-                .url(play_url)
                 .id(Some(media.id.to_owned()))
                 .build()
             else {

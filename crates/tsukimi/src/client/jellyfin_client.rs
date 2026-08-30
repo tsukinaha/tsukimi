@@ -12,10 +12,7 @@ use crate::{
         ServerType,
         build_url,
     },
-    ui::{
-        PlaybackDirectMode,
-        provider::tu_item::image_type::BACKDROP,
-    },
+    ui::provider::tu_item::image_type::BACKDROP,
 };
 use anyhow::{
     Context,
@@ -413,8 +410,8 @@ impl JellyfinClient {
             .await?)
     }
 
-    pub async fn get_item_stream_url(
-        &self, container: &str, item_id: &str, media_source_id: &str,
+    pub async fn get_item_direct_play_url(
+        &self, container: &str, item_id: &str, media_source_id: &str, play_session_id: Option<&str>,
     ) -> Result<String> {
         let s = self.session();
         let (url, _) = s.url_headers.as_ref().context("Client not initialized")?;
@@ -425,6 +422,9 @@ impl JellyfinClient {
             .append_pair("Static", "true")
             .append_pair("deviceId", &DEVICE_ID)
             .append_pair("MediaSourceId", media_source_id);
+        if let Some(play_session_id) = play_session_id {
+            query_pairs.append_pair("PlaySessionId", play_session_id);
+        }
         match self.server_type() {
             ServerType::Emby => {
                 query_pairs.append_pair("api_key", &s.account.access_token);
@@ -771,28 +771,48 @@ impl JellyfinClient {
 
     pub async fn get_playbackinfo(
         &self, id: &str, sub_stream_index: Option<i64>, media_source_id: Option<String>,
-        is_playback: bool, direct_mode: PlaybackDirectMode,
+        is_playback: bool,
+    ) -> Result<Media> {
+        self.get_playbackinfo_inner(
+            id,
+            sub_stream_index,
+            media_source_id.as_deref(),
+            None,
+            is_playback,
+            false,
+        )
+        .await
+    }
+
+    pub async fn get_fallback_playbackinfo(
+        &self, id: &str, media_source_id: &str, live_stream_id: Option<&str>,
+    ) -> Result<Media> {
+        self.get_playbackinfo_inner(id, None, Some(media_source_id), live_stream_id, true, true)
+            .await
+    }
+
+    async fn get_playbackinfo_inner(
+        &self, id: &str, sub_stream_index: Option<i64>, media_source_id: Option<&str>,
+        live_stream_id: Option<&str>, is_playback: bool, disable_direct_play: bool,
     ) -> Result<Media> {
         let s = self.session();
         let path = format!("Items/{id}/PlaybackInfo");
         let subtitle_stream_index = sub_stream_index.map(|s| s.to_string()).unwrap_or_default();
-        let params = [
+        let is_playback = is_playback.to_string();
+        let mut params = vec![
             ("StartTimeTicks", "0"),
             ("UserId", &s.account.user_id),
             ("AutoOpenLiveStream", "true"),
-            ("IsPlayback", &is_playback.to_string()),
-            ("MediaSourceId", &media_source_id.unwrap_or_default()),
+            ("IsPlayback", &is_playback),
+            ("MediaSourceId", media_source_id.unwrap_or_default()),
             ("SubtitleStreamIndex", &subtitle_stream_index),
-            ("MaxStreamingBitrate", "2147483647"),
-            (
-                "EnableDirectPlay",
-                &direct_mode.enable_direct_play.to_string(),
-            ),
-            (
-                "EnableDirectStream",
-                &direct_mode.enable_direct_stream.to_string(),
-            ),
         ];
+        if let Some(live_stream_id) = live_stream_id {
+            params.push(("LiveStreamId", live_stream_id));
+        }
+        if disable_direct_play {
+            params.push(("EnableDirectPlay", "false"));
+        }
         let profile: Value = serde_json::from_str(PROFILE).expect("Failed to parse profile");
         self.post_json(&path, &params, profile).await
     }
@@ -884,7 +904,7 @@ impl JellyfinClient {
         self.request(&path, &params).await
     }
 
-    pub async fn get_streaming_url(&self, path: &str) -> String {
+    pub fn resolve_url(&self, path: &str) -> String {
         let s = self.session();
         let (url, _) = s.url_headers.as_ref().expect("Client not initialized");
         url.join(path.trim_start_matches('/')).unwrap().to_string()

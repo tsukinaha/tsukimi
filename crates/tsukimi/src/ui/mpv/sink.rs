@@ -2,7 +2,6 @@ use std::cell::Cell;
 
 use crate::{
     client::jellyfin_client::JELLYFIN_CLIENT,
-    utils::spawn,
 };
 
 use adw::{
@@ -95,24 +94,18 @@ impl MPVPlaySink {
     }
 
     pub fn play(&self, url: &str, start_seconds: f64) {
-        let url = url.to_owned();
+        let url = JELLYFIN_CLIENT.resolve_url(&url);
 
-        spawn(glib::clone!(
-            #[weak(rename_to = obj)]
-            self,
-            async move {
-                let url = JELLYFIN_CLIENT.get_streaming_url(&url).await;
+        let (imp, player) = (self.imp(), self.player());
+        info!("Now Playing: {}", url);
 
-                info!("Now Playing: {}", url);
-                obj.imp().position.set(start_seconds);
-                obj.imp().paused.set(false);
+        imp.position.set(start_seconds);
+        imp.paused.set(false);
 
-                obj.player().set_start(start_seconds);
-                obj.player().push_an_empty_texture();
-                obj.player().load_video(&url);
-                obj.player().pause(false);
-            }
-        ));
+        player.set_start(start_seconds);
+        player.push_an_empty_texture();
+        player.load_video(&url);
+        player.pause(false);
     }
 
     pub fn add_sub(&self, url: &str) {

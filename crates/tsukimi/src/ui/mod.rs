@@ -20,8 +20,6 @@ pub use widgets::{
     window::Window,
 };
 
-pub use mpv::page::PlaybackDirectMode;
-
 pub fn init() {
     widgets::fixed_bin::FixedBin::ensure_type();
     widgets::lazy_diff_view::LazyDiffView::ensure_type();

@@ -12,8 +12,6 @@ pub struct DropdownList {
     pub sub_lang: Option<String>,
     pub index: Option<i64>,
     pub id: Option<String>,
-    pub url: Option<String>,
-    pub is_external: Option<bool>,
 }
 
 pub fn factory<const UPBIND: bool>() -> gtk::SignalListItemFactory {
