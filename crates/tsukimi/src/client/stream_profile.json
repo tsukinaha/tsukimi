@@ -84,7 +84,18 @@
         "Type": "Video"
       }
     ],
-    "TranscodingProfiles": [],
+    "TranscodingProfiles": [
+      {
+        "Container": "ts",
+        "AudioCodec": "aac,ac3,eac3,mp3",
+        "VideoCodec": "h264,hevc,vp9,av1",
+        "BreakOnNonKeyFrames": true,
+        "Type": "Video",
+        "Protocol": "hls",
+        "Context": "Streaming",
+        "MinSegments": 1
+      }
+    ],
     "ResponseProfiles": [],
     "ContainerProfiles": [],
     "MusicStreamingTranscodingBitrate": 120000000,
