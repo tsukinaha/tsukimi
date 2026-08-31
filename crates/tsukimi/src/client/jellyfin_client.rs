@@ -410,7 +410,7 @@ impl JellyfinClient {
             .await?)
     }
 
-    pub async fn get_item_direct_play_url(
+    pub fn get_item_direct_play_url(
         &self, container: &str, item_id: &str, media_source_id: &str, play_session_id: Option<&str>,
     ) -> Result<String> {
         let s = self.session();

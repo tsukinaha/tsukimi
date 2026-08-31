@@ -92,7 +92,7 @@ impl MPVPlaySink {
     }
 
     pub fn play(&self, url: &str, start_seconds: f64) {
-        let url = JELLYFIN_CLIENT.resolve_url(&url);
+        let url = JELLYFIN_CLIENT.resolve_url(url);
 
         let (imp, player) = (self.imp(), self.player());
         info!("Now Playing: {}", url);

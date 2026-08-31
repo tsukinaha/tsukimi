@@ -882,7 +882,7 @@ impl MPVPage {
                 imp.suburl.replace(sub_url);
 
                 let Some((primary_url, fallback)) =
-                    media_source_url(media_source, playback_info.play_session_id.as_deref()).await
+                    media_source_url(media_source, playback_info.play_session_id.as_deref())
                 else {
                     obj.fail_playback(gettext("No media source found"));
                     return;
@@ -1922,7 +1922,7 @@ impl MPVPage {
     }
 }
 
-async fn direct_play_url(source: &MediaSource, play_session_id: Option<&str>) -> Option<String> {
+fn direct_play_url(source: &MediaSource, play_session_id: Option<&str>) -> Option<String> {
     let container = source.container.as_deref()?;
     JELLYFIN_CLIENT
         .get_item_direct_play_url(
@@ -1931,11 +1931,10 @@ async fn direct_play_url(source: &MediaSource, play_session_id: Option<&str>) ->
             &source.id,
             play_session_id,
         )
-        .await
         .ok()
 }
 
-async fn media_source_url(
+fn media_source_url(
     source: &MediaSource, play_session_id: Option<&str>,
 ) -> Option<(String, Option<MediaSourceFallback>)> {
     if let Some(path) = source.path.as_deref()
@@ -1944,13 +1943,9 @@ async fn media_source_url(
         let fallback = if source.live_stream_id.is_some() {
             Some(MediaSourceFallback::PlaybackInfo)
         } else {
-            direct_play_url(source, play_session_id)
-                .await
-                .map(MediaSourceFallback::DirectPlay)
+            direct_play_url(source, play_session_id).map(MediaSourceFallback::DirectPlay)
         };
         return Some((path.to_owned(), fallback));
     }
-    direct_play_url(source, play_session_id)
-        .await
-        .map(|url| (url, None))
+    direct_play_url(source, play_session_id).map(|url| (url, None))
 }
