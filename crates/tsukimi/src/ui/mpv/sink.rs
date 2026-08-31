@@ -101,7 +101,6 @@ impl MPVPlaySink {
         imp.paused.set(false);
 
         player.set_start(start_seconds);
-        player.push_an_empty_texture();
         player.load_video(&url);
         player.pause(false);
     }

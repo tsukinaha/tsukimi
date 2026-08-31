@@ -704,6 +704,7 @@ impl MPVPage {
             .as_ref()
             .is_none_or(|current| current.id() != item.id());
         let imp = self.imp();
+        imp.video.player().push_an_empty_texture();
         imp.file_loaded.set(false);
         imp.media_source_fallback.take();
         imp.danmaku_sync.reset();
