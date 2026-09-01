@@ -1,4 +1,7 @@
-use std::cell::RefCell;
+use std::cell::{
+    OnceCell,
+    RefCell,
+};
 
 use adw::{
     prelude::*,
@@ -69,6 +72,7 @@ mod imp {
         #[template_child]
         pub toast: TemplateChild<adw::ToastOverlay>,
 
+        pub client: OnceCell<DanmakuClient>,
         pub page: glib::WeakRef<MPVPage>,
         pub episodes: RefCell<Vec<TuItem>>,
     }
@@ -115,11 +119,17 @@ glib::wrapper! {
 
 #[template_callbacks]
 impl DanmakuSearchDialog {
-    pub fn new(page: &MPVPage) -> Self {
+    pub fn new(page: &MPVPage, client: DanmakuClient) -> Self {
         let dialog: Self = glib::Object::new();
+        dialog.imp().client.get_or_init(|| client);
         dialog.imp().page.set(Some(page));
         dialog.prefill_from_current_video();
         dialog
+    }
+
+    fn client(&self) -> &DanmakuClient {
+        // SAFETY: DanmakuSearchDialog::new has already initialized the client
+        self.imp().client.get().unwrap()
     }
 
     fn prefill_from_current_video(&self) {
@@ -188,11 +198,9 @@ impl DanmakuSearchDialog {
 
         let anime_type = self.selected_anime_type();
         self.set_searching(true);
-        let result = spawn_tokio(async move {
-            let client = DanmakuClient::new()?;
-            client.search_anime_details(title, anime_type).await
-        })
-        .await;
+        let client = self.client().clone();
+        let result =
+            spawn_tokio(async move { client.search_anime_details(title, anime_type).await }).await;
         self.set_searching(false);
 
         match result {
@@ -256,12 +264,15 @@ impl DanmakuSearchDialog {
             || item.name(),
             |series_name| format!("{} - {series_name}", item.name()),
         );
-
+        let client = self.client().clone();
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
             self,
             async move {
-                match page.apply_manual_danmaku(episode_id, item_name).await {
+                match page
+                    .apply_manual_danmaku(client, episode_id, item_name)
+                    .await
+                {
                     Ok(true) => {
                         let mut cache = DanmakuCacheMap::load();
                         if let Err(error) = cache.remember_manual_selection(
@@ -296,12 +307,12 @@ impl DanmakuSearchDialog {
         let anime_id = item.id();
         let anime_title = item.name();
         let episode_series_name = anime_title.clone();
+        let client = self.client().clone();
         spawn(glib::clone!(
             #[weak(rename_to = obj)]
             self,
             async move {
                 let result = spawn_tokio(async move {
-                    let client = DanmakuClient::new()?;
                     client
                         .search_animes(SearchSearchEpisodesParams {
                             anime: Some(anime_title),
