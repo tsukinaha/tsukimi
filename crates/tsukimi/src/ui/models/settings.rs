@@ -94,7 +94,11 @@ impl Settings {
     }
 
     pub fn bind_mpv_danmaku_enabled(&self, object: &impl IsA<glib::Object>, property: &str) {
-        self.bind_setting(Self::KEY_MPV_DANMAKU_ENABLED, object, property);
+        self.0
+            .get_ref()
+            .bind(Self::KEY_MPV_DANMAKU_ENABLED, object, property)
+            .no_sensitivity()
+            .build();
     }
 
     pub fn bind_mpv_danmaku_opacity(&self, object: &impl IsA<glib::Object>, property: &str) {
