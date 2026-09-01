@@ -8,6 +8,7 @@
     <property name="margin-end">6</property>
     <property name="child">
       <object class="AdwNavigationView">
+        <property name="animate-transitions">false</property>
         <child>
           <object class="AdwNavigationPage">
             <property name="title" translatable="yes">Danmaku</property>
