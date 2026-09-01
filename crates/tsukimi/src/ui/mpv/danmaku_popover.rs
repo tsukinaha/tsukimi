@@ -193,10 +193,12 @@ pub mod imp {
         }
 
         fn update_status_view(&self) {
-            let status = if self.danmaku_switch.is_active() {
-                self.status.borrow().clone()
-            } else {
+            let status = if *self.status.borrow() == DanmakuPopoverStatus::SecretNotExist {
+                DanmakuPopoverStatus::SecretNotExist
+            } else if !self.danmaku_switch.is_active() {
                 DanmakuPopoverStatus::Disabled
+            } else {
+                self.status.borrow().clone()
             };
             self.danmaku_status_group.set_title(&status.title());
             self.danmaku_status_row.set_title(&status.status_title());
