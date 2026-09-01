@@ -92,6 +92,16 @@ enum MediaSourceFallback {
     PlaybackInfo,
 }
 
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, glib::Enum)]
+#[repr(u32)]
+#[enum_type(name = "DurationLabelMode")]
+pub enum DurationLabelMode {
+    #[default]
+    Total,
+    TimeLeft,
+    FinishTime,
+}
+
 mod imp {
 
     use std::cell::{
@@ -162,6 +172,8 @@ mod imp {
         pub progress_time_label: TemplateChild<gtk::Label>,
         #[template_child]
         pub duration_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub duration_label_button: TemplateChild<gtk::Button>,
         #[template_child]
         pub spinner: TemplateChild<adw::Spinner>,
         #[template_child]
@@ -235,6 +247,14 @@ mod imp {
         pub danmaku_count: Cell<usize>,
         pub danmaku_generation: Cell<u64>,
         pub file_loaded: Cell<bool>,
+        pub duration: Cell<f64>,
+        #[property(
+            get,
+            set = Self::set_duration_label_mode,
+            explicit_notify,
+            builder(super::DurationLabelMode::default())
+        )]
+        pub duration_label_mode: Cell<super::DurationLabelMode>,
     }
 
     #[glib::object_subclass]
@@ -333,6 +353,7 @@ mod imp {
             });
 
             obj.listen_events();
+            obj.setup_duration_label();
 
             // Initialize MPRIS server
 
@@ -366,6 +387,17 @@ mod imp {
             self.fullscreened.set(fullscreened);
 
             self.obj().notify_fullscreened();
+        }
+
+        fn set_duration_label_mode(&self, mode: super::DurationLabelMode) {
+            if self.duration_label_mode.get() == mode {
+                return;
+            }
+
+            self.duration_label_mode.set(mode);
+
+            self.obj().notify_duration_label_mode();
+            self.obj().update_duration_label();
         }
 
         fn set_paused(&self, paused: bool) {
@@ -1198,12 +1230,12 @@ impl MPVPage {
 
     fn update_duration(&self, value: f64) {
         let imp = self.imp();
-        let duration = format_duration(value as i64);
-        let width_chars = duration.chars().count() as i32;
+        imp.duration.set(value);
+        let width_chars = format_duration(value as i64).chars().count() as i32;
         imp.video_scale.set_range(0.0, value);
         imp.progress_time_label.set_width_chars(width_chars);
         imp.duration_label.set_width_chars(width_chars);
-        imp.duration_label.set_text(&duration);
+        self.update_duration_label();
     }
 
     fn speed_cb(&self, value: f64) {
@@ -1216,6 +1248,66 @@ impl MPVPage {
         if let Some(window) = self.root().and_downcast_ref::<Window>() {
             window.imp().mpv_control_sidebar.set_playback_speed(value);
         }
+        self.update_duration_label();
+    }
+
+    fn setup_duration_label(&self) {
+        let imp = self.imp();
+        if let Some(cursor) = gtk::gdk::Cursor::from_name("pointer", None) {
+            imp.duration_label_button.set_cursor(Some(&cursor));
+        }
+        self.update_duration_label();
+    }
+
+    fn update_duration_label(&self) {
+        let imp = self.imp();
+        let duration = imp.duration.get();
+        if duration <= 0.0 {
+            return;
+        }
+        let label = &imp.duration_label;
+        let button = &imp.duration_label_button;
+        match imp.duration_label_mode.get() {
+            DurationLabelMode::Total => {
+                label.set_text(&format_duration(duration as i64));
+                button.set_tooltip_text(Some(&gettext("Total duration")));
+            }
+            DurationLabelMode::TimeLeft => {
+                let speed = imp.playback_speed_adj.value().max(0.1);
+                let left_secs = ((duration - imp.video_scale.value()) / speed).max(0.0);
+                label.set_text(&format_duration(left_secs as i64));
+                button.set_tooltip_text(Some(
+                    &gettext("Time left at {speed}x").replace("{speed}", &format!("{speed:.2}")),
+                ));
+            }
+            DurationLabelMode::FinishTime => {
+                let speed = imp.playback_speed_adj.value().max(0.1);
+                let remaining_secs = ((duration - imp.video_scale.value()) / speed).max(0.0);
+                let Ok(now) = glib::DateTime::now_local() else {
+                    return;
+                };
+                let Ok(finish) = now.add_seconds(remaining_secs) else {
+                    return;
+                };
+                let Ok(finish_text) = finish.format("%H:%M:%S") else {
+                    return;
+                };
+                label.set_text(&finish_text);
+                button.set_tooltip_text(Some(
+                    &gettext("Finishes at {time}").replace("{time}", &finish_text),
+                ));
+            }
+        }
+    }
+
+    #[template_callback]
+    fn on_duration_label_clicked(&self) {
+        let next = match self.duration_label_mode() {
+            DurationLabelMode::Total => DurationLabelMode::TimeLeft,
+            DurationLabelMode::TimeLeft => DurationLabelMode::FinishTime,
+            DurationLabelMode::FinishTime => DurationLabelMode::Total,
+        };
+        self.set_duration_label_mode(next);
     }
 
     fn volume_cb(&self, value: i64) {
@@ -1237,6 +1329,7 @@ impl MPVPage {
             imp.video_scale.set_value(value as f64);
         }
         self.update_skip_segment_button(value as f64);
+        self.update_duration_label();
 
         if let Some(time_millis) = imp
             .danmaku_sync

@@ -1829,6 +1829,14 @@ msgid ""
 "Tsukimi can't restart MPV."
 msgstr ""
 
+#: crates/tsukimi/src/ui/mpv/page.rs:1273
+msgid "Total duration"
+msgstr ""
+
+#: crates/tsukimi/src/ui/mpv/page.rs:1280
+msgid "Time left at {speed}x"
+msgstr ""
+
 #: crates/tsukimi/src/ui/provider/actions.rs:56
 #: crates/tsukimi/src/ui/widgets/identify/search_page.rs:162
 #: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:181
@@ -1984,7 +1992,8 @@ msgstr ""
 msgid "Resume"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1052
+#: crates/tsukimi/src/ui/widgets/item.rs:1048
+#: crates/tsukimi/src/ui/mpv/page.rs:1297
 msgid "Finishes at {time}"
 msgstr ""
 
