@@ -3,21 +3,22 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Niklas Andersson <niklas770524@gmail.com>, 2025, 2026.
 # Jonatan Nyberg <monalisa@users.noreply.hosted.weblate.org>, 2026.
+# Jonatan Nyberg <nickwick@users.noreply.hosted.weblate.org>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
 "POT-Creation-Date: 2026-09-02 06:20+0000\n"
-"PO-Revision-Date: 2026-07-26 12:01+0000\n"
-"Last-Translator: Jonatan Nyberg <monalisa@users.noreply.hosted.weblate.org>\n"
-"Language-Team: Swedish <https://hosted.weblate.org/projects/tsukimi/main/sv/"
-">\n"
+"PO-Revision-Date: 2026-09-02 18:51+0000\n"
+"Last-Translator: Jonatan Nyberg <nickwick@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Swedish <https://hosted.weblate.org/projects/tsukimi/main/sv/>"
+"\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.8.dev0\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: crates/tsukimi/resources/ui/account.ui:6
 #: crates/tsukimi/resources/ui/account.ui:14
@@ -271,10 +272,8 @@ msgid "Config dir"
 msgstr "Konfigurationsmapp"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:406
-#, fuzzy
-#| msgid "Contents"
 msgid "GPU Context"
-msgstr "Innehåll"
+msgstr "GPU-kontext"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:409
 #: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:501
@@ -392,21 +391,20 @@ msgstr "Spela upp"
 #: crates/tsukimi/resources/ui/mpvpage.ui:395
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:39
 msgid "Danmaku"
-msgstr ""
+msgstr "Danmaku"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:33
 msgid "Danmaku disabled"
-msgstr ""
+msgstr "Danmaku är inaktiverat"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:73
 msgid "Search Manually"
-msgstr ""
+msgstr "Sök manuellt"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:91
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:110
-#, fuzzy
 msgid "Danmaku Settings"
-msgstr "Avancerade inställningar"
+msgstr "Inställningar för danmaku"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:139
 #: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:447
@@ -414,98 +412,93 @@ msgid "Speed"
 msgstr "Hastighet"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:154
-#, fuzzy
 msgid "Font Size"
-msgstr "Kantstorlek"
+msgstr "Teckenstorlek"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:169
 msgid "Font Weight"
-msgstr ""
+msgstr "Teckengrovlek"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:174
 msgid "Thin"
-msgstr ""
+msgstr "Tunn"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:175
 msgid "Ultralight"
-msgstr ""
+msgstr "Ultralätt"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:176
-#, fuzzy
 msgid "Light"
-msgstr "Höjd"
+msgstr "Lätt"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:177
-#, fuzzy
 msgid "Semilight"
-msgstr "Höjd"
+msgstr "Halvlätt"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:178
 msgid "Book"
-msgstr ""
+msgstr "Bok"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:179
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:180
-#, fuzzy
 msgid "Medium"
-msgstr "Medier"
+msgstr "Medium"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:181
 msgid "Semibold"
-msgstr ""
+msgstr "Halvfet"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:182
 msgid "Bold"
-msgstr ""
+msgstr "Fet"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:183
 msgid "Ultrabold"
-msgstr ""
+msgstr "Ultrafet"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:184
 msgid "Heavy"
-msgstr ""
+msgstr "Tung"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:185
 msgid "Ultraheavy"
-msgstr ""
+msgstr "Ultratung"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:193
 msgid "Danmaku Intensity"
-msgstr ""
+msgstr "Danmaku-intensitet"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:198
 msgid "Quarter"
-msgstr ""
+msgstr "En fjärdedel"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:199
 msgid "Half"
-msgstr ""
+msgstr "Hälften"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:201
 msgid "Allow Overlay"
-msgstr ""
+msgstr "Tillåt överlappning"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:209
 msgid "Spacing"
-msgstr ""
+msgstr "Radavstånd"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:210
 msgid "N x Font Size"
-msgstr ""
+msgstr "N × teckenstorleken"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:225
-#, fuzzy
 msgid "Stroke Size"
-msgstr "Kantstorlek"
+msgstr "Konturstorlek"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:226
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:242
 msgid "px"
-msgstr ""
+msgstr "px"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:241
 #: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:326
@@ -520,9 +513,8 @@ msgstr "Tillbaka"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:7
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:15
-#, fuzzy
 msgid "Search Danmaku"
-msgstr "Sök"
+msgstr "Sök efter danmaku"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:32
 #: crates/tsukimi/resources/ui/metadata_dialog.ui:91
@@ -532,23 +524,20 @@ msgid "Title"
 msgstr "Titel"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:38
-#, fuzzy
 msgid "Anime Type"
-msgstr "Videotyper"
+msgstr "Animetyp"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:42
-#, fuzzy
 msgid "TV Series"
-msgstr "Serier"
+msgstr "TV-serie"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:43
-#, fuzzy
 msgid "TV Special"
-msgstr "Specialavsnitt"
+msgstr "TV-special"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:44
 msgid "OVA"
-msgstr ""
+msgstr "OVA"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:45
 #: crates/tsukimi/resources/ui/other.ui:134
@@ -557,35 +546,32 @@ msgid "Movie"
 msgstr "Film"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:46
-#, fuzzy
 msgid "Music Video"
-msgstr "Video"
+msgstr "Musikvideo"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:47
 msgid "Web"
-msgstr ""
+msgstr "Webb"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:48
-#, fuzzy
 msgid "Other"
 msgstr "Övrigt"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:49
 msgid "Japanese Movie"
-msgstr ""
+msgstr "Japansk film"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:50
 msgid "Japanese Drama"
-msgstr ""
+msgstr "Japanskt drama"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:51
 msgid "TMDB TV"
-msgstr ""
+msgstr "TMDB-TV"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:52
-#, fuzzy
 msgid "TMDB Movie"
-msgstr "Film"
+msgstr "TMDB-film"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:70
 #: crates/tsukimi/resources/ui/identify_dialog.ui:95
@@ -598,7 +584,6 @@ msgid "Search"
 msgstr "Sök"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:113
-#, fuzzy
 msgid "Episodes"
 msgstr "Avsnitt"
 
@@ -1767,89 +1752,76 @@ msgstr "Inställningarna för färgbandsreducering har återställts."
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:37
 msgid "{count} Danmaku Loaded"
-msgstr ""
+msgstr "{count} inlästa danmaku"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:45
-#, fuzzy
 msgid "Searching"
-msgstr "Sök"
+msgstr "Söker…"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:46
-#, fuzzy
 msgid "Loading"
 msgstr "Läser in…"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:49
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:276
 msgid "No danmaku found"
-msgstr ""
+msgstr "Inga danmaku-kommentarer hittades"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:51
 msgid "This feature requires an official build"
-msgstr ""
+msgstr "Den här funktionen kräver en officiell programversion"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:53
 msgid "Disabled"
-msgstr ""
+msgstr "Inaktiverat"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:54
 msgid "Maybe there is something wrong"
-msgstr ""
+msgstr "Något verkar ha gått fel"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:60
 msgid "From 弹弹play开放弹幕网络 (Auto Matched)"
-msgstr ""
+msgstr "Från 弹弹play开放弹幕网络 (automatisk matchning)"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:62
 msgid "From 弹弹play开放弹幕网络 (Manually Matched)"
-msgstr ""
+msgstr "Från 弹弹play开放弹幕网络 (manuell matchning)"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:185
 msgid "Enter at least two characters"
-msgstr ""
+msgstr "Ange minst två tecken"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:207
-#, fuzzy
 msgid "No matching anime found"
-msgstr "Ingen ytterligare video hittades"
+msgstr "Ingen matchande anime hittades"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:211
-#, fuzzy
 msgid "Search failed"
-msgstr "Sök"
+msgstr "Sökningen misslyckades"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:242
-#, fuzzy
 msgid "Invalid episode ID"
-msgstr "Ogiltigt reguljärt uttryck"
+msgstr "Ogiltigt avsnitts-ID"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:278
-#, fuzzy
-#| msgid "Failed to load image"
 msgid "Failed to load danmaku"
-msgstr "Det gick inte att läsa in bilden"
+msgstr "Det gick inte att läsa in danmaku"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:339
-#, fuzzy
-#| msgid "No more video found"
 msgid "No episodes found"
-msgstr "Ingen ytterligare video hittades"
+msgstr "Inga avsnitt hittades"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:343
-#, fuzzy
-#| msgid "Failed to load image"
 msgid "Failed to load episodes"
-msgstr "Det gick inte att läsa in bilden"
+msgstr "Det gick inte att läsa in avsnitten"
 
 #: crates/tsukimi/src/ui/mpv/page.rs:784
 msgid "Initializing..."
-msgstr ""
+msgstr "Initierar…"
 
 #: crates/tsukimi/src/ui/mpv/page.rs:822 crates/tsukimi/src/ui/mpv/page.rs:888
-#, fuzzy
-#| msgid "No video source found"
 msgid "No media source found"
-msgstr "Ingen videokälla hittades"
+msgstr "Ingen mediekälla hittades"
 
 #: crates/tsukimi/src/ui/mpv/page.rs:967
 msgid "Skip Intro"
@@ -1884,12 +1856,12 @@ msgstr "Klart"
 
 #: crates/tsukimi/src/ui/provider/tu_item.rs:648
 msgid "No next up video found"
-msgstr "Ingen nästa video hittades"
+msgstr "Ingen video på tur hittades"
 
 #: crates/tsukimi/src/ui/provider/tu_item.rs:677
 #: crates/tsukimi/src/ui/widgets/tu_overview_item.rs:276
 msgid "Present"
-msgstr "Nutid"
+msgstr "Pågående"
 
 #: crates/tsukimi/src/ui/provider/tu_item.rs:685
 #: crates/tsukimi/src/ui/provider/tu_item.rs:703
@@ -2028,7 +2000,7 @@ msgstr "Fortsätt"
 
 #: crates/tsukimi/src/ui/widgets/item.rs:1052
 msgid "Finishes at {time}"
-msgstr ""
+msgstr "Slutar kl. {time}"
 
 #: crates/tsukimi/src/ui/widgets/item.rs:1140
 msgid "Codec"
@@ -2203,10 +2175,8 @@ msgstr ""
 
 #: crates/tsukimi/src/ui/widgets/tu_item/action.rs:522
 #: crates/tsukimi/src/ui/widgets/tu_item/action.rs:582
-#, fuzzy
-#| msgid "Image deleted"
 msgid "Item deleted"
-msgstr "Bilden har tagits bort"
+msgstr "Objektet har tagits bort"
 
 #: crates/tsukimi/src/ui/widgets/tu_item/action.rs:556
 msgid "Are you sure you wish to reset all metadata?"
