@@ -1630,16 +1630,13 @@ impl MPVPage {
         imp.bottom_revealer.set_reveal_child(reveal);
         imp.top_revealer.set_reveal_child(reveal);
 
-        let Some(surface) = self.native().and_then(|f| f.surface()) else {
-            return;
-        };
         let cursor = if reveal {
             gtk::gdk::Cursor::from_name("default", None)
         } else {
             gtk::gdk::Cursor::from_name("none", None)
         };
 
-        surface.set_cursor(cursor.as_ref());
+        self.set_cursor(cursor.as_ref());
     }
 
     #[template_callback]
