@@ -386,7 +386,7 @@ mod imp {
 
             if self.file_loaded.get()
                 && !self.loading_box.is_visible()
-                && self.danmaku_popover_content.is_enabled()
+                && self.danmaku_popover_content.enabled()
             {
                 self.danmakw.set_paused(paused);
             }
@@ -440,7 +440,7 @@ impl MPVPage {
                 #[weak(rename_to = obj)]
                 self,
                 async move {
-                    if !obj.imp().danmaku_popover_content.is_enabled() {
+                    if !obj.imp().danmaku_popover_content.enabled() {
                         return;
                     }
                     if let Err(error) = obj
@@ -557,7 +557,7 @@ impl MPVPage {
             DanmakuPopoverStatus::Loaded(count, item_name)
         };
         imp.danmaku_popover_content.set_status(status);
-        self.update_danmaku_rendering(imp.danmaku_popover_content.is_enabled());
+        self.update_danmaku_rendering(imp.danmaku_popover_content.enabled());
     }
 
     pub async fn apply_manual_danmaku(
@@ -1292,7 +1292,7 @@ impl MPVPage {
         imp.file_loaded.set(true);
         imp.media_source_fallback.take();
 
-        if imp.danmaku_popover_content.is_enabled() && self.has_danmaku() {
+        if imp.danmaku_popover_content.enabled() && self.has_danmaku() {
             imp.danmakw.set_visible(true);
         }
 
@@ -1310,7 +1310,7 @@ impl MPVPage {
         imp.loading_box.set_visible(seeking);
         imp.spinner.set_visible(seeking);
 
-        if !imp.file_loaded.get() || !imp.danmaku_popover_content.is_enabled() {
+        if !imp.file_loaded.get() || !imp.danmaku_popover_content.enabled() {
             return;
         }
 

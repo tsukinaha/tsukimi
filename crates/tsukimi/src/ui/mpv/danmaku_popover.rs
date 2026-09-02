@@ -106,7 +106,10 @@ impl DanmakuPopoverStatus {
 }
 
 pub mod imp {
-    use std::cell::RefCell;
+    use std::cell::{
+        Cell,
+        RefCell,
+    };
 
     use super::*;
     use glib::subclass::InitializingObject;
@@ -145,6 +148,8 @@ pub mod imp {
         #[template_child]
         pub shadow_spin: TemplateChild<adw::SpinRow>,
 
+        #[property(get, set = Self::set_enabled, explicit_notify)]
+        pub enabled: Cell<bool>,
         #[property(get, set = Self::set_status, explicit_notify)]
         pub status: RefCell<DanmakuPopoverStatus>,
     }
@@ -170,21 +175,27 @@ pub mod imp {
         fn constructed(&self) {
             self.parent_constructed();
 
-            let obj = self.obj();
-            self.danmaku_switch.connect_active_notify(glib::clone!(
-                #[weak]
-                obj,
-                move |_| obj.imp().update_status_view()
-            ));
-            let client_available = DanmakuClient::instance().is_some();
-            self.danmaku_switch.set_sensitive(client_available);
-            self.manual_search_button.set_sensitive(client_available);
-            self.update_status_view();
+            if DanmakuClient::instance().is_none() {
+                self.set_status(DanmakuPopoverStatus::SecretNotExist);
+            }
         }
     }
 
     impl DanmakuPopover {
+        fn set_enabled(&self, enabled: bool) {
+            if self.enabled.replace(enabled) == enabled {
+                return;
+            }
+            self.update_status_view();
+            self.obj().notify_enabled();
+        }
+
         fn set_status(&self, status: DanmakuPopoverStatus) {
+            // Controls are disabled by default, so update sensitivity even if the status is unchanged
+            let sensitive = status != DanmakuPopoverStatus::SecretNotExist;
+            self.danmaku_switch.set_sensitive(sensitive);
+            self.manual_search_button.set_sensitive(sensitive);
+
             if self.status.replace(status.clone()) == status {
                 return;
             }
@@ -195,7 +206,7 @@ pub mod imp {
         fn update_status_view(&self) {
             let status = if *self.status.borrow() == DanmakuPopoverStatus::SecretNotExist {
                 DanmakuPopoverStatus::SecretNotExist
-            } else if !self.danmaku_switch.is_active() {
+            } else if !self.enabled.get() {
                 DanmakuPopoverStatus::Disabled
             } else {
                 self.status.borrow().clone()
@@ -245,6 +256,10 @@ impl DanmakuPopover {
         SETTINGS.bind_mpv_danmaku_outline_size(&imp.outline_spin.get(), "value");
         SETTINGS.bind_mpv_danmaku_shadow_offset(&imp.shadow_spin.get(), "value");
 
+        imp.danmaku_switch
+            .bind_property("active", self, "enabled")
+            .flags(glib::BindingFlags::SYNC_CREATE)
+            .build();
         imp.danmaku_opacity_spin
             .bind_property("value", &danmakw, "opacity")
             .flags(glib::BindingFlags::SYNC_CREATE)
@@ -279,10 +294,6 @@ impl DanmakuPopover {
             .bind_property("value", &danmakw, "shadow-offset")
             .flags(glib::BindingFlags::SYNC_CREATE)
             .build();
-    }
-
-    pub fn is_enabled(&self) -> bool {
-        self.imp().danmaku_switch.is_active()
     }
 
     #[template_callback]
