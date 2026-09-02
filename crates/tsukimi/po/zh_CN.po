@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
 "POT-Creation-Date: 2026-08-25 15:34+0000\n"
-"PO-Revision-Date: 2026-07-10 13:01+0000\n"
+"PO-Revision-Date: 2026-08-31 13:52+0000\n"
 "Last-Translator: ᴀᴍᴛᴏᴀᴇʀ <amtoaer@outlook.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tsukimi/main/zh_Hans/>\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.7.1.dev0\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: crates/tsukimi/resources/ui/account.ui:6
 #: crates/tsukimi/resources/ui/account.ui:14
@@ -278,10 +278,8 @@ msgid "Config dir"
 msgstr "配置目录"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:406
-#, fuzzy
-#| msgid "Contents"
 msgid "GPU Context"
-msgstr "目录"
+msgstr "GPU 上下文"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:409
 #: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:501
@@ -400,13 +398,12 @@ msgid "Danmaku"
 msgstr "弹幕"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:33
-#, fuzzy
 msgid "Danmaku disabled"
-msgstr "弹幕速度"
+msgstr "弹幕停用"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:73
 msgid "Search Manually"
-msgstr ""
+msgstr "手动搜索"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:91
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:110
@@ -419,101 +416,93 @@ msgid "Speed"
 msgstr "速度"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:154
-#, fuzzy
 msgid "Font Size"
-msgstr "字体大小"
+msgstr "字号"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:169
-#, fuzzy
 msgid "Font Weight"
-msgstr "字体大小"
+msgstr "字重"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:174
 msgid "Thin"
-msgstr ""
+msgstr "Thin"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:175
 msgid "Ultralight"
-msgstr ""
+msgstr "Ultralight"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:176
-#, fuzzy
 msgid "Light"
-msgstr "高度"
+msgstr "Light"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:177
-#, fuzzy
 msgid "Semilight"
-msgstr "高度"
+msgstr "Semilight"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:178
 msgid "Book"
-msgstr ""
+msgstr "Book"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:179
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:180
-#, fuzzy
 msgid "Medium"
-msgstr "媒体"
+msgstr "Medium"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:181
 msgid "Semibold"
-msgstr ""
+msgstr "Semibold"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:182
 msgid "Bold"
-msgstr ""
+msgstr "Bold"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:183
 msgid "Ultrabold"
-msgstr ""
+msgstr "Ultrabold"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:184
 msgid "Heavy"
-msgstr ""
+msgstr "Heavy"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:185
 msgid "Ultraheavy"
-msgstr ""
+msgstr "Ultraheavy"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:193
-#, fuzzy
 msgid "Danmaku Intensity"
-msgstr "弹幕设置"
+msgstr "弹幕密度"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:198
 msgid "Quarter"
-msgstr ""
+msgstr "1/4"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:199
 msgid "Half"
-msgstr ""
+msgstr "1/2"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:201
 msgid "Allow Overlay"
-msgstr ""
+msgstr "允许重叠"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:209
 msgid "Spacing"
-msgstr ""
+msgstr "间距"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:210
-#, fuzzy
 msgid "N x Font Size"
-msgstr "字体大小"
+msgstr "N x 字体大小"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:225
-#, fuzzy
 msgid "Stroke Size"
-msgstr "边框大小"
+msgstr "描边粗细"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:226
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:242
 msgid "px"
-msgstr ""
+msgstr "像素"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:241
 #: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:326
@@ -528,9 +517,8 @@ msgstr "后退"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:7
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:15
-#, fuzzy
 msgid "Search Danmaku"
-msgstr "弹幕"
+msgstr "搜索弹幕"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:32
 #: crates/tsukimi/resources/ui/metadata_dialog.ui:91
@@ -540,23 +528,20 @@ msgid "Title"
 msgstr "标题"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:38
-#, fuzzy
 msgid "Anime Type"
-msgstr "视频类型"
+msgstr "动漫类型"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:42
-#, fuzzy
 msgid "TV Series"
-msgstr "系列"
+msgstr "电视剧"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:43
-#, fuzzy
 msgid "TV Special"
-msgstr "特别"
+msgstr "电视特辑"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:44
 msgid "OVA"
-msgstr ""
+msgstr "OVA"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:45
 #: crates/tsukimi/resources/ui/other.ui:134
@@ -565,35 +550,32 @@ msgid "Movie"
 msgstr "电影"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:46
-#, fuzzy
 msgid "Music Video"
-msgstr "视频"
+msgstr "音乐视频"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:47
 msgid "Web"
-msgstr ""
+msgstr "网络"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:48
-#, fuzzy
 msgid "Other"
 msgstr "其他"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:49
 msgid "Japanese Movie"
-msgstr ""
+msgstr "日本电影"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:50
 msgid "Japanese Drama"
-msgstr ""
+msgstr "日本电视剧"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:51
 msgid "TMDB TV"
-msgstr ""
+msgstr "TMDB 电视剧"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:52
-#, fuzzy
 msgid "TMDB Movie"
-msgstr "电影"
+msgstr "TMDB 电影"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:70
 #: crates/tsukimi/resources/ui/identify_dialog.ui:95
@@ -606,7 +588,6 @@ msgid "Search"
 msgstr "搜索"
 
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:113
-#, fuzzy
 msgid "Episodes"
 msgstr "剧集"
 
@@ -1770,82 +1751,69 @@ msgid "Deband settings cleared."
 msgstr "去色带设置已清除。"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:37
-#, fuzzy
 msgid "{count} Danmaku Loaded"
-msgstr "无弹幕加载"
+msgstr "已加载 {count} 条弹幕"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:45
-#, fuzzy
 msgid "Searching"
-msgstr "搜索"
+msgstr "搜索中"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:46
-#, fuzzy
 msgid "Loading"
 msgstr "正在载入..."
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:49
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:276
-#, fuzzy
 msgid "No danmaku found"
-msgstr "无弹幕加载"
+msgstr "未找到弹幕"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:51
 msgid "This feature requires an official build"
-msgstr ""
+msgstr "此功能需要官方构建版本"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:53
 msgid "Disabled"
-msgstr ""
+msgstr "停用"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:54
 msgid "Maybe there is something wrong"
-msgstr ""
+msgstr "或许有什么地方出错了"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:60
 msgid "From 弹弹play开放弹幕网络 (Auto Matched)"
-msgstr ""
+msgstr "来自 弹弹play开放弹幕网络 （自动匹配）"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:62
 msgid "From 弹弹play开放弹幕网络 (Manually Matched)"
-msgstr ""
+msgstr "来自 弹弹play开放弹幕网络 （手动匹配）"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:185
 msgid "Enter at least two characters"
-msgstr ""
+msgstr "请输入至少两个字符"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:207
-#, fuzzy
 msgid "No matching anime found"
-msgstr "未找到转码URL"
+msgstr "未找到匹配的动漫"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:211
-#, fuzzy
 msgid "Search failed"
-msgstr "搜索"
+msgstr "搜索失败"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:242
-#, fuzzy
 msgid "Invalid episode ID"
-msgstr "正则表达式无效"
+msgstr "剧集 ID 无效"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:278
-#, fuzzy
-#| msgid "Failed to load image"
 msgid "Failed to load danmaku"
-msgstr "加载图像失败"
+msgstr "加载弹幕失败"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:339
-#, fuzzy
-#| msgid "No media sources found"
 msgid "No episodes found"
-msgstr "暂未找到媒体源"
+msgstr "暂未找到剧集"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:343
-#, fuzzy
-#| msgid "Failed to load image"
 msgid "Failed to load episodes"
-msgstr "加载图像失败"
+msgstr "加载剧集失败"
 
 #: crates/tsukimi/src/ui/mpv/page.rs:883
 msgid "Initializing..."
@@ -2032,7 +2000,7 @@ msgstr "续播"
 
 #: crates/tsukimi/src/ui/widgets/item.rs:1066
 msgid "Finishes at {time}"
-msgstr ""
+msgstr "结束于 {time}"
 
 #: crates/tsukimi/src/ui/widgets/item.rs:1154
 msgid "Codec"
