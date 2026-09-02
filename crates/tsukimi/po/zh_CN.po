@@ -2023,6 +2023,10 @@ msgstr "选择一集"
 msgid "Resume"
 msgstr "续播"
 
+#: crates/tsukimi/src/ui/widgets/item.rs:1088
+msgid "Finishes at {time}"
+msgstr ""
+
 #: crates/tsukimi/src/ui/widgets/item.rs:1099
 msgid "Codec"
 msgstr "编解码器"
