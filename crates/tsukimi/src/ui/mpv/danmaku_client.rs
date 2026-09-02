@@ -24,14 +24,14 @@ impl DanmakuClient {
         CLIENT
             .get_or_init(|| {
                 let Some(key) = KEY.map(str::trim).filter(|key| !key.is_empty()) else {
-                    tracing::warn!("DANDANAPI_SECRET_KEY is not configured");
+                    tracing::error!("Failed to initialize danmaku client: DANDANAPI_SECRET_KEY is not configured");
                     return None;
                 };
-                if let Err(e) = DanDanClient::init(
+                if DanDanClient::init(
                     X_APPID.to_string(),
                     SecretGenerator::new(CIPHERTEXT.to_vec(), key.to_string()),
-                ) {
-                    tracing::warn!("{e}");
+                ).is_err() {
+                    tracing::warn!("DanDanClient already initialized, using existing instance...");
                 }
                 Some(Self(DanDanClient::instance()))
             })
