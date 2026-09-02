@@ -9,11 +9,11 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
 "POT-Creation-Date: 2026-08-18 05:33+0200\n"
-"PO-Revision-Date: 2026-08-10 11:51+0000\n"
-"Last-Translator: MarioSwitch "
-"<58565980+MarioSwitch@users.noreply.github.com>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/"
-">\n"
+"PO-Revision-Date: 2026-08-25 12:51+0000\n"
+"Last-Translator: MarioSwitch <58565980+MarioSwitch@users.noreply.github.com>"
+"\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tsukimi/main/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -414,51 +414,51 @@ msgstr "Épaisseur de police"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:174
 msgid "Thin"
-msgstr ""
+msgstr "1 (Thin)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:175
 msgid "Ultralight"
-msgstr ""
+msgstr "2 (Ultralight)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:176
 msgid "Light"
-msgstr ""
+msgstr "3 (Light)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:177
 msgid "Semilight"
-msgstr ""
+msgstr "4 (Semilight)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:178
 msgid "Book"
-msgstr ""
+msgstr "5 (Book)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:179
 msgid "Normal"
-msgstr ""
+msgstr "6 (Normal)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:180
 msgid "Medium"
-msgstr ""
+msgstr "7 (Medium)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:181
 msgid "Semibold"
-msgstr ""
+msgstr "8 (Semibold)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:182
 msgid "Bold"
-msgstr ""
+msgstr "9 (Bold)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:183
 msgid "Ultrabold"
-msgstr ""
+msgstr "10 (Ultrabold)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:184
 msgid "Heavy"
-msgstr ""
+msgstr "11 (Heavy)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:185
 msgid "Ultraheavy"
-msgstr ""
+msgstr "12 (Ultraheavy)"
 
 #: crates/tsukimi/resources/ui/danmaku_popover.ui:193
 msgid "Danmaku Intensity"
@@ -1769,9 +1769,8 @@ msgid "No danmaku found"
 msgstr "Aucun sous-titre mouvant trouvé"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:51
-#, fuzzy
 msgid "This feature requires an official build"
-msgstr "Cette fonctionnalité nécessite un build officiel"
+msgstr "Cette fonctionnalité nécessite une version officielle"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:53
 msgid "Disabled"
@@ -1784,10 +1783,14 @@ msgstr "Peut-être que quelque chose ne va pas"
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:60
 msgid "From 弹弹play开放弹幕网络 (Auto Matched)"
 msgstr ""
+"Depuis le réseau de commentaires en direct DanDanPlay (弹弹play开放弹幕网络) "
+"(automatique)"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:62
 msgid "From 弹弹play开放弹幕网络 (Manually Matched)"
 msgstr ""
+"Depuis le réseau de commentaires en direct DanDanPlay (弹弹play开放弹幕网络) "
+"(manuel)"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:185
 msgid "Enter at least two characters"
@@ -1806,22 +1809,16 @@ msgid "Invalid episode ID"
 msgstr "ID d'épisode invalide"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:278
-#, fuzzy
-#| msgid "Failed to load image"
 msgid "Failed to load danmaku"
-msgstr "Échec du chargement de l'image"
+msgstr "Échec du chargement des sous-titres mouvants"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:339
-#, fuzzy
-#| msgid "No media sources found"
 msgid "No episodes found"
-msgstr "Aucune source de média trouvée"
+msgstr "Aucun épisode trouvé"
 
 #: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:343
-#, fuzzy
-#| msgid "Failed to load image"
 msgid "Failed to load episodes"
-msgstr "Échec du chargement de l'image"
+msgstr "Échec du chargement des épisodes"
 
 #: crates/tsukimi/src/ui/mpv/page.rs:883
 msgid "Initializing..."
@@ -2008,7 +2005,7 @@ msgstr "Reprendre"
 
 #: crates/tsukimi/src/ui/widgets/item.rs:1088
 msgid "Finishes at {time}"
-msgstr ""
+msgstr "Termine à {time}"
 
 #: crates/tsukimi/src/ui/widgets/item.rs:1099
 msgid "Codec"
