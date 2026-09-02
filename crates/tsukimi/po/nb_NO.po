@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
-"POT-Creation-Date: 2026-08-18 05:33+0200\n"
+"POT-Creation-Date: 2026-08-25 15:34+0000\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
 "Last-Translator: Gracealina  clover <zhiweishuisheng@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/tsukimi/"
@@ -52,7 +52,7 @@ msgid "Password"
 msgstr "Passord"
 
 #: crates/tsukimi/resources/ui/account.ui:108
-#: crates/tsukimi/resources/ui/account_settings.ui:524
+#: crates/tsukimi/resources/ui/account_settings.ui:587
 #, fuzzy
 msgid "Add"
 msgstr "_Legg til"
@@ -213,7 +213,7 @@ msgid "Others"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/account_settings.ui:291
-#: crates/tsukimi/resources/ui/account_settings.ui:430
+#: crates/tsukimi/resources/ui/account_settings.ui:493
 msgid "Preferred Video Version"
 msgstr ""
 
@@ -279,35 +279,46 @@ msgstr ""
 msgid "Config dir"
 msgstr "Bekreft passord"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:408
+#: crates/tsukimi/resources/ui/account_settings.ui:406
+#, fuzzy
+#| msgid "Contents"
+msgid "GPU Context"
+msgstr "Innhold"
+
+#: crates/tsukimi/resources/ui/account_settings.ui:409
+#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:501
+msgid "Auto"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/account_settings.ui:471
 #, fuzzy
 msgid "Preferred Version"
 msgstr "Innstillinger"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:431
+#: crates/tsukimi/resources/ui/account_settings.ui:494
 msgid ""
 "Weight is ordered from high to low, until a specific version is matched, or "
 "the highest matching version is obtained before clearing the match list"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:446
+#: crates/tsukimi/resources/ui/account_settings.ui:509
 msgid "Descriptors"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:468
+#: crates/tsukimi/resources/ui/account_settings.ui:531
 msgid "It is recommended to set no more than 3 lines"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:488
+#: crates/tsukimi/resources/ui/account_settings.ui:551
 msgid "No Descriptors"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:507
+#: crates/tsukimi/resources/ui/account_settings.ui:570
 msgid "Add a descriptor"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:518
-#: crates/tsukimi/resources/ui/account_settings.ui:628
+#: crates/tsukimi/resources/ui/account_settings.ui:581
+#: crates/tsukimi/resources/ui/account_settings.ui:691
 #: crates/tsukimi/src/ui/widgets/identify/search_page.rs:130
 #: crates/tsukimi/src/ui/widgets/image_dialog/search_page.rs:151
 #: crates/tsukimi/src/ui/widgets/metadata_dialog.rs:289
@@ -316,72 +327,72 @@ msgstr ""
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:549
-#: crates/tsukimi/resources/ui/account_settings.ui:659
+#: crates/tsukimi/resources/ui/account_settings.ui:612
+#: crates/tsukimi/resources/ui/account_settings.ui:722
 msgid "This will use exact matching to obtain a list"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:552
-#: crates/tsukimi/resources/ui/account_settings.ui:662
+#: crates/tsukimi/resources/ui/account_settings.ui:615
+#: crates/tsukimi/resources/ui/account_settings.ui:725
 msgid "Descriptor Type"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:557
-#: crates/tsukimi/resources/ui/account_settings.ui:667
+#: crates/tsukimi/resources/ui/account_settings.ui:620
+#: crates/tsukimi/resources/ui/account_settings.ui:730
 msgid "String"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:558
-#: crates/tsukimi/resources/ui/account_settings.ui:668
+#: crates/tsukimi/resources/ui/account_settings.ui:621
+#: crates/tsukimi/resources/ui/account_settings.ui:731
 msgid "Regular Expression"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:570
-#: crates/tsukimi/resources/ui/account_settings.ui:680
+#: crates/tsukimi/resources/ui/account_settings.ui:633
+#: crates/tsukimi/resources/ui/account_settings.ui:743
 msgid "Descriptor"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:575
-#: crates/tsukimi/resources/ui/account_settings.ui:685
+#: crates/tsukimi/resources/ui/account_settings.ui:638
+#: crates/tsukimi/resources/ui/account_settings.ui:748
 msgid "Descriptor should not be too long"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:586
-#: crates/tsukimi/resources/ui/account_settings.ui:696
+#: crates/tsukimi/resources/ui/account_settings.ui:649
+#: crates/tsukimi/resources/ui/account_settings.ui:759
 msgid "eg. 1080p"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:597
-#: crates/tsukimi/resources/ui/account_settings.ui:707
+#: crates/tsukimi/resources/ui/account_settings.ui:660
+#: crates/tsukimi/resources/ui/account_settings.ui:770
 msgid "eg. 1080p.*WebDL"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:617
+#: crates/tsukimi/resources/ui/account_settings.ui:680
 msgid "Edit descriptor"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/account_settings.ui:634
+#: crates/tsukimi/resources/ui/account_settings.ui:697
 #: crates/tsukimi/resources/ui/image_dialog_edit_page.ui:37
 #, fuzzy
 msgid "Save"
 msgstr "_Lagre"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:727
+#: crates/tsukimi/resources/ui/account_settings.ui:790
 #, fuzzy
 msgid "Change folder"
 msgstr "Endre passord"
 
-#: crates/tsukimi/resources/ui/account_settings.ui:729
+#: crates/tsukimi/resources/ui/account_settings.ui:792
 msgid "Select new mpv config folder"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/album_widget.ui:94
-#: crates/tsukimi/resources/ui/item.ui:184
+#: crates/tsukimi/resources/ui/item.ui:193
 #: crates/tsukimi/resources/ui/mpv_menu_actions.ui:27
 #: crates/tsukimi/resources/ui/other.ui:95
 #: crates/tsukimi/resources/ui/player_toolbar.ui:116
 #: crates/tsukimi/src/ui/mpv/page.rs:414 crates/tsukimi/src/ui/mpv/page.rs:416
-#: crates/tsukimi/src/ui/widgets/item.rs:704
+#: crates/tsukimi/src/ui/widgets/item.rs:710
 msgid "Play"
 msgstr "Spill av"
 
@@ -526,7 +537,7 @@ msgstr "Søk"
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:32
 #: crates/tsukimi/resources/ui/metadata_dialog.ui:91
 #: crates/tsukimi/resources/ui/single_grid.ui:105
-#: crates/tsukimi/src/ui/widgets/item.rs:1105
+#: crates/tsukimi/src/ui/widgets/item.rs:1160
 msgid "Title"
 msgstr "Navn"
 
@@ -589,7 +600,7 @@ msgstr "Film"
 #: crates/tsukimi/resources/ui/search.ui:23
 #: crates/tsukimi/resources/ui/window.ui:21
 #: crates/tsukimi/resources/ui/window.ui:261
-#: crates/tsukimi/src/ui/widgets/window.rs:307
+#: crates/tsukimi/src/ui/widgets/window.rs:365
 msgid "Search"
 msgstr "Søk"
 
@@ -635,16 +646,16 @@ msgid "Continue Play"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/filter.ui:78
-#: crates/tsukimi/resources/ui/item.ui:483
+#: crates/tsukimi/resources/ui/item.ui:497
 #: crates/tsukimi/resources/ui/other.ui:174
-#: crates/tsukimi/src/ui/widgets/list.rs:132
+#: crates/tsukimi/src/ui/widgets/list.rs:135
 msgid "Genres"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/filter.ui:85
-#: crates/tsukimi/resources/ui/item.ui:488
+#: crates/tsukimi/resources/ui/item.ui:502
 #: crates/tsukimi/resources/ui/other.ui:169
-#: crates/tsukimi/src/ui/widgets/list.rs:131
+#: crates/tsukimi/src/ui/widgets/list.rs:134
 msgid "Tags"
 msgstr ""
 
@@ -657,7 +668,7 @@ msgid "Official Ratings"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/filter.ui:106
-#: crates/tsukimi/resources/ui/item.ui:478
+#: crates/tsukimi/resources/ui/item.ui:492
 #: crates/tsukimi/resources/ui/other.ui:164
 msgid "Studios"
 msgstr ""
@@ -698,15 +709,15 @@ msgstr "Bibliotek"
 
 #. if merged, next up will contain resume items, so change title to continue watching
 #: crates/tsukimi/resources/ui/home.ui:21
-#: crates/tsukimi/resources/ui/item.ui:298
-#: crates/tsukimi/src/ui/widgets/home.rs:226
-#: crates/tsukimi/src/ui/widgets/home.rs:304
+#: crates/tsukimi/resources/ui/item.ui:312
+#: crates/tsukimi/src/ui/widgets/home.rs:248
+#: crates/tsukimi/src/ui/widgets/home.rs:326
 msgid "Continue Watching"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/home.ui:29
-#: crates/tsukimi/src/ui/widgets/home.rs:228
-#: crates/tsukimi/src/ui/widgets/home.rs:314
+#: crates/tsukimi/src/ui/widgets/home.rs:250
+#: crates/tsukimi/src/ui/widgets/home.rs:336
 #, fuzzy
 msgid "Next Up"
 msgstr "Neste"
@@ -833,51 +844,51 @@ msgstr ""
 msgid "BackDrops"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/item.ui:218
+#: crates/tsukimi/resources/ui/item.ui:232
 msgid "Video: "
 msgstr ""
 
-#: crates/tsukimi/resources/ui/item.ui:238
+#: crates/tsukimi/resources/ui/item.ui:252
 msgid "Subtitle: "
 msgstr ""
 
-#: crates/tsukimi/resources/ui/item.ui:312
+#: crates/tsukimi/resources/ui/item.ui:326
 msgid "View this season"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/item.ui:421
+#: crates/tsukimi/resources/ui/item.ui:435
 #: crates/tsukimi/resources/ui/liked.ui:69
 #: crates/tsukimi/resources/ui/single_grid.ui:164
 msgid "Nothing Here"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/item.ui:447
+#: crates/tsukimi/resources/ui/item.ui:461
 msgid "Included In"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/item.ui:452
+#: crates/tsukimi/resources/ui/item.ui:466
 msgid "Additional Parts"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/item.ui:457
+#: crates/tsukimi/resources/ui/item.ui:471
 msgid "Seasons"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/item.ui:462
+#: crates/tsukimi/resources/ui/item.ui:476
 #: crates/tsukimi/resources/ui/other.ui:158
 msgid "Actors"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/item.ui:468
+#: crates/tsukimi/resources/ui/item.ui:482
 msgid "Recommend"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/item.ui:473
+#: crates/tsukimi/resources/ui/item.ui:487
 #: crates/tsukimi/resources/ui/other.ui:179
 msgid "Links"
 msgstr "Lenker"
 
-#: crates/tsukimi/resources/ui/item.ui:506
+#: crates/tsukimi/resources/ui/item.ui:520
 msgid "MediaInfo"
 msgstr "Mediainfo"
 
@@ -987,7 +998,7 @@ msgid "Upcoming"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:5
-#: crates/tsukimi/resources/ui/window.ui:444
+#: crates/tsukimi/resources/ui/window.ui:451
 #, fuzzy
 msgid "Advanced Settings"
 msgstr "Videoinnstillinger"
@@ -1140,10 +1151,6 @@ msgstr ""
 msgid "Audio Channel"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:501
-msgid "Auto"
-msgstr ""
-
 #: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:502
 msgid "Auto (Safety)"
 msgstr ""
@@ -1284,8 +1291,8 @@ msgstr "Forrige"
 
 #: crates/tsukimi/resources/ui/mpv_menu.ui:35
 #: crates/tsukimi/resources/ui/mpvpage.ui:179
-#: crates/tsukimi/resources/ui/window.ui:393
-#: crates/tsukimi/resources/ui/window.ui:415
+#: crates/tsukimi/resources/ui/window.ui:400
+#: crates/tsukimi/resources/ui/window.ui:422
 msgid "Playlist"
 msgstr "Spilleliste"
 
@@ -1605,7 +1612,7 @@ msgid "Refresh"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/search.ui:60
-#: crates/tsukimi/src/ui/widgets/list.rs:130
+#: crates/tsukimi/src/ui/widgets/list.rs:133
 msgid "BoxSet"
 msgstr ""
 
@@ -1683,7 +1690,7 @@ msgid "Sort By"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/single_grid.ui:106
-#: crates/tsukimi/src/ui/widgets/item.rs:1109
+#: crates/tsukimi/src/ui/widgets/item.rs:1164
 msgid "Bitrate"
 msgstr ""
 
@@ -1767,13 +1774,13 @@ msgid "Contents"
 msgstr "Innhold"
 
 #: crates/tsukimi/resources/ui/window.ui:249
-#: crates/tsukimi/src/ui/widgets/window.rs:283
+#: crates/tsukimi/src/ui/widgets/window.rs:341
 msgid "Home"
 msgstr "Hjem"
 
 #: crates/tsukimi/resources/ui/window.ui:255
-#: crates/tsukimi/src/ui/widgets/list.rs:133
-#: crates/tsukimi/src/ui/widgets/window.rs:295
+#: crates/tsukimi/src/ui/widgets/list.rs:136
+#: crates/tsukimi/src/ui/widgets/window.rs:353
 msgid "Liked"
 msgstr ""
 
@@ -1897,7 +1904,7 @@ msgstr ""
 msgid "No more video found"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/page.rs:1345
+#: crates/tsukimi/src/ui/mpv/page.rs:1344
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -1914,20 +1921,20 @@ msgstr ""
 msgid "Success"
 msgstr "Vellykket"
 
-#: crates/tsukimi/src/ui/provider/tu_item.rs:638
+#: crates/tsukimi/src/ui/provider/tu_item.rs:648
 msgid "No next up video found"
 msgstr ""
 
-#: crates/tsukimi/src/ui/provider/tu_item.rs:667
+#: crates/tsukimi/src/ui/provider/tu_item.rs:677
 #: crates/tsukimi/src/ui/widgets/tu_overview_item.rs:276
 msgid "Present"
 msgstr ""
 
-#: crates/tsukimi/src/ui/provider/tu_item.rs:675
-#: crates/tsukimi/src/ui/provider/tu_item.rs:693
-#: crates/tsukimi/src/ui/provider/tu_item.rs:716
-#: crates/tsukimi/src/ui/provider/tu_item.rs:739
-#: crates/tsukimi/src/ui/provider/tu_item.rs:742
+#: crates/tsukimi/src/ui/provider/tu_item.rs:685
+#: crates/tsukimi/src/ui/provider/tu_item.rs:703
+#: crates/tsukimi/src/ui/provider/tu_item.rs:726
+#: crates/tsukimi/src/ui/provider/tu_item.rs:749
+#: crates/tsukimi/src/ui/provider/tu_item.rs:752
 msgid "Unknown"
 msgstr ""
 
@@ -1967,19 +1974,19 @@ msgstr ""
 msgid "No file selected"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/account_settings.rs:543
-#: crates/tsukimi/src/ui/widgets/account_settings.rs:552
-#: crates/tsukimi/src/ui/widgets/account_settings.rs:586
-#: crates/tsukimi/src/ui/widgets/account_settings.rs:595
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:559
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:568
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:602
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:611
 msgid "Descriptor cannot be empty!"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/account_settings.rs:557
-#: crates/tsukimi/src/ui/widgets/account_settings.rs:600
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:573
+#: crates/tsukimi/src/ui/widgets/account_settings.rs:616
 msgid "Invalid regex"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/home.rs:395
+#: crates/tsukimi/src/ui/widgets/home.rs:418
 msgid "Latest"
 msgstr ""
 
@@ -2045,76 +2052,76 @@ msgstr ""
 msgid "Replace Image"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:356
+#: crates/tsukimi/src/ui/widgets/item.rs:362
 msgid "No episode selected"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:357
+#: crates/tsukimi/src/ui/widgets/item.rs:363
 msgid "Select an episode"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:700
-#: crates/tsukimi/src/ui/widgets/list.rs:129
+#: crates/tsukimi/src/ui/widgets/item.rs:706
+#: crates/tsukimi/src/ui/widgets/list.rs:132
 msgid "Resume"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1088
+#: crates/tsukimi/src/ui/widgets/item.rs:1066
 msgid "Finishes at {time}"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1099
+#: crates/tsukimi/src/ui/widgets/item.rs:1154
 msgid "Codec"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1102
+#: crates/tsukimi/src/ui/widgets/item.rs:1157
 msgid "Language"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1114
+#: crates/tsukimi/src/ui/widgets/item.rs:1169
 msgid "BitDepth"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1118
+#: crates/tsukimi/src/ui/widgets/item.rs:1173
 msgid "SampleRate"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1122
+#: crates/tsukimi/src/ui/widgets/item.rs:1177
 msgid "Height"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1125
+#: crates/tsukimi/src/ui/widgets/item.rs:1180
 msgid "Width"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1128
+#: crates/tsukimi/src/ui/widgets/item.rs:1183
 msgid "ColorSpace"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1132
+#: crates/tsukimi/src/ui/widgets/item.rs:1187
 msgid "DisplayTitle"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1136
+#: crates/tsukimi/src/ui/widgets/item.rs:1191
 msgid "Channel"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1140
+#: crates/tsukimi/src/ui/widgets/item.rs:1195
 msgid "ChannelLayout"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1145
+#: crates/tsukimi/src/ui/widgets/item.rs:1200
 msgid "AverageFrameRate"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1149
+#: crates/tsukimi/src/ui/widgets/item.rs:1204
 msgid "PixelFormat"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1258
+#: crates/tsukimi/src/ui/widgets/item.rs:1313
 msgid "No video source found"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1331
+#: crates/tsukimi/src/ui/widgets/item.rs:1386
 msgid "Season not found. Is this a continue watching list?"
 msgstr ""
 
@@ -2122,15 +2129,15 @@ msgstr ""
 msgid "Favourite"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/list.rs:121
+#: crates/tsukimi/src/ui/widgets/list.rs:124
 msgid "Channels"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/list.rs:128
+#: crates/tsukimi/src/ui/widgets/list.rs:131
 msgid "All"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/list.rs:134
+#: crates/tsukimi/src/ui/widgets/list.rs:137
 msgid "Folder"
 msgstr ""
 
@@ -2244,27 +2251,22 @@ msgstr ""
 msgid "Are you sure you wish to reset all metadata?"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/window.rs:794
+#: crates/tsukimi/src/ui/widgets/window.rs:852
 msgid "Server Panel"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/window.rs:966
+#: crates/tsukimi/src/ui/widgets/window.rs:1024
 msgid "Fatal Error"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/window.rs:969
+#: crates/tsukimi/src/ui/widgets/window.rs:1027
 msgid "Copy Error & Close"
 msgstr ""
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: crates/tsukimi/src/ui/widgets/window.rs:998
+#: crates/tsukimi/src/ui/widgets/window.rs:1056
 msgid "translator-credits"
 msgstr "Allan Nordhøy <epost@anotheragency.no>"
-
-#, fuzzy
-#~| msgid "Contents"
-#~ msgid "GPU Context"
-#~ msgstr "Innhold"
 
 #~ msgid "Video Output"
 #~ msgstr "Videoutdata"
