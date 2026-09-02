@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
-"POT-Creation-Date: 2026-08-25 15:34+0000\n"
+"POT-Creation-Date: 2026-09-02 06:20+0000\n"
 "PO-Revision-Date: 2026-07-15 22:01+0000\n"
 "Last-Translator: Ornifex <persoon@outlook.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/tsukimi/main/ja/"
@@ -397,8 +397,8 @@ msgstr "mpv設定ディレクトリから読み込む"
 #: crates/tsukimi/resources/ui/mpv_menu_actions.ui:27
 #: crates/tsukimi/resources/ui/other.ui:95
 #: crates/tsukimi/resources/ui/player_toolbar.ui:116
-#: crates/tsukimi/src/ui/mpv/page.rs:414 crates/tsukimi/src/ui/mpv/page.rs:416
-#: crates/tsukimi/src/ui/widgets/item.rs:710
+#: crates/tsukimi/src/ui/mpv/page.rs:376 crates/tsukimi/src/ui/mpv/page.rs:378
+#: crates/tsukimi/src/ui/widgets/item.rs:700
 msgid "Play"
 msgstr "再生"
 
@@ -543,7 +543,7 @@ msgstr "検索"
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:32
 #: crates/tsukimi/resources/ui/metadata_dialog.ui:91
 #: crates/tsukimi/resources/ui/single_grid.ui:105
-#: crates/tsukimi/src/ui/widgets/item.rs:1160
+#: crates/tsukimi/src/ui/widgets/item.rs:1146
 msgid "Title"
 msgstr "タイトル"
 
@@ -1541,7 +1541,7 @@ msgid "Media info (MPV)"
 msgstr "メディア情報（MPV）"
 
 #: crates/tsukimi/resources/ui/mpvpage.ui:279
-#: crates/tsukimi/src/ui/mpv/page.rs:419 crates/tsukimi/src/ui/mpv/page.rs:421
+#: crates/tsukimi/src/ui/mpv/page.rs:381 crates/tsukimi/src/ui/mpv/page.rs:383
 msgid "Pause"
 msgstr "一時停止"
 
@@ -1702,7 +1702,7 @@ msgid "Sort By"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/single_grid.ui:106
-#: crates/tsukimi/src/ui/widgets/item.rs:1164
+#: crates/tsukimi/src/ui/widgets/item.rs:1150
 msgid "Bitrate"
 msgstr "ビットレート"
 
@@ -1899,27 +1899,27 @@ msgstr "ファイルが選択されていない"
 msgid "Failed to load episodes"
 msgstr "パスワードの変更に失敗しました"
 
-#: crates/tsukimi/src/ui/mpv/page.rs:883
+#: crates/tsukimi/src/ui/mpv/page.rs:784
 msgid "Initializing..."
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/page.rs:930 crates/tsukimi/src/ui/mpv/page.rs:999
+#: crates/tsukimi/src/ui/mpv/page.rs:822 crates/tsukimi/src/ui/mpv/page.rs:888
 msgid "No media source found"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/page.rs:1079
+#: crates/tsukimi/src/ui/mpv/page.rs:967
 msgid "Skip Intro"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/page.rs:1080
+#: crates/tsukimi/src/ui/mpv/page.rs:968
 msgid "Skip Outro"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/page.rs:1234
+#: crates/tsukimi/src/ui/mpv/page.rs:1115
 msgid "No more video found"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/page.rs:1344
+#: crates/tsukimi/src/ui/mpv/page.rs:1225
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -2070,78 +2070,78 @@ msgstr "画像の読み込みエラー"
 msgid "Replace Image"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:362
+#: crates/tsukimi/src/ui/widgets/item.rs:358
 #, fuzzy
 msgid "No episode selected"
 msgstr "ファイルが選択されていない"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:363
+#: crates/tsukimi/src/ui/widgets/item.rs:359
 #, fuzzy
 msgid "Select an episode"
 msgstr "mpv設定ディレクトリから読み込む"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:706
+#: crates/tsukimi/src/ui/widgets/item.rs:696
 #: crates/tsukimi/src/ui/widgets/list.rs:132
 msgid "Resume"
 msgstr "再開"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1066
+#: crates/tsukimi/src/ui/widgets/item.rs:1052
 msgid "Finishes at {time}"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1154
+#: crates/tsukimi/src/ui/widgets/item.rs:1140
 msgid "Codec"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1157
+#: crates/tsukimi/src/ui/widgets/item.rs:1143
 msgid "Language"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1169
+#: crates/tsukimi/src/ui/widgets/item.rs:1155
 msgid "BitDepth"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1173
+#: crates/tsukimi/src/ui/widgets/item.rs:1159
 msgid "SampleRate"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1177
+#: crates/tsukimi/src/ui/widgets/item.rs:1163
 msgid "Height"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1180
+#: crates/tsukimi/src/ui/widgets/item.rs:1166
 msgid "Width"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1183
+#: crates/tsukimi/src/ui/widgets/item.rs:1169
 msgid "ColorSpace"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1187
+#: crates/tsukimi/src/ui/widgets/item.rs:1173
 msgid "DisplayTitle"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1191
+#: crates/tsukimi/src/ui/widgets/item.rs:1177
 msgid "Channel"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1195
+#: crates/tsukimi/src/ui/widgets/item.rs:1181
 msgid "ChannelLayout"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1200
+#: crates/tsukimi/src/ui/widgets/item.rs:1186
 msgid "AverageFrameRate"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1204
+#: crates/tsukimi/src/ui/widgets/item.rs:1190
 msgid "PixelFormat"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1313
+#: crates/tsukimi/src/ui/widgets/item.rs:1299
 msgid "No video source found"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1386
+#: crates/tsukimi/src/ui/widgets/item.rs:1372
 msgid "Season not found. Is this a continue watching list?"
 msgstr ""
 
