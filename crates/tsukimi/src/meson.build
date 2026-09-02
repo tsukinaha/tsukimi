@@ -13,6 +13,39 @@ endif
 
 cargo_bin = cargo_target_dir / rust_target / meson.project_name()
 
+git = find_program('git', required: false)
+
+git_release = false
+git_version = version
+
+if git.found()
+    tag = run_command(
+        git,
+        'describe',
+        '--tags',
+        '--exact-match',
+        'HEAD',
+        check: false,
+    )
+
+    if tag.returncode() == 0
+        git_release = true
+    else
+        describe = run_command(
+            git,
+            'describe',
+            '--tags',
+            '--always',
+            '--dirty',
+            check: false,
+        )
+
+        if describe.returncode() == 0
+            git_version = describe.stdout().strip()
+        endif
+    endif
+endif
+
 env = environment()
 
 if get_option('sandboxed-build')
@@ -25,6 +58,12 @@ endif
 env.set('TSUKIMI_VERSION', version)
 env.set('TSUKIMI_LOCALEDIR', localedir)
 env.set('TSUKIMI_PKGDATADIR', pkgdatadir)
+
+if git_release
+    env.set('TSUKIMI_RELEASE', '1')
+else
+    env.set('TSUKIMI_GIT_VERSION', git_version)
+endif
 
 # We currently don't have rustdoc wiring.
 # rustdoc_flags = ' '.join(
