@@ -8,6 +8,7 @@
     <property name="margin-end">6</property>
     <property name="child">
       <object class="AdwNavigationView">
+        <property name="animate-transitions">false</property>
         <child>
           <object class="AdwNavigationPage">
             <property name="title" translatable="yes">Danmaku</property>
@@ -30,7 +31,7 @@
                         </child>
                         <child>
                           <object class="AdwActionRow" id="danmaku_status_row">
-                            <property name="subtitle" translatable="yes">Danmaku disabled</property>
+                            <property name="subtitle" translatable="yes">Disabled</property>
                             <property name="subtitle-lines">2</property>
                             <property name="subtitle-selectable">True</property>
                             <child type="prefix">
@@ -68,7 +69,8 @@
                     <child>
                       <object class="AdwPreferencesGroup">
                         <child>
-                          <object class="AdwButtonRow">
+                          <object class="AdwButtonRow" id="manual_search_button">
+                            <property name="sensitive">false</property>
                             <property name="start-icon-name">edit-find-symbolic</property>
                             <property name="title" translatable="yes">Search Manually</property>
                             <signal name="activated" handler="on_manual_search" swapped="yes"/>

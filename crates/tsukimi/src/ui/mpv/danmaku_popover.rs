@@ -11,6 +11,7 @@ use gtk::{
 use crate::ui::{
     models::SETTINGS,
     mpv::{
+        danmaku_client::DanmakuClient,
         danmaku_search_dialog::DanmakuSearchDialog,
         page::MPVPage,
     },
@@ -26,6 +27,7 @@ pub enum DanmakuPopoverStatus {
     ManualLoaded(usize, String),
     SecretNotExist,
     #[default]
+    Idle,
     Disabled,
     Unavailable,
 }
@@ -50,6 +52,7 @@ impl DanmakuPopoverStatus {
             DanmakuPopoverStatus::SecretNotExist => {
                 gettext("This feature requires an official build")
             }
+            DanmakuPopoverStatus::Idle => gettext("Not loaded"),
             DanmakuPopoverStatus::Disabled => gettext("Disabled"),
             DanmakuPopoverStatus::Unavailable => gettext("Maybe there is something wrong"),
         }
@@ -72,9 +75,9 @@ impl DanmakuPopoverStatus {
             DanmakuPopoverStatus::Loaded(..) | DanmakuPopoverStatus::ManualLoaded(..) => {
                 "check-round-outline-symbolic"
             }
-            DanmakuPopoverStatus::NoMatching | DanmakuPopoverStatus::Disabled => {
-                "minus-circle-outline-symbolic"
-            }
+            DanmakuPopoverStatus::NoMatching
+            | DanmakuPopoverStatus::Idle
+            | DanmakuPopoverStatus::Disabled => "minus-circle-outline-symbolic",
             DanmakuPopoverStatus::SecretNotExist => "cross-small-circle-outline-symbolic",
             DanmakuPopoverStatus::Unavailable => "question-round-outline-symbolic",
         }
@@ -95,13 +98,18 @@ impl DanmakuPopoverStatus {
             DanmakuPopoverStatus::ManualLoaded(..) => &["success"],
             DanmakuPopoverStatus::NoMatching => &["warning"],
             DanmakuPopoverStatus::SecretNotExist => &["error"],
-            DanmakuPopoverStatus::Disabled | DanmakuPopoverStatus::Unavailable => &[],
+            DanmakuPopoverStatus::Idle
+            | DanmakuPopoverStatus::Disabled
+            | DanmakuPopoverStatus::Unavailable => &[],
         }
     }
 }
 
 pub mod imp {
-    use std::cell::RefCell;
+    use std::cell::{
+        Cell,
+        RefCell,
+    };
 
     use super::*;
     use glib::subclass::InitializingObject;
@@ -122,6 +130,8 @@ pub mod imp {
         #[template_child]
         pub danmaku_status_icon: TemplateChild<gtk::Image>,
         #[template_child]
+        pub manual_search_button: TemplateChild<adw::ButtonRow>,
+        #[template_child]
         pub danmaku_opacity_spin: TemplateChild<adw::SpinRow>,
         #[template_child]
         pub danmaku_speed_spin: TemplateChild<adw::SpinRow>,
@@ -138,6 +148,8 @@ pub mod imp {
         #[template_child]
         pub shadow_spin: TemplateChild<adw::SpinRow>,
 
+        #[property(get, set = Self::set_enabled, explicit_notify)]
+        pub enabled: Cell<bool>,
         #[property(get, set = Self::set_status, explicit_notify)]
         pub status: RefCell<DanmakuPopoverStatus>,
     }
@@ -159,14 +171,46 @@ pub mod imp {
     }
 
     #[glib::derived_properties]
-    impl ObjectImpl for DanmakuPopover {}
+    impl ObjectImpl for DanmakuPopover {
+        fn constructed(&self) {
+            self.parent_constructed();
+
+            if DanmakuClient::instance().is_none() {
+                self.set_status(DanmakuPopoverStatus::SecretNotExist);
+            }
+        }
+    }
 
     impl DanmakuPopover {
+        fn set_enabled(&self, enabled: bool) {
+            if self.enabled.replace(enabled) == enabled {
+                return;
+            }
+            self.update_status_view();
+            self.obj().notify_enabled();
+        }
+
         fn set_status(&self, status: DanmakuPopoverStatus) {
+            // Controls are disabled by default, so update sensitivity even if the status is unchanged
+            let sensitive = status != DanmakuPopoverStatus::SecretNotExist;
+            self.danmaku_switch.set_sensitive(sensitive);
+            self.manual_search_button.set_sensitive(sensitive);
+
             if self.status.replace(status.clone()) == status {
                 return;
             }
+            self.update_status_view();
+            self.obj().notify_status();
+        }
 
+        fn update_status_view(&self) {
+            let status = if *self.status.borrow() == DanmakuPopoverStatus::SecretNotExist {
+                DanmakuPopoverStatus::SecretNotExist
+            } else if !self.enabled.get() {
+                DanmakuPopoverStatus::Disabled
+            } else {
+                self.status.borrow().clone()
+            };
             self.danmaku_status_group.set_title(&status.title());
             self.danmaku_status_row.set_title(&status.status_title());
             self.danmaku_status_row
@@ -177,8 +221,6 @@ pub mod imp {
                 .set_visible_child_name(status.stack_visible_child_name());
             self.danmaku_status_stack
                 .set_css_classes(status.status_css_class());
-
-            self.obj().notify_status();
         }
     }
 
@@ -214,6 +256,10 @@ impl DanmakuPopover {
         SETTINGS.bind_mpv_danmaku_outline_size(&imp.outline_spin.get(), "value");
         SETTINGS.bind_mpv_danmaku_shadow_offset(&imp.shadow_spin.get(), "value");
 
+        imp.danmaku_switch
+            .bind_property("active", self, "enabled")
+            .flags(glib::BindingFlags::SYNC_CREATE)
+            .build();
         imp.danmaku_opacity_spin
             .bind_property("value", &danmakw, "opacity")
             .flags(glib::BindingFlags::SYNC_CREATE)
@@ -250,24 +296,15 @@ impl DanmakuPopover {
             .build();
     }
 
-    pub fn set_enabled(&self, enabled: bool) {
-        self.imp().danmaku_switch.set_active(enabled);
-    }
-
-    pub fn set_switch_sensitive(&self, sensitive: bool) {
-        self.imp().danmaku_switch.set_sensitive(sensitive);
-    }
-
-    pub fn is_enabled(&self) -> bool {
-        self.imp().danmaku_switch.is_active()
-    }
-
     #[template_callback]
     fn on_manual_search(&self) {
+        let Some(client) = DanmakuClient::instance() else {
+            return;
+        };
         let Some(page) = self.imp().page.upgrade() else {
             return;
         };
-        DanmakuSearchDialog::new(&page).present(Some(self));
+        DanmakuSearchDialog::new(&page, client).present(Some(self));
     }
 
     #[template_callback]

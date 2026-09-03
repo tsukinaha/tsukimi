@@ -90,11 +90,13 @@ impl Settings {
     const KEY_DANMAKU_CACHE_MAP: &'static str = "danmaku-cache-map";
 
     fn bind_setting(&self, key: &str, object: &impl IsA<glib::Object>, property: &str) {
-        self.0.get_ref().bind(key, object, property).build();
+        self.bind(key, object, property).build();
     }
 
     pub fn bind_mpv_danmaku_enabled(&self, object: &impl IsA<glib::Object>, property: &str) {
-        self.bind_setting(Self::KEY_MPV_DANMAKU_ENABLED, object, property);
+        self.bind(Self::KEY_MPV_DANMAKU_ENABLED, object, property)
+            .no_sensitivity()
+            .build();
     }
 
     pub fn bind_mpv_danmaku_opacity(&self, object: &impl IsA<glib::Object>, property: &str) {
