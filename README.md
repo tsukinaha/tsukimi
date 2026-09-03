@@ -1,7 +1,7 @@
 # tsukimi
 A simple third-party Jellyfin client for Linux.
 
-> We use wl-proxy for mpv gpu-next vo embedding, you can find the embedder [here](https://github.com/MutsumiUniverse/Mutsumi). We also made a local player [Fughetta](https://github.com/MutsumiUniverse/Fughetta) by this embedder.
+> We use wl-proxy for mpv gpu-next vo embedding, you can find the embedder [here](https://github.com/MutsumiUniverse/Mutsumi). We also made a local player [Fughetta](https://github.com/MutsumiUniverse/Fughetta) using this embedder.
 
 <p align="left">
     <a href="https://matrix.to/#/#tsukimi:matrix.org"><img alt="Matrix" src="https://img.shields.io/badge/Matrix-%23tsukimi-7aa2f7?style=flat&logo=matrix&logoColor=white"></a>
@@ -77,11 +77,11 @@ sudo emerge --ask media-video/tsukimi
 [MPV-manual#files](https://mpv.io/manual/master/#files)
 
 ## Contributing
-Please, follow the [contribution guide](./CONTRIBUTING.md) to know how to
+Please follow the [contribution guide](./CONTRIBUTING.md) to learn how to
 start contributing to Tsukimi.
 
 ## Disclaimer
-The developers of this application does not have any affiliation with the content providers available.
+The developers of this application do not have any affiliation with the content providers available.
 
 ## License
 tsukimi is licensed under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html) license.
