@@ -489,6 +489,12 @@
                             <attributes>
                               <attribute name="font-features" value="tnum=1"/>
                             </attributes>
+                            <child>
+                              <object class="GtkGestureClick">
+                                <property name="button">1</property>
+                                <signal name="released" handler="on_duration_label_clicked" swapped="yes"/>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
