@@ -51,6 +51,9 @@ paru -S tsukimi-bin
 # AUR latest commit (https://aur.archlinux.org/packages/tsukimi-git)
 paru -S tsukimi-git
 
+# archlinuxcn repo https://github.com/archlinuxcn/repo/blob/master/archlinuxcn/tsukimi/PKGBUILD
+sudo pacman -Syu tsukimi
+
 # archlinuxcn repo https://github.com/archlinuxcn/repo/blob/master/archlinuxcn/tsukimi-git/PKGBUILD
 sudo pacman -Syu tsukimi-git
 ```
