@@ -144,6 +144,8 @@ mod imp {
         pub fullscreened: Cell<bool>,
         #[property(get, set = Self::set_paused)]
         pub paused: Cell<bool>,
+        #[property(get, set = Self::set_compact_mode, explicit_notify)]
+        pub compact_mode: Cell<bool>,
         #[template_child]
         pub video: TemplateChild<MPVPlaySink>,
         #[template_child]
@@ -152,6 +154,14 @@ mod imp {
         pub danmaku_popover_content: TemplateChild<DanmakuPopover>,
         #[template_child]
         pub bottom_revealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub center_box: TemplateChild<gtk::CenterBox>,
+        #[template_child]
+        pub right_group_box: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub right_wrapper_box: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub mobile_popover_box: TemplateChild<gtk::Box>,
         #[template_child]
         pub top_revealer: TemplateChild<gtk::Revealer>,
         #[template_child]
@@ -173,7 +183,9 @@ mod imp {
         #[template_child]
         pub network_speed_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub network_speed_label_2: TemplateChild<gtk::Button>,
+        pub network_speed_label_2: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub danmaku_button: TemplateChild<gtk::MenuButton>,
         #[template_child]
         pub playback_speed_indicator: TemplateChild<gtk::Button>,
         #[template_child]
@@ -316,6 +328,15 @@ mod imp {
                 .bind("mpv-default-volume", &self.volume_adj.get(), "value")
                 .build();
 
+            SETTINGS
+                .bind(
+                    "is-danmaku-enabled",
+                    &self.danmaku_button.get(),
+                    "visible"
+                )
+                .build();
+
+
             self.video_scale.set_player(Some(&self.video.get()));
 
             let obj = self.obj();
@@ -358,6 +379,26 @@ mod imp {
     impl adw::subclass::navigation_page::NavigationPageImpl for MPVPage {}
 
     impl MPVPage {
+    fn set_compact_mode(&self, compact: bool) {
+        if self.compact_mode.get() == compact {
+            return;
+        }
+        self.compact_mode.set(compact);
+        
+        let imp = self;
+        if compact {
+            imp.right_wrapper_box.remove(&*imp.right_group_box);
+            imp.mobile_popover_box.append(&*imp.right_group_box);
+            imp.right_group_box.set_orientation(gtk::Orientation::Vertical);
+        } else {
+            imp.mobile_popover_box.remove(&*imp.right_group_box);
+            imp.right_wrapper_box.prepend(&*imp.right_group_box);
+            imp.right_group_box.set_orientation(gtk::Orientation::Horizontal);
+        }
+        
+        self.obj().notify_compact_mode();
+    }
+
         fn set_fullscreened(&self, fullscreened: bool) {
             if fullscreened == self.fullscreened.get() {
                 return;
@@ -1708,8 +1749,20 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn left_click_cb(&self) {
-        self.imp().video.pause();
+    fn left_click_cb(&self, n_press: i32, _x: f64, _y: f64) {
+        if n_press == 1 {
+            self.imp().video.pause();
+        } else if n_press == 2 {
+            self.imp().video.pause(); // Revert the pause from the first click
+            let binding = self.root();
+            if let Some(window) = binding.and_downcast_ref::<Window>() {
+                if window.is_fullscreen() {
+                    window.unfullscreen();
+                } else {
+                    window.fullscreen();
+                }
+            }
+        }
     }
 
     #[template_callback]

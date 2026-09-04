@@ -84,7 +84,7 @@ button.pill.ultrasmall {
       rgba(0, 0, 0, 0));
   border-radius: 0;
   color: white;
-  padding: 18px 20px 42px;
+  padding: 0px 0px 42px 0px;
 }
 
 .mpv-bottom-bar {
@@ -94,7 +94,7 @@ button.pill.ultrasmall {
       rgba(0, 0, 0, 0));
   border-radius: 0;
   color: white;
-  padding: 48px 36px 24px;
+  padding: 48px 12px 12px;
 }
 
 .mpv-play-button {
