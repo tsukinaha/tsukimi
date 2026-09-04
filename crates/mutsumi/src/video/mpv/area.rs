@@ -16,7 +16,10 @@ use crate::{
     },
 };
 
-use super::RENDER_UPDATE;
+use super::{
+    RENDER_UPDATE,
+    get_proc_address as epoxy_get_proc_address,
+};
 
 mod imp {
     use crate::video::{
@@ -200,7 +203,7 @@ mod imp {
 
         fn glow_cxt(&self) -> &glow::Context {
             self.gl_ctx.get_or_init(|| unsafe {
-                glow::Context::from_loader_function(epoxy::get_proc_addr)
+                glow::Context::from_loader_function(epoxy_get_proc_address)
             })
         }
 
@@ -210,7 +213,7 @@ mod imp {
     }
 
     fn get_proc_address(_ctx: &GLContext, name: &str) -> *mut c_void {
-        epoxy::get_proc_addr(name) as *mut c_void
+        epoxy_get_proc_address(name) as *mut c_void
     }
 }
 
