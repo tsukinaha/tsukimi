@@ -26,11 +26,11 @@ pub fn init() {
         .expect("Failed to register resources.");
 
     MutsumiPlayer::ensure_type();
-    ControlSidebar::ensure_type();
-    MenuActions::ensure_type();
-    VideoScale::ensure_type();
-    ScaleRow::ensure_type();
-    VolumeBar::ensure_type();
+    MutsumiControlSidebar::ensure_type();
+    MutsumiMenuActions::ensure_type();
+    MutsumiVideoScale::ensure_type();
+    MutsumiScaleRow::ensure_type();
+    MutsumiVolumeBar::ensure_type();
 
     let display = gtk::gdk::Display::default().expect("No default display");
     gtk::IconTheme::for_display(&display)

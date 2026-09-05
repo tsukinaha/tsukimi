@@ -41,12 +41,12 @@ use crate::{
     TrackKind,
     TrackSelection,
     control::{
-        ControlSidebar,
         GlobalToast,
-        MenuActions,
-        ScaleRow,
-        VideoScale,
-        VolumeBar,
+        MutsumiControlSidebar,
+        MutsumiMenuActions,
+        MutsumiScaleRow,
+        MutsumiVideoScale,
+        MutsumiVolumeBar,
         format_duration,
     },
 };
@@ -135,11 +135,11 @@ mod imp {
         #[template_child]
         pub split_view: TemplateChild<adw::OverlaySplitView>,
         #[template_child]
-        pub control_sidebar: TemplateChild<ControlSidebar>,
+        pub control_sidebar: TemplateChild<MutsumiControlSidebar>,
         #[template_child]
         pub video: TemplateChild<MutsumiVideoPlayer>,
         #[template_child]
-        pub volume_bar: TemplateChild<VolumeBar>,
+        pub volume_bar: TemplateChild<MutsumiVolumeBar>,
         #[template_child]
         pub loading_box: TemplateChild<gtk::Box>,
         #[template_child]
@@ -151,7 +151,7 @@ mod imp {
         #[template_child]
         pub play_pause_image: TemplateChild<gtk::Image>,
         #[template_child]
-        pub video_scale: TemplateChild<VideoScale>,
+        pub video_scale: TemplateChild<MutsumiVideoScale>,
         #[template_child]
         pub progress_time_label: TemplateChild<gtk::Label>,
         #[template_child]
@@ -204,7 +204,7 @@ mod imp {
         #[template_child]
         pub content_overlay: TemplateChild<gtk::Overlay>,
 
-        pub menu_actions: MenuActions,
+        pub menu_actions: MutsumiMenuActions,
         pub context_popover: RefCell<Option<PopoverMenu>>,
 
         pub context_menu: RefCell<Option<gio::Menu>>,
@@ -246,10 +246,10 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             MutsumiVideoPlayer::ensure_type();
-            ControlSidebar::ensure_type();
-            VideoScale::ensure_type();
-            ScaleRow::ensure_type();
-            VolumeBar::ensure_type();
+            MutsumiControlSidebar::ensure_type();
+            MutsumiVideoScale::ensure_type();
+            MutsumiScaleRow::ensure_type();
+            MutsumiVolumeBar::ensure_type();
 
             klass.bind_template();
             klass.bind_template_instance_callbacks();
@@ -842,7 +842,7 @@ impl MutsumiPlayer {
     }
 
     #[template_callback]
-    fn on_progress_value_changed(&self, progress_scale: &VideoScale) {
+    fn on_progress_value_changed(&self, progress_scale: &MutsumiVideoScale) {
         let label = &self.imp().progress_time_label;
         label.set_text(&format_duration(progress_scale.value() as i64));
     }

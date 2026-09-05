@@ -17,8 +17,8 @@ mod imp {
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/io/github/mutsumiuniverse/mutsumi/ui/scale_row.ui")]
-    #[properties(wrapper_type = super::ScaleRow)]
-    pub struct ScaleRow {
+    #[properties(wrapper_type = super::MutsumiScaleRow)]
+    pub struct MutsumiScaleRow {
         #[template_child]
         pub scale: TemplateChild<gtk::Scale>,
         #[template_child]
@@ -34,9 +34,9 @@ mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for ScaleRow {
-        const NAME: &'static str = "ScaleRow";
-        type Type = super::ScaleRow;
+    impl ObjectSubclass for MutsumiScaleRow {
+        const NAME: &'static str = "MutsumiScaleRow";
+        type Type = super::MutsumiScaleRow;
         type ParentType = adw::PreferencesRow;
 
         fn class_init(klass: &mut Self::Class) {
@@ -49,18 +49,18 @@ mod imp {
     }
 
     #[glib::derived_properties]
-    impl ObjectImpl for ScaleRow {
+    impl ObjectImpl for MutsumiScaleRow {
         fn constructed(&self) {
             self.parent_constructed();
             self.refresh_scale();
         }
     }
 
-    impl WidgetImpl for ScaleRow {}
-    impl ListBoxRowImpl for ScaleRow {}
-    impl PreferencesRowImpl for ScaleRow {}
+    impl WidgetImpl for MutsumiScaleRow {}
+    impl ListBoxRowImpl for MutsumiScaleRow {}
+    impl PreferencesRowImpl for MutsumiScaleRow {}
 
-    impl ScaleRow {
+    impl MutsumiScaleRow {
         fn set_model(&self, model: Option<gtk::StringList>) {
             self.model.replace(model);
             self.refresh_scale();
@@ -144,18 +144,18 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub struct ScaleRow(ObjectSubclass<imp::ScaleRow>)
+    pub struct MutsumiScaleRow(ObjectSubclass<imp::MutsumiScaleRow>)
         @extends adw::PreferencesRow, gtk::ListBoxRow, gtk::Widget,
         @implements gtk::Accessible, gtk::Actionable, gtk::Buildable, gtk::ConstraintTarget;
 }
 
-impl ScaleRow {
+impl MutsumiScaleRow {
     pub fn new() -> Self {
         glib::Object::new()
     }
 }
 
-impl Default for ScaleRow {
+impl Default for MutsumiScaleRow {
     fn default() -> Self {
         Self::new()
     }

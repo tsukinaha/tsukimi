@@ -127,7 +127,7 @@ mod imp {
                                                 .pending_snapshot_frame_id
                                                 .set(profile_frame_id);
                                         }
-                                        obj.imp().texture.replace(Some(texture));
+                                        obj.replace_texture(Some(texture));
                                     }
                                     Err(e) => {
                                         tracing::error!("dmabuf build failed: {e}");
@@ -148,12 +148,12 @@ mod imp {
                                     &bytes,
                                     frame.stride,
                                 );
-                                obj.imp().texture.replace(Some(gdk::Texture::from(texture)));
+                                obj.replace_texture(Some(gdk::Texture::from(texture)));
                             }
                             SurfaceContentUpdate::Clear => {
                                 #[cfg(feature = "profiling")]
                                 obj.imp().pending_snapshot_frame_id.set(None);
-                                obj.imp().texture.take();
+                                obj.replace_texture(None);
                             }
                             SurfaceContentUpdate::Unchanged => {}
                         }
@@ -286,6 +286,17 @@ impl MutsumiVideoSink {
         ));
     }
 
+    fn replace_texture(&self, texture: Option<gdk::Texture>) {
+        let old_size = (self.intrinsic_width(), self.intrinsic_height());
+        self.imp().texture.replace(texture);
+        let new_size = (self.intrinsic_width(), self.intrinsic_height());
+
+        // Picture caches its layout even when paintable contents are invalidated.
+        if old_size != new_size {
+            self.invalidate_size();
+        }
+    }
+
     // This would be useful for clearing the video area when stopping playback, to avoid showing the last frame.
     pub fn push_an_empty_texture(&self) {
         let bytes = glib::Bytes::from_static(&[0, 0, 0, 0]);
@@ -294,7 +305,7 @@ impl MutsumiVideoSink {
 
         let texture = gdk::Texture::from(texture);
 
-        self.imp().texture.replace(Some(texture));
+        self.replace_texture(Some(texture));
         self.invalidate_contents();
     }
 

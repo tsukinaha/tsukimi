@@ -13,15 +13,15 @@ mod imp {
 
     #[derive(Debug, Default, CompositeTemplate)]
     #[template(resource = "/io/github/mutsumiuniverse/mutsumi/ui/menu_actions.ui")]
-    pub struct MenuActions {
+    pub struct MutsumiMenuActions {
         #[template_child]
         pub play_pause_button: TemplateChild<gtk::Button>,
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for MenuActions {
-        const NAME: &'static str = "MenuActions";
-        type Type = super::MenuActions;
+    impl ObjectSubclass for MutsumiMenuActions {
+        const NAME: &'static str = "MutsumiMenuActions";
+        type Type = super::MutsumiMenuActions;
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
@@ -33,20 +33,20 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for MenuActions {}
+    impl ObjectImpl for MutsumiMenuActions {}
 
-    impl WidgetImpl for MenuActions {}
+    impl WidgetImpl for MutsumiMenuActions {}
 
-    impl BinImpl for MenuActions {}
+    impl BinImpl for MutsumiMenuActions {}
 }
 
 glib::wrapper! {
     /// The play / pause / seek button row embedded in the context menu.
-    pub struct MenuActions(ObjectSubclass<imp::MenuActions>)
+    pub struct MutsumiMenuActions(ObjectSubclass<imp::MutsumiMenuActions>)
         @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
-impl MenuActions {
+impl MutsumiMenuActions {
     pub fn new() -> Self {
         glib::Object::new()
     }
@@ -63,7 +63,7 @@ impl MenuActions {
     }
 }
 
-impl Default for MenuActions {
+impl Default for MutsumiMenuActions {
     fn default() -> Self {
         Self::new()
     }

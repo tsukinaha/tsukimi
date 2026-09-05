@@ -24,10 +24,10 @@ use std::{
         OwnedFd,
     },
     rc::Rc,
-    sync::Mutex,
 };
 
 use once_cell::sync::Lazy;
+use tokio::sync::watch;
 use wl_proxy::{
     baseline::Baseline,
     client::ClientHandler,
@@ -168,16 +168,40 @@ pub struct DmabufFrameChannel {
 }
 
 pub static VIEWPORT_CHANNEL: Lazy<ViewportChannel> = Lazy::new(|| {
-    let (tx, rx) = flume::unbounded::<(i32, i32, f64)>();
-    ViewportChannel { tx, rx }
+    let (tx, _) = watch::channel(None);
+    ViewportChannel { tx }
 });
 
-pub struct ViewportChannel {
-    pub tx: flume::Sender<(i32, i32, f64)>,
-    pub rx: flume::Receiver<(i32, i32, f64)>,
+#[derive(Debug, Default, Clone, Copy, PartialEq)]
+pub struct Viewport {
+    pub width: i32,
+    pub height: i32,
+    pub scale: f64,
 }
 
-static CURRENT_SCALE: Mutex<f64> = Mutex::new(1.0);
+impl Viewport {
+    pub fn new(width: i32, height: i32, scale: f64) -> Self {
+        Self {
+            width,
+            height,
+            scale,
+        }
+    }
+}
+
+pub struct ViewportChannel {
+    tx: watch::Sender<Option<Viewport>>,
+}
+
+impl ViewportChannel {
+    pub fn send(&self, viewport: Viewport) {
+        self.tx.send_replace(Some(viewport));
+    }
+
+    fn subscribe(&self) -> watch::Receiver<Option<Viewport>> {
+        self.tx.subscribe()
+    }
+}
 
 struct SharedState {
     buffer_info: HashMap<u64, BufferInfo>,
@@ -185,6 +209,7 @@ struct SharedState {
     frame_callbacks: HashMap<u64, Vec<Rc<WlCallback>>>,
     next_callback_batch_id: u64,
     toplevels: Vec<ToplevelEntry>,
+    viewport: Option<Viewport>,
     configure_serial: u32,
     fractional_scales: Vec<Rc<WpFractionalScaleV1>>,
     surfaces: Vec<Rc<WlSurface>>,
@@ -192,12 +217,20 @@ struct SharedState {
 }
 
 impl SharedState {
-    fn configure_toplevels(&mut self, width: i32, height: i32) {
+    fn configure_toplevels(&mut self) {
+        let Some(viewport) = self.viewport else {
+            return;
+        };
+
+        let mut serial = self.configure_serial;
         for entry in &self.toplevels {
-            entry.toplevel.send_configure(width, height, &[]);
-            entry.xdg_surface.send_configure(self.configure_serial);
-            self.configure_serial = self.configure_serial.wrapping_add(1);
+            entry
+                .toplevel
+                .send_configure(viewport.width, viewport.height, &[]);
+            entry.xdg_surface.send_configure(serial);
+            serial = serial.wrapping_add(1);
         }
+        self.configure_serial = serial;
     }
 
     fn update_fractional_scales(&mut self, scale_120: u32) {
@@ -361,15 +394,17 @@ fn handle_proxy_event(shared: &Rc<RefCell<SharedState>>, event: ProxyEvent) {
     }
 }
 
-fn handle_viewport_update(shared: &Rc<RefCell<SharedState>>, width: i32, height: i32, scale: f64) {
-    shared.borrow_mut().configure_toplevels(width, height);
-    *CURRENT_SCALE.lock().unwrap() = scale;
-    let scale_120 = (scale * 120.0).round() as u32;
-    shared.borrow_mut().update_fractional_scales(scale_120);
+fn handle_viewport_update(shared: &Rc<RefCell<SharedState>>, viewport: Viewport) {
+    let scale_120 = (viewport.scale * 120.0).round() as u32;
+    let mut shared = shared.borrow_mut();
+    shared.viewport = Some(viewport);
+    shared.update_fractional_scales(scale_120);
+    shared.configure_toplevels();
 }
 
 async fn run_client(
     state: Rc<State>, shared: Rc<RefCell<SharedState>>, event_rx: flume::Receiver<ProxyEvent>,
+    mut viewport_rx: watch::Receiver<Option<Viewport>>,
 ) {
     let poll_fd = match tokio::io::unix::AsyncFd::new(Rc::clone(state.poll_fd())) {
         Ok(fd) => fd,
@@ -402,14 +437,15 @@ async fn run_client(
                 Ok(event) => handle_proxy_event(&shared, event),
                 Err(_) => return,
             },
-            viewport = VIEWPORT_CHANNEL.rx.recv_async() => match viewport {
-                Ok(mut viewport) => {
-                    while let Ok(latest) = VIEWPORT_CHANNEL.rx.try_recv() {
-                        viewport = latest;
-                    }
-                    handle_viewport_update(&shared, viewport.0, viewport.1, viewport.2);
+            viewport = viewport_rx.changed() => {
+                if viewport.is_err() {
+                    return;
                 }
-                Err(_) => return,
+
+                let viewport = *viewport_rx.borrow_and_update();
+                if let Some(viewport) = viewport {
+                    handle_viewport_update(&shared, viewport);
+                }
             },
         }
     }
@@ -438,12 +474,15 @@ fn serve_client(socket: OwnedFd, upstream: String) {
     });
 
     let (event_tx, event_rx) = flume::unbounded();
+    let mut viewport_rx = VIEWPORT_CHANNEL.subscribe();
+    let viewport = *viewport_rx.borrow_and_update();
     let shared = Rc::new(RefCell::new(SharedState {
         buffer_info: HashMap::new(),
         event_tx,
         frame_callbacks: HashMap::new(),
         next_callback_batch_id: 1,
         toplevels: Vec::new(),
+        viewport,
         configure_serial: 1,
         fractional_scales: Vec::new(),
         surfaces: Vec::new(),
@@ -463,7 +502,7 @@ fn serve_client(socket: OwnedFd, upstream: String) {
             return;
         }
     };
-    runtime.block_on(run_client(state, shared, event_rx));
+    runtime.block_on(run_client(state, shared, event_rx, viewport_rx));
 }
 
 static PROXY_ARMED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);

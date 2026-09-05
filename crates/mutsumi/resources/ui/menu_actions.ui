@@ -6,7 +6,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
 -->
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="MenuActions" parent="AdwBin">
+  <template class="MutsumiMenuActions" parent="AdwBin">
     <property name="child">
       <object class="GtkGrid" id="grid">
         <property name="accessible-role">18</property>

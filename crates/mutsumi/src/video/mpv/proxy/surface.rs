@@ -50,7 +50,6 @@ use wl_proxy::{
 };
 
 use super::{
-    CURRENT_SCALE,
     FRAME_CHANNEL,
     FrameCallbacks,
     SharedState,
@@ -73,7 +72,7 @@ impl WlCompositorHandler for CompositorHandler {
 
         let mut state = self.state.borrow_mut();
         if id.version() >= 6 {
-            let scale = *CURRENT_SCALE.lock().unwrap();
+            let scale = state.viewport.map_or(1.0, |viewport| viewport.scale);
             id.send_preferred_buffer_scale(scale.ceil() as i32);
         }
         state.surfaces.push(Rc::clone(id));
@@ -137,15 +136,14 @@ impl WpFractionalScaleManagerV1Handler for FractionalScaleManagerHandler {
         _surface: &Rc<WlSurface>,
     ) {
         id.set_forward_to_server(false);
-        let scale_120 = (*CURRENT_SCALE.lock().unwrap() * 120.0).round() as u32;
+        let mut state = self.state.borrow_mut();
+        let scale = state.viewport.map_or(1.0, |viewport| viewport.scale);
+        let scale_120 = (scale * 120.0).round() as u32;
         id.send_preferred_scale(scale_120);
         id.set_handler(FractionalScaleHandler {
             state: Rc::clone(&self.state),
         });
-        self.state
-            .borrow_mut()
-            .fractional_scales
-            .push(Rc::clone(id));
+        state.fractional_scales.push(Rc::clone(id));
     }
 }
 

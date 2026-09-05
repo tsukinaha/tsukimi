@@ -72,11 +72,13 @@ impl XdgSurfaceHandler for XdgSurfaceHandlerImpl {
             state: Rc::clone(&self.state),
         });
 
-        id.send_configure_bounds(0, 0);
-
         let mut state = self.state.borrow_mut();
+        let viewport = state.viewport.unwrap_or_default();
         let serial = state.configure_serial;
         state.configure_serial = serial.wrapping_add(1);
+
+        id.send_configure_bounds(0, 0);
+        id.send_configure(viewport.width, viewport.height, &[]);
         slf.send_configure(serial);
 
         state.toplevels.push(ToplevelEntry {

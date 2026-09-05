@@ -44,7 +44,6 @@ pub fn init() {
     mpv::video_scale::VideoScale::ensure_type();
     mpv::volume_bar::VolumeBar::ensure_type();
     mpv::danmaku_popover::DanmakuPopover::ensure_type();
-    mutsumi::Danmakw::ensure_type();
 
     widgets::player_toolbar::PlayerToolbarBox::ensure_type();
     widgets::content_viewer::MediaContentViewer::ensure_type();

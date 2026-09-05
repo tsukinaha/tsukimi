@@ -48,5 +48,6 @@
     <file compressed="true" preprocess="xml-stripblanks" alias="scale_row.ui">ui/scale_row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="control_sidebar.ui">ui/control_sidebar.ui</file>
     <file compressed="true" preprocess="xml-stripblanks" alias="volume_bar.ui">ui/volume_bar.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks" alias="video_player.ui">ui/video_player.ui</file>
   </gresource>
 </gresources>

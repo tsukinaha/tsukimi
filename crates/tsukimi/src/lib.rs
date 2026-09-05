@@ -46,6 +46,8 @@ pub fn run() -> gtk::glib::ExitCode {
     textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
 
     adw::init().expect("Failed to initialize Adwaita");
+    mutsumi::init();
+
     register_gio_resources();
 
     ui::init();

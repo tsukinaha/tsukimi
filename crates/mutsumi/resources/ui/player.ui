@@ -57,7 +57,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                         <property name="title" translatable="yes">Settings</property>
                         <property name="icon-name">settings-symbolic</property>
                         <property name="child">
-                          <object class="ControlSidebar" id="control_sidebar"></object>
+                          <object class="MutsumiControlSidebar" id="control_sidebar"></object>
                         </property>
                       </object>
                     </child>
@@ -118,7 +118,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                   </object>
                 </child>
                 <child type="overlay">
-                  <object class="VolumeBar" id="volume_bar">
+                  <object class="MutsumiVolumeBar" id="volume_bar">
                     <property name="halign">start</property>
                     <property name="valign">center</property>
                     <property name="margin-start">10</property>
@@ -501,7 +501,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                               </object>
                             </child>
                             <child>
-                              <object class="VideoScale" id="video_scale">
+                              <object class="MutsumiVideoScale" id="video_scale">
                                 <property name="focusable">True</property>
                                 <property name="valign">center</property>
                                 <property name="hexpand">True</property>
@@ -632,7 +632,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
               </object>
             </child>
             <child>
-              <object class="ScaleRow" id="font_weight_row">
+              <object class="MutsumiScaleRow" id="font_weight_row">
                 <property name="title" translatable="yes">Font Weight</property>
                 <property name="value">8</property>
                 <property name="model">
@@ -656,7 +656,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
               </object>
             </child>
             <child>
-              <object class="ScaleRow" id="intensity_row">
+              <object class="MutsumiScaleRow" id="intensity_row">
                 <property name="title" translatable="yes">Danmaku Intensity</property>
                 <property name="value">1</property>
                 <property name="model">

@@ -47,7 +47,7 @@ template $MutsumiPlayer: Adw.Bin {
                         title: _("Settings");
                         icon-name: "settings-symbolic";
 
-                        child: $ControlSidebar control_sidebar {};
+                        child: $MutsumiControlSidebar control_sidebar {};
                     }
 
                     Adw.ViewStackPage playlist_stack_page {
@@ -99,7 +99,7 @@ template $MutsumiPlayer: Adw.Bin {
                 }
 
                 [overlay]
-                $VolumeBar volume_bar {
+                $MutsumiVolumeBar volume_bar {
                     halign: "start";
                     valign: "center";
                     margin-start: "10";
@@ -474,7 +474,7 @@ template $MutsumiPlayer: Adw.Bin {
                                 ]
                             }
 
-                            $VideoScale video_scale {
+                            $MutsumiVideoScale video_scale {
                                 focusable: "True";
                                 valign: "center";
                                 hexpand: "True";
@@ -589,7 +589,7 @@ Popover danmaku_popover {
                 };
             }
 
-            $ScaleRow font_weight_row {
+            $MutsumiScaleRow font_weight_row {
                 title: _("Font Weight");
                 value: 8;
 
@@ -611,7 +611,7 @@ Popover danmaku_popover {
                 };
             }
 
-            $ScaleRow intensity_row {
+            $MutsumiScaleRow intensity_row {
                 title: _("Danmaku Intensity");
                 value: 1;
 
