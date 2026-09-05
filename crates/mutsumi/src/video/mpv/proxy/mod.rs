@@ -224,6 +224,9 @@ impl SharedState {
 
         let mut serial = self.configure_serial;
         for entry in &self.toplevels {
+            if !entry.has_committed_buffer {
+                continue;
+            }
             entry
                 .toplevel
                 .send_configure(viewport.width, viewport.height, &[]);
@@ -231,6 +234,21 @@ impl SharedState {
             serial = serial.wrapping_add(1);
         }
         self.configure_serial = serial;
+    }
+
+    fn surface_committed_buffer(&mut self, surface_id: u64) {
+        let Some(entry) = self
+            .toplevels
+            .iter_mut()
+            .find(|entry| entry.surface_id == surface_id)
+        else {
+            return;
+        };
+        if entry.has_committed_buffer {
+            return;
+        }
+        entry.has_committed_buffer = true;
+        self.configure_toplevels();
     }
 
     fn update_fractional_scales(&mut self, scale_120: u32) {

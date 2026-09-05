@@ -64,11 +64,11 @@ pub struct CompositorHandler {
 impl WlCompositorHandler for CompositorHandler {
     fn handle_create_surface(&mut self, _slf: &Rc<WlCompositor>, id: &Rc<WlSurface>) {
         id.set_forward_to_server(false);
-        id.set_handler(SurfaceHandler {
+        id.set_handler(InitialSurfaceHandler(SurfaceHandler {
             shared: Rc::clone(&self.state),
             pending_buffer: None,
             pending_callbacks: Vec::new(),
-        });
+        }));
 
         let mut state = self.state.borrow_mut();
         if id.version() >= 6 {
@@ -161,6 +161,43 @@ impl WpFractionalScaleV1Handler for FractionalScaleHandler {
     }
 }
 
+struct InitialSurfaceHandler(SurfaceHandler);
+
+impl WlSurfaceHandler for InitialSurfaceHandler {
+    fn handle_destroy(&mut self, slf: &Rc<WlSurface>) {
+        self.0.handle_destroy(slf);
+    }
+
+    fn handle_attach(
+        &mut self, slf: &Rc<WlSurface>, buffer: Option<&Rc<WlBuffer>>, x: i32, y: i32,
+    ) {
+        self.0.handle_attach(slf, buffer, x, y);
+    }
+
+    fn handle_frame(&mut self, slf: &Rc<WlSurface>, callback: &Rc<WlCallback>) {
+        self.0.handle_frame(slf, callback);
+    }
+
+    fn handle_commit(&mut self, slf: &Rc<WlSurface>) {
+        if !matches!(self.0.pending_buffer, Some(Some(_))) {
+            self.0.handle_commit(slf);
+            return;
+        }
+
+        self.0
+            .shared
+            .borrow_mut()
+            .surface_committed_buffer(slf.unique_id());
+        self.0.handle_commit(slf);
+
+        slf.set_handler(SurfaceHandler {
+            shared: Rc::clone(&self.0.shared),
+            pending_buffer: self.0.pending_buffer.take(),
+            pending_callbacks: std::mem::take(&mut self.0.pending_callbacks),
+        });
+    }
+}
+
 struct SurfaceHandler {
     shared: Rc<RefCell<SharedState>>,
     pending_buffer: Option<Option<Rc<WlBuffer>>>,
@@ -224,9 +261,7 @@ impl WlSurfaceHandler for SurfaceHandler {
                         .snapshot()
                         .map(|snapshot| SurfaceContentUpdate::Shm(snapshot.to_frame()))
                         .unwrap_or(SurfaceContentUpdate::Clear);
-                    // wl_shm is copy semantics: the bytes were captured by the
-                    // snapshot, so the buffer can be released immediately,
-                    // unlike dmabuf which keeps the fds until the frame drops.
+
                     buffer.send_release();
                     content
                 } else {
