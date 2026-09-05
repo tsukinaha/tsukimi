@@ -25,19 +25,28 @@ mod imp {
         prelude::*,
         subclass::prelude::*,
     };
-    use gtk::CssProvider;
+    use gtk::{
+        CompositeTemplate,
+        CssProvider,
+    };
 
     use crate::{
         MutsumiVideoSink,
         VIEWPORT_CHANNEL,
+        Viewport,
     };
 
     use super::*;
-    #[derive(Default, glib::Properties)]
+    use crate::video::layout::MutsumiVideoLayout;
+
+    #[derive(Default, CompositeTemplate, glib::Properties)]
+    #[template(resource = "/io/github/mutsumiuniverse/mutsumi/ui/video_player.ui")]
     #[properties(wrapper_type = super::MutsumiVideoPlayer)]
     pub struct MutsumiVideoPlayer {
         pub backend: MutsumiVideoSink,
-        last_viewport: Cell<(i32, i32, f64)>,
+        last_viewport: Cell<Viewport>,
+        #[template_child]
+        picture: TemplateChild<gtk::Picture>,
     }
 
     #[glib::object_subclass]
@@ -45,6 +54,15 @@ mod imp {
         const NAME: &'static str = "MutsumiVideoPlayer";
         type Type = super::MutsumiVideoPlayer;
         type ParentType = adw::Bin;
+
+        fn class_init(klass: &mut Self::Class) {
+            MutsumiVideoLayout::ensure_type();
+            klass.bind_template();
+        }
+
+        fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
+            obj.init_template();
+        }
     }
 
     #[glib::derived_properties]
@@ -53,16 +71,7 @@ mod imp {
             self.parent_constructed();
 
             let obj = self.obj();
-            obj.set_hexpand(true);
-            obj.set_vexpand(true);
-
-            let graphics_offload = gtk::GraphicsOffload::default();
-            let picture = gtk::Picture::new();
-            picture.set_hexpand(true);
-            picture.set_vexpand(true);
-            picture.set_paintable(Some(&self.backend));
-            graphics_offload.set_child(Some(&picture));
-            obj.set_child(Some(&graphics_offload));
+            self.picture.set_paintable(Some(&self.backend));
 
             obj.add_css_class("mutsumi-video-player");
 
@@ -83,7 +92,11 @@ mod imp {
     }
 
     impl MutsumiVideoPlayer {
-        fn update_viewport(&self, width: i32, height: i32) {
+        pub fn update_viewport(&self, width: i32, height: i32) {
+            if width <= 0 || height <= 0 {
+                return;
+            }
+
             let obj = self.obj();
 
             let Some(native) = obj.native() else {
@@ -100,26 +113,14 @@ mod imp {
                 return;
             };
 
-            let viewport = (width, height, surface.scale());
+            let viewport = Viewport::new(width, height, surface.scale());
             if self.last_viewport.replace(viewport) != viewport {
-                let _ = VIEWPORT_CHANNEL.tx.send(viewport);
+                VIEWPORT_CHANNEL.send(viewport);
             }
         }
     }
 
-    impl WidgetImpl for MutsumiVideoPlayer {
-        fn realize(&self) {
-            self.parent_realize();
-
-            let obj = self.obj();
-            self.update_viewport(obj.width(), obj.height());
-        }
-
-        fn size_allocate(&self, width: i32, height: i32, baseline: i32) {
-            self.parent_size_allocate(width, height, baseline);
-            self.update_viewport(width, height);
-        }
-    }
+    impl WidgetImpl for MutsumiVideoPlayer {}
     impl BinImpl for MutsumiVideoPlayer {}
 }
 
@@ -138,6 +139,10 @@ impl Default for MutsumiVideoPlayer {
 impl MutsumiVideoPlayer {
     pub fn new() -> Self {
         Object::new()
+    }
+
+    pub fn update_viewport(&self, width: i32, height: i32) {
+        self.imp().update_viewport(width, height);
     }
 
     pub fn backend_ref(&self) -> &MutsumiVideoSink {

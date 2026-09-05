@@ -6,7 +6,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
 -->
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="VolumeBar" parent="AdwBin">
+  <template class="MutsumiVolumeBar" parent="AdwBin">
     <child>
       <object class="GtkRevealer" id="revealer">
         <property name="reveal-child">false</property>

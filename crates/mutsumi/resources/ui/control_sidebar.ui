@@ -6,7 +6,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
 -->
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="ControlSidebar" parent="AdwNavigationPage">
+  <template class="MutsumiControlSidebar" parent="AdwNavigationPage">
     <property name="title" translatable="yes">Advanced Settings</property>
     <property name="child">
       <object class="GtkScrolledWindow">
@@ -89,7 +89,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                 <property name="title" translatable="yes">Cache</property>
                 <child>
                   <object class="AdwSwitchRow" id="buffer_switchrow">
-                    <property name="active" bind-source="ControlSidebar" bind-property="show-buffer-speed" bind-flags="sync-create|bidirectional"/>
+                    <property name="active" bind-source="MutsumiControlSidebar" bind-property="show-buffer-speed" bind-flags="sync-create|bidirectional"/>
                     <child type="prefix">
                       <object class="GtkImage">
                         <property name="icon-name">speedometer5-symbolic</property>

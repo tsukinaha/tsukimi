@@ -23,8 +23,8 @@ mod imp {
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/io/github/mutsumiuniverse/mutsumi/ui/control_sidebar.ui")]
-    #[properties(wrapper_type = super::ControlSidebar)]
-    pub struct ControlSidebar {
+    #[properties(wrapper_type = super::MutsumiControlSidebar)]
+    pub struct MutsumiControlSidebar {
         #[property(get, set = Self::set_player, explicit_notify, nullable)]
         pub player: glib::WeakRef<MutsumiVideoPlayer>,
 
@@ -100,9 +100,9 @@ mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for ControlSidebar {
-        const NAME: &'static str = "ControlSidebar";
-        type Type = super::ControlSidebar;
+    impl ObjectSubclass for MutsumiControlSidebar {
+        const NAME: &'static str = "MutsumiControlSidebar";
+        type Type = super::MutsumiControlSidebar;
         type ParentType = adw::NavigationPage;
 
         fn class_init(klass: &mut Self::Class) {
@@ -116,7 +116,7 @@ mod imp {
     }
 
     #[glib::derived_properties]
-    impl ObjectImpl for ControlSidebar {
+    impl ObjectImpl for MutsumiControlSidebar {
         fn constructed(&self) {
             self.parent_constructed();
 
@@ -126,10 +126,10 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for ControlSidebar {}
-    impl NavigationPageImpl for ControlSidebar {}
+    impl WidgetImpl for MutsumiControlSidebar {}
+    impl NavigationPageImpl for MutsumiControlSidebar {}
 
-    impl ControlSidebar {
+    impl MutsumiControlSidebar {
         fn set_player(&self, player: Option<MutsumiVideoPlayer>) {
             if self.player.upgrade() == player {
                 return;
@@ -140,21 +140,21 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub struct ControlSidebar(ObjectSubclass<imp::ControlSidebar>)
+    pub struct MutsumiControlSidebar(ObjectSubclass<imp::MutsumiControlSidebar>)
         @extends gtk::Widget, adw::NavigationPage,
         @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget;
 }
 
-impl Default for ControlSidebar {
+impl Default for MutsumiControlSidebar {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl GlobalToast for ControlSidebar {}
+impl GlobalToast for MutsumiControlSidebar {}
 
 #[template_callbacks]
-impl ControlSidebar {
+impl MutsumiControlSidebar {
     pub fn new() -> Self {
         glib::Object::new()
     }

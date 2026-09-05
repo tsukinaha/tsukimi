@@ -176,6 +176,8 @@ impl MpvActor {
             mpv.set_option("input-default-bindings", "yes")?;
             mpv.set_option("hwdec", "auto-safe")?;
             mpv.set_option("keep-open", "yes")?;
+            mpv.set_option("auto-window-resize", "no")?;
+
             mpv.set_option("vo", "gpu-next")?;
 
             if let Some(initializer) = MPV_INITIALIZER.get() {

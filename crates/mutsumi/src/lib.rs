@@ -12,6 +12,7 @@ pub fn force_gl_renderer() {
 }
 
 pub fn init() {
+    video::init();
     control::init();
     danmakw::init();
 }

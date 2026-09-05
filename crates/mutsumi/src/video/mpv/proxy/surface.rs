@@ -50,7 +50,6 @@ use wl_proxy::{
 };
 
 use super::{
-    CURRENT_SCALE,
     FRAME_CHANNEL,
     FrameCallbacks,
     SharedState,
@@ -65,15 +64,15 @@ pub struct CompositorHandler {
 impl WlCompositorHandler for CompositorHandler {
     fn handle_create_surface(&mut self, _slf: &Rc<WlCompositor>, id: &Rc<WlSurface>) {
         id.set_forward_to_server(false);
-        id.set_handler(SurfaceHandler {
+        id.set_handler(InitialSurfaceHandler(SurfaceHandler {
             shared: Rc::clone(&self.state),
             pending_buffer: None,
             pending_callbacks: Vec::new(),
-        });
+        }));
 
         let mut state = self.state.borrow_mut();
         if id.version() >= 6 {
-            let scale = *CURRENT_SCALE.lock().unwrap();
+            let scale = state.viewport.map_or(1.0, |viewport| viewport.scale);
             id.send_preferred_buffer_scale(scale.ceil() as i32);
         }
         state.surfaces.push(Rc::clone(id));
@@ -137,15 +136,14 @@ impl WpFractionalScaleManagerV1Handler for FractionalScaleManagerHandler {
         _surface: &Rc<WlSurface>,
     ) {
         id.set_forward_to_server(false);
-        let scale_120 = (*CURRENT_SCALE.lock().unwrap() * 120.0).round() as u32;
+        let mut state = self.state.borrow_mut();
+        let scale = state.viewport.map_or(1.0, |viewport| viewport.scale);
+        let scale_120 = (scale * 120.0).round() as u32;
         id.send_preferred_scale(scale_120);
         id.set_handler(FractionalScaleHandler {
             state: Rc::clone(&self.state),
         });
-        self.state
-            .borrow_mut()
-            .fractional_scales
-            .push(Rc::clone(id));
+        state.fractional_scales.push(Rc::clone(id));
     }
 }
 
@@ -160,6 +158,43 @@ impl WpFractionalScaleV1Handler for FractionalScaleHandler {
             .fractional_scales
             .retain(|s| !Rc::ptr_eq(s, slf));
         slf.delete_id();
+    }
+}
+
+struct InitialSurfaceHandler(SurfaceHandler);
+
+impl WlSurfaceHandler for InitialSurfaceHandler {
+    fn handle_destroy(&mut self, slf: &Rc<WlSurface>) {
+        self.0.handle_destroy(slf);
+    }
+
+    fn handle_attach(
+        &mut self, slf: &Rc<WlSurface>, buffer: Option<&Rc<WlBuffer>>, x: i32, y: i32,
+    ) {
+        self.0.handle_attach(slf, buffer, x, y);
+    }
+
+    fn handle_frame(&mut self, slf: &Rc<WlSurface>, callback: &Rc<WlCallback>) {
+        self.0.handle_frame(slf, callback);
+    }
+
+    fn handle_commit(&mut self, slf: &Rc<WlSurface>) {
+        if !matches!(self.0.pending_buffer, Some(Some(_))) {
+            self.0.handle_commit(slf);
+            return;
+        }
+
+        self.0
+            .shared
+            .borrow_mut()
+            .surface_committed_buffer(slf.unique_id());
+        self.0.handle_commit(slf);
+
+        slf.set_handler(SurfaceHandler {
+            shared: Rc::clone(&self.0.shared),
+            pending_buffer: self.0.pending_buffer.take(),
+            pending_callbacks: std::mem::take(&mut self.0.pending_callbacks),
+        });
     }
 }
 
@@ -226,9 +261,7 @@ impl WlSurfaceHandler for SurfaceHandler {
                         .snapshot()
                         .map(|snapshot| SurfaceContentUpdate::Shm(snapshot.to_frame()))
                         .unwrap_or(SurfaceContentUpdate::Clear);
-                    // wl_shm is copy semantics: the bytes were captured by the
-                    // snapshot, so the buffer can be released immediately,
-                    // unlike dmabuf which keeps the fds until the frame drops.
+
                     buffer.send_release();
                     content
                 } else {

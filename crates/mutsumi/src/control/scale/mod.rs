@@ -14,8 +14,8 @@ mod imp {
     use super::*;
 
     #[derive(Default, glib::Properties)]
-    #[properties(wrapper_type = super::VideoScale)]
-    pub struct VideoScale {
+    #[properties(wrapper_type = super::MutsumiVideoScale)]
+    pub struct MutsumiVideoScale {
         #[property(get, set = Self::set_player, explicit_notify, nullable)]
         pub player: glib::WeakRef<MutsumiVideoPlayer>,
 
@@ -23,14 +23,14 @@ mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for VideoScale {
-        const NAME: &'static str = "VideoScale";
-        type Type = super::VideoScale;
+    impl ObjectSubclass for MutsumiVideoScale {
+        const NAME: &'static str = "MutsumiVideoScale";
+        type Type = super::MutsumiVideoScale;
         type ParentType = gtk::Scale;
     }
 
     #[glib::derived_properties]
-    impl ObjectImpl for VideoScale {
+    impl ObjectImpl for MutsumiVideoScale {
         fn constructed(&self) {
             self.parent_constructed();
 
@@ -69,11 +69,11 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for VideoScale {}
-    impl RangeImpl for VideoScale {}
-    impl ScaleImpl for VideoScale {}
+    impl WidgetImpl for MutsumiVideoScale {}
+    impl RangeImpl for MutsumiVideoScale {}
+    impl ScaleImpl for MutsumiVideoScale {}
 
-    impl VideoScale {
+    impl MutsumiVideoScale {
         fn set_player(&self, player: Option<MutsumiVideoPlayer>) {
             if self.player.upgrade() == player {
                 return;
@@ -92,17 +92,17 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub struct VideoScale(ObjectSubclass<imp::VideoScale>)
+    pub struct MutsumiVideoScale(ObjectSubclass<imp::MutsumiVideoScale>)
     @extends gtk::Widget, gtk::Scale, gtk::Range, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Orientable;
 }
 
-impl Default for VideoScale {
+impl Default for MutsumiVideoScale {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl VideoScale {
+impl MutsumiVideoScale {
     pub fn new() -> Self {
         glib::Object::builder().build()
     }

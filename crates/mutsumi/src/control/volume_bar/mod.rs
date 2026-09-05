@@ -15,8 +15,8 @@ mod imp {
 
     #[derive(Debug, Default, CompositeTemplate, glib::Properties)]
     #[template(resource = "/io/github/mutsumiuniverse/mutsumi/ui/volume_bar.ui")]
-    #[properties(wrapper_type = super::VolumeBar)]
-    pub struct VolumeBar {
+    #[properties(wrapper_type = super::MutsumiVolumeBar)]
+    pub struct MutsumiVolumeBar {
         #[property(get, set = Self::set_level, default_value = 100.0)]
         pub level: RefCell<f64>,
         #[template_child]
@@ -30,9 +30,9 @@ mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for VolumeBar {
-        const NAME: &'static str = "VolumeBar";
-        type Type = super::VolumeBar;
+    impl ObjectSubclass for MutsumiVolumeBar {
+        const NAME: &'static str = "MutsumiVolumeBar";
+        type Type = super::MutsumiVolumeBar;
         type ParentType = adw::Bin;
 
         fn class_init(klass: &mut Self::Class) {
@@ -45,17 +45,17 @@ mod imp {
     }
 
     #[glib::derived_properties]
-    impl ObjectImpl for VolumeBar {
+    impl ObjectImpl for MutsumiVolumeBar {
         fn constructed(&self) {
             self.parent_constructed();
         }
     }
 
-    impl WidgetImpl for VolumeBar {}
+    impl WidgetImpl for MutsumiVolumeBar {}
 
-    impl BinImpl for VolumeBar {}
+    impl BinImpl for MutsumiVolumeBar {}
 
-    impl VolumeBar {
+    impl MutsumiVolumeBar {
         fn set_level(&self, level: f64) {
             self.level.replace(level);
             self.progress.set_fraction(level);
@@ -106,17 +106,17 @@ mod imp {
 
 glib::wrapper! {
     /// A widget displaying a `VolumeBar`.
-    pub struct VolumeBar(ObjectSubclass<imp::VolumeBar>)
+    pub struct MutsumiVolumeBar(ObjectSubclass<imp::MutsumiVolumeBar>)
         @extends gtk::Widget, adw::Bin, @implements gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Native;
 }
 
-impl VolumeBar {
+impl MutsumiVolumeBar {
     pub fn new() -> Self {
         glib::Object::new()
     }
 }
 
-impl Default for VolumeBar {
+impl Default for MutsumiVolumeBar {
     fn default() -> Self {
         Self::new()
     }

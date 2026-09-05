@@ -29,6 +29,8 @@ use super::SharedState;
 pub struct ToplevelEntry {
     pub xdg_surface: Rc<XdgSurface>,
     pub toplevel: Rc<XdgToplevel>,
+    pub surface_id: u64,
+    pub has_committed_buffer: bool,
 }
 
 pub struct WmBaseHandler {
@@ -41,11 +43,12 @@ impl XdgWmBaseHandler for WmBaseHandler {
     }
 
     fn handle_get_xdg_surface(
-        &mut self, _slf: &Rc<XdgWmBase>, id: &Rc<XdgSurface>, _surface: &Rc<WlSurface>,
+        &mut self, _slf: &Rc<XdgWmBase>, id: &Rc<XdgSurface>, surface: &Rc<WlSurface>,
     ) {
         id.set_forward_to_server(false);
         id.set_handler(XdgSurfaceHandlerImpl {
             state: Rc::clone(&self.state),
+            surface_id: surface.unique_id(),
         });
     }
 
@@ -54,6 +57,7 @@ impl XdgWmBaseHandler for WmBaseHandler {
 
 struct XdgSurfaceHandlerImpl {
     state: Rc<RefCell<SharedState>>,
+    surface_id: u64,
 }
 
 impl XdgSurfaceHandler for XdgSurfaceHandlerImpl {
@@ -72,16 +76,20 @@ impl XdgSurfaceHandler for XdgSurfaceHandlerImpl {
             state: Rc::clone(&self.state),
         });
 
-        id.send_configure_bounds(0, 0);
-
         let mut state = self.state.borrow_mut();
         let serial = state.configure_serial;
         state.configure_serial = serial.wrapping_add(1);
+
+        id.send_configure_bounds(0, 0);
+
+        id.send_configure(0, 0, &[]);
         slf.send_configure(serial);
 
         state.toplevels.push(ToplevelEntry {
             xdg_surface: Rc::clone(slf),
             toplevel: Rc::clone(id),
+            surface_id: self.surface_id,
+            has_committed_buffer: false,
         });
     }
 
