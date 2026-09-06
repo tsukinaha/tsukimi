@@ -7,13 +7,13 @@ description = "Dandanapi http client"
 license = "MIT"
 
 [dependencies]
-age = "0.12"
-base64 = "0.23"
-chrono = "0.4"
-futures = "0.3"
-reqwest = { version = "0.13", features = ["json", "query"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-sha2 = "0.11"
-thiserror = "2.0"
-tokio = "1.53"
+age.workspace = true
+base64.workspace = true
+chrono.workspace = true
+futures.workspace = true
+reqwest = { workspace = true, features = ["json", "query"] }
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+tokio.workspace = true

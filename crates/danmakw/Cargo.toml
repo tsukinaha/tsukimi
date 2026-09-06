@@ -7,8 +7,8 @@ license = "MIT"
 description = "A danmaku engine for gtk4"
 
 [dependencies]
-gtk = { version = "0.11", package = "gtk4", features = ["v4_22"] }
-glib = "0.22"
-quick-xml = { version = "0.41", features = ["serialize"] }
-pango = "0.22"
-thiserror = "2.0"
+gtk = { workspace = true, features = ["v4_22"] }
+glib.workspace = true
+quick-xml = { workspace = true, features = ["serialize"] }
+pango.workspace = true
+thiserror.workspace = true

@@ -7,5 +7,5 @@ description = "Snippet utilities for GTK4 Rust applications"
 license = "MIT"
 
 [dependencies]
-tokio = { version = "1", features = ["rt", "sync"] }
-glib = "0.22"
+tokio = { workspace = true, features = ["rt", "sync"] }
+glib.workspace = true
