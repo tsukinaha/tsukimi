@@ -34,7 +34,6 @@ gdk-wayland = { version = "0.11", package = "gdk4-wayland" }
 gdk-x11 = { version = "0.11", package = "gdk4-x11" }
 gettext-rs = "~0.8"
 glib = "0.22"
-glib-build-tools = "0.22"
 glow = "0.18"
 glycin = { version = "3.1.0", default-features = false }
 gst = { version = "0.25", package = "gstreamer" }

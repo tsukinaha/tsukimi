@@ -1831,12 +1831,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "glib-build-tools"
-version = "0.22.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f9871f38b67853c358b8190f77b9f878eb27d933a950f1045b244c4559a9f5f0"
-
-[[package]]
 name = "glib-macros"
 version = "0.22.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3142,7 +3136,6 @@ dependencies = [
  "gdk4-wayland",
  "gdk4-x11",
  "glib",
- "glib-build-tools",
  "glow",
  "gtk4",
  "libadwaita",
