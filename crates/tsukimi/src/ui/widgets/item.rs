@@ -699,6 +699,8 @@ impl ItemPage {
         } else {
             imp.buttoncontent.set_label(&gettext("Play"));
         }
+
+        self.set_finishes_at(item.run_time_ticks(), item.playback_position_ticks());
     }
 
     pub fn set_dropdown(&self, playbackinfo: &Media) {
@@ -949,12 +951,6 @@ impl ItemPage {
                                 let time_string = run_time_ticks_to_label(runtime);
                                 str.push_str(&time_string);
                                 str.push_str("  ");
-                                let position = item
-                                    .user_data
-                                    .as_ref()
-                                    .and_then(|user_data| user_data.playback_position_ticks)
-                                    .unwrap_or_default();
-                                obj.set_finishes_at(runtime, position);
                             }
                             if let Some(genres) = &item.genres {
                                 for genre in genres {
