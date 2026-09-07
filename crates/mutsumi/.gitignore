@@ -1,3 +1,5 @@
 /target
 /test
 /subprojects/blueprint-compiler
+/resources/ui
+/resources/resources.gresource.xml

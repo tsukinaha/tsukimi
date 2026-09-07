@@ -32,9 +32,6 @@ libmpv2-sys.workspace = true
 quick-xml = { workspace = true, features = ["serialize"] }
 thiserror.workspace = true
 
-[build-dependencies]
-glib-build-tools.workspace = true
-
 [target.'cfg(target_os = "linux")'.dependencies]
 gdk-x11 = { workspace = true, features = [
   "v4_10",
