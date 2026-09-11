@@ -1,14 +1,9 @@
-use std::str::FromStr;
-
 use reqwest::header::{
     HeaderMap,
     HeaderValue,
 };
 
-use crate::{
-    DandanapiError,
-    Result,
-};
+use crate::Result;
 
 #[derive(Debug, Clone)]
 pub struct RequestHeaderGenerator {
@@ -28,13 +23,7 @@ impl Default for RequestHeaderGenerator {
 }
 
 impl RequestHeaderGenerator {
-    pub fn new(x_appid: String, secret_generator: SecretGenerator) -> Result<Self> {
-        let Some(secret) = secret_generator.generate_plaintext() else {
-            return Err(DandanapiError::SecretGenerationError(
-                "Failed to generate secret".to_string(),
-            ));
-        };
-
+    pub fn new(x_appid: String, secret: String) -> Result<Self> {
         let x_appid_header = HeaderValue::from_str(&x_appid)?;
 
         Ok(Self {
@@ -78,23 +67,6 @@ impl RequestHeaderGenerator {
     }
 }
 
-pub struct SecretGenerator {
-    ciphertext: Vec<u8>,
-    key: String,
-}
-
-impl SecretGenerator {
-    pub fn new(ciphertext: Vec<u8>, key: String) -> Self {
-        Self { ciphertext, key }
-    }
-
-    pub fn generate_plaintext(&self) -> Option<String> {
-        let key = age::x25519::Identity::from_str(self.key.trim()).ok()?;
-        let pl = age::decrypt(&key, &self.ciphertext).ok()?;
-        String::from_utf8(pl).ok()
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use base64::prelude::*;
@@ -126,12 +98,5 @@ mod tests {
         assert_eq!(headers["x-appid"], "test-app");
         assert_eq!(headers["x-timestamp"], timestamp.to_string());
         assert_eq!(headers["x-signature"], expected);
-    }
-
-    #[test]
-    fn invalid_identity_does_not_decrypt() {
-        let generator = SecretGenerator::new(vec![], "invalid identity".to_owned());
-
-        assert_eq!(generator.generate_plaintext(), None);
     }
 }

@@ -11,10 +11,7 @@ use dandanapi::{
 
 use crate::{
     DandanapiError,
-    secret::{
-        RequestHeaderGenerator,
-        SecretGenerator,
-    },
+    secret::RequestHeaderGenerator,
 };
 
 static HEADER_GENERATOR: OnceLock<RequestHeaderGenerator> = OnceLock::new();
@@ -25,8 +22,8 @@ pub struct DanDanClient {
 }
 
 impl DanDanClient {
-    pub fn init(x_appid: String, secret_generator: SecretGenerator) -> crate::Result<()> {
-        let request_header_generator = RequestHeaderGenerator::new(x_appid, secret_generator)?;
+    pub fn init(x_appid: String, secret: String) -> crate::Result<()> {
+        let request_header_generator = RequestHeaderGenerator::new(x_appid, secret)?;
         HEADER_GENERATOR
             .set(request_header_generator)
             .map_err(|_| DandanapiError::SecretGenerationError("Already initialized".into()))

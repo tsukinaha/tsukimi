@@ -5025,6 +5025,7 @@ dependencies = [
  "url",
  "uuid",
  "xxhash-rust",
+ "yzlm",
 ]
 
 [[package]]
@@ -5691,6 +5692,10 @@ dependencies = [
  "syn 2.0.119",
  "synstructure",
 ]
+
+[[package]]
+name = "yzlm"
+version = "0.1.0"
 
 [[package]]
 name = "zbus"
