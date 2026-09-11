@@ -7,7 +7,6 @@ description = "Dandanapi http client"
 license = "MIT"
 
 [dependencies]
-age.workspace = true
 base64.workspace = true
 chrono.workspace = true
 futures.workspace = true
