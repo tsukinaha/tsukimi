@@ -481,14 +481,22 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="duration_label">
+                          <object class="GtkButton" id="duration_label_button">
                             <property name="focusable">False</property>
-                            <property name="halign">start</property>
+                            <property name="has-frame">False</property>
                             <property name="valign">center</property>
-                            <property name="label">0:00</property>
-                            <attributes>
-                              <attribute name="font-features" value="tnum=1"/>
-                            </attributes>
+                            <signal name="clicked" handler="on_duration_label_clicked" swapped="yes"/>
+                            <property name="child">
+                              <object class="GtkLabel" id="duration_label">
+                                <property name="focusable">False</property>
+                                <property name="halign">start</property>
+                                <property name="valign">center</property>
+                                <property name="label">0:00</property>
+                                <attributes>
+                                  <attribute name="font-features" value="tnum=1"/>
+                                </attributes>
+                              </object>
+                            </property>
                           </object>
                         </child>
                       </object>
@@ -679,7 +687,7 @@
       <widget name="_play_button"/>
       <widget name="progress_time_label"/>
       <widget name="video_scale"/>
-      <widget name="duration_label"/>
+      <widget name="duration_label_button"/>
     </widgets>
   </object>
   <object class="GtkSizeGroup">
