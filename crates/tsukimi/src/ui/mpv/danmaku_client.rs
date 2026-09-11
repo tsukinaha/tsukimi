@@ -8,11 +8,6 @@ use mutsumi::Danmaku;
 
 use crate::ui::mpv::danmaku::DanmakuExt;
 
-const KEY: Option<&str> = option_env!("DANDANAPI_SECRET_KEY");
-const CIPHERTEXT: &[u8] = include_bytes!(concat!(
-    env!("CARGO_MANIFEST_DIR"),
-    "/data/dandanapi-secret.age"
-));
 const X_APPID: &str = "e9imrhcexn";
 
 #[derive(Clone)]
@@ -23,14 +18,7 @@ impl DanmakuClient {
         static CLIENT: OnceLock<Option<DanmakuClient>> = OnceLock::new();
         CLIENT
             .get_or_init(|| {
-                let Some(key) = KEY.map(str::trim).filter(|key| !key.is_empty()) else {
-                    tracing::error!("Failed to initialize danmaku client: DANDANAPI_SECRET_KEY is not configured");
-                    return None;
-                };
-                if DanDanClient::init(
-                    X_APPID.to_string(),
-                    SecretGenerator::new(CIPHERTEXT.to_vec(), key.to_string()),
-                ).is_err() {
+                if DanDanClient::init(X_APPID.to_string(), yzlm::yzlm()).is_err() {
                     tracing::warn!("DanDanClient already initialized, using existing instance...");
                 }
                 Some(Self(DanDanClient::instance()))

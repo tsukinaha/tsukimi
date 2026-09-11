@@ -1580,11 +1580,7 @@ impl MPVPage {
             return false;
         };
 
-        if view.visible_child_name() != Some("mpv".into()) {
-            return false;
-        }
-
-        true
+        view.visible_child_name() == Some("mpv".into())
     }
 
     fn set_reveal_overlay(&self, reveal: bool) {
