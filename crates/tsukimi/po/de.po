@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
-"POT-Creation-Date: 2026-09-02 06:20+0000\n"
+"POT-Creation-Date: 2026-09-11 10:24+0000\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tsukimi/main/de/"
@@ -136,7 +136,7 @@ msgid "Compact"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/account_settings.ui:133
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:200
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:202
 msgid "Full"
 msgstr ""
 
@@ -188,7 +188,7 @@ msgid "Background"
 msgstr "Hintergrund"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:235
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:124
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:126
 msgid "Opacity"
 msgstr "Opazität"
 
@@ -396,135 +396,135 @@ msgstr "Wählen Sie den neuen mpv Konfigurationsordner"
 msgid "Play"
 msgstr "Abspielen"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:13
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:22
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:14
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:23
 #: crates/tsukimi/resources/ui/mpvpage.ui:395
-#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:39
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:41
 msgid "Danmaku"
 msgstr "Danmaku"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:33
-#, fuzzy
-msgid "Danmaku disabled"
-msgstr "Danmaku-Geschwindigkeit"
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:34
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:56
+msgid "Disabled"
+msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:73
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:75
 msgid "Search Manually"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:91
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:110
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:93
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:112
 msgid "Danmaku Settings"
 msgstr "Danmaku Einstellungen"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:139
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:141
 #: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:447
 msgid "Speed"
 msgstr "Geschwindigkeit"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:154
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:156
 #, fuzzy
 msgid "Font Size"
 msgstr "Schriftgröße"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:169
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:171
 #, fuzzy
 msgid "Font Weight"
 msgstr "Schriftgröße"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:174
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:176
 msgid "Thin"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:175
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:177
 msgid "Ultralight"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:176
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:178
 #, fuzzy
 msgid "Light"
 msgstr "Höhe"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:177
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:179
 #, fuzzy
 msgid "Semilight"
 msgstr "Höhe"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:178
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:180
 msgid "Book"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:179
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:181
 msgid "Normal"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:180
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:182
 #, fuzzy
 msgid "Medium"
 msgstr "Medien"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:181
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:183
 msgid "Semibold"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:182
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:184
 msgid "Bold"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:183
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:185
 msgid "Ultrabold"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:184
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:186
 msgid "Heavy"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:185
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:187
 msgid "Ultraheavy"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:193
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:195
 #, fuzzy
 msgid "Danmaku Intensity"
 msgstr "Danmaku Einstellungen"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:198
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:200
 msgid "Quarter"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:199
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:201
 msgid "Half"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:201
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:203
 msgid "Allow Overlay"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:209
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:211
 msgid "Spacing"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:210
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:212
 #, fuzzy
 msgid "N x Font Size"
 msgstr "Schriftgröße"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:225
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:227
 #, fuzzy
 msgid "Stroke Size"
 msgstr "Randgröße"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:226
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:242
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:228
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:244
 msgid "px"
 msgstr ""
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:241
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:243
 #: crates/tsukimi/resources/ui/mpv_control_sidebar.ui:326
 msgid "Shadow Offset"
 msgstr "Schattenverschiebung"
 
-#: crates/tsukimi/resources/ui/danmaku_popover.ui:261
+#: crates/tsukimi/resources/ui/danmaku_popover.ui:263
 #: crates/tsukimi/resources/ui/media_viewer.ui:36
 #: crates/tsukimi/resources/ui/media_viewer.ui:38
 msgid "Back"
@@ -539,7 +539,7 @@ msgstr "Danmaku"
 #: crates/tsukimi/resources/ui/danmaku_search_dialog.ui:32
 #: crates/tsukimi/resources/ui/metadata_dialog.ui:91
 #: crates/tsukimi/resources/ui/single_grid.ui:105
-#: crates/tsukimi/src/ui/widgets/item.rs:1146
+#: crates/tsukimi/src/ui/widgets/item.rs:1142
 msgid "Title"
 msgstr "Titel"
 
@@ -1677,7 +1677,7 @@ msgid "Sort By"
 msgstr "Sortieren nach"
 
 #: crates/tsukimi/resources/ui/single_grid.ui:106
-#: crates/tsukimi/src/ui/widgets/item.rs:1150
+#: crates/tsukimi/src/ui/widgets/item.rs:1146
 msgid "Bitrate"
 msgstr "Bitrate"
 
@@ -1802,105 +1802,107 @@ msgstr "Untertitelverschiebungseinstellungen gelöscht."
 msgid "Deband settings cleared."
 msgstr "Deband-Einstellungen gelöscht."
 
-#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:37
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:39
 #, fuzzy
 msgid "{count} Danmaku Loaded"
 msgstr "Keine Danmakus geladen"
 
-#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:45
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:47
 #, fuzzy
 msgid "Searching"
 msgstr "Suche"
 
-#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:46
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:48
 #, fuzzy
 msgid "Loading"
 msgstr "Lädt..."
 
-#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:49
-#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:276
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:51
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:287
 #, fuzzy
 msgid "No danmaku found"
 msgstr "Keine Danmakus geladen"
 
-#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:51
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:53
 msgid "This feature requires an official build"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:53
-msgid "Disabled"
-msgstr ""
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:55
+#, fuzzy
+#| msgid "Not Available"
+msgid "Not loaded"
+msgstr "Nicht verfügbar"
 
-#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:54
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:57
 msgid "Maybe there is something wrong"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:60
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:63
 msgid "From 弹弹play开放弹幕网络 (Auto Matched)"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:62
+#: crates/tsukimi/src/ui/mpv/danmaku_popover.rs:65
 msgid "From 弹弹play开放弹幕网络 (Manually Matched)"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:185
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:195
 msgid "Enter at least two characters"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:207
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:215
 #, fuzzy
 msgid "No matching anime found"
 msgstr "Keine weiteren Videos gefunden"
 
-#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:211
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:219
 #, fuzzy
 msgid "Search failed"
 msgstr "Suche"
 
-#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:242
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:250
 #, fuzzy
 msgid "Invalid episode ID"
 msgstr "ungültiger regex"
 
-#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:278
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:289
 #, fuzzy
 #| msgid "Failed to load image"
 msgid "Failed to load danmaku"
 msgstr "Ladung des Bildes fehlgeschlagen"
 
-#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:339
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:350
 #, fuzzy
 #| msgid "No media source found"
 msgid "No episodes found"
 msgstr "Keine Medienquelle gefunden"
 
-#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:343
+#: crates/tsukimi/src/ui/mpv/danmaku_search_dialog.rs:354
 #, fuzzy
 #| msgid "Failed to load image"
 msgid "Failed to load episodes"
 msgstr "Ladung des Bildes fehlgeschlagen"
 
-#: crates/tsukimi/src/ui/mpv/page.rs:784
+#: crates/tsukimi/src/ui/mpv/page.rs:746
 msgid "Initializing..."
 msgstr "Initialisierung..."
 
-#: crates/tsukimi/src/ui/mpv/page.rs:822 crates/tsukimi/src/ui/mpv/page.rs:888
+#: crates/tsukimi/src/ui/mpv/page.rs:784 crates/tsukimi/src/ui/mpv/page.rs:850
 msgid "No media source found"
 msgstr "Keine Medienquelle gefunden"
 
-#: crates/tsukimi/src/ui/mpv/page.rs:967
+#: crates/tsukimi/src/ui/mpv/page.rs:929
 msgid "Skip Intro"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/page.rs:968
+#: crates/tsukimi/src/ui/mpv/page.rs:930
 msgid "Skip Outro"
 msgstr ""
 
-#: crates/tsukimi/src/ui/mpv/page.rs:1115
+#: crates/tsukimi/src/ui/mpv/page.rs:1077
 msgid "No more video found"
 msgstr "Keine weiteren Videos gefunden"
 
-#: crates/tsukimi/src/ui/mpv/page.rs:1225
+#: crates/tsukimi/src/ui/mpv/page.rs:1187
 msgid ""
 "MPV has been shutdown, Application will exit.\n"
 "Tsukimi can't restart MPV."
@@ -2065,63 +2067,63 @@ msgstr "Wähle eine Episode aus"
 msgid "Resume"
 msgstr "Wiederaufnehmen"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1052
+#: crates/tsukimi/src/ui/widgets/item.rs:1048
 msgid "Finishes at {time}"
 msgstr ""
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1140
+#: crates/tsukimi/src/ui/widgets/item.rs:1136
 msgid "Codec"
 msgstr "Codec"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1143
+#: crates/tsukimi/src/ui/widgets/item.rs:1139
 msgid "Language"
 msgstr "Sprache"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1155
+#: crates/tsukimi/src/ui/widgets/item.rs:1151
 msgid "BitDepth"
 msgstr "Bittiefe"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1159
+#: crates/tsukimi/src/ui/widgets/item.rs:1155
 msgid "SampleRate"
 msgstr "Samplerate"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1163
+#: crates/tsukimi/src/ui/widgets/item.rs:1159
 msgid "Height"
 msgstr "Höhe"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1166
+#: crates/tsukimi/src/ui/widgets/item.rs:1162
 msgid "Width"
 msgstr "Breite"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1169
+#: crates/tsukimi/src/ui/widgets/item.rs:1165
 msgid "ColorSpace"
 msgstr "Farbraum"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1173
+#: crates/tsukimi/src/ui/widgets/item.rs:1169
 msgid "DisplayTitle"
 msgstr "Anzeigetitel"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1177
+#: crates/tsukimi/src/ui/widgets/item.rs:1173
 msgid "Channel"
 msgstr "Kanal"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1181
+#: crates/tsukimi/src/ui/widgets/item.rs:1177
 msgid "ChannelLayout"
 msgstr "Kanallayout"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1186
+#: crates/tsukimi/src/ui/widgets/item.rs:1182
 msgid "AverageFrameRate"
 msgstr "Durchschnittliche Bildwiederholrate"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1190
+#: crates/tsukimi/src/ui/widgets/item.rs:1186
 msgid "PixelFormat"
 msgstr "Pixelformat"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1299
+#: crates/tsukimi/src/ui/widgets/item.rs:1295
 msgid "No video source found"
 msgstr "Keine Videoquelle gefunden"
 
-#: crates/tsukimi/src/ui/widgets/item.rs:1372
+#: crates/tsukimi/src/ui/widgets/item.rs:1368
 msgid "Season not found. Is this a continue watching list?"
 msgstr "Staffel nicht gefunden. Ist das eine Liste zum Weiterschauen?"
 
@@ -2266,6 +2268,10 @@ msgstr "Fehler kopieren und schließen"
 #: crates/tsukimi/src/ui/widgets/window.rs:1056
 msgid "translator-credits"
 msgstr "Skrido <zkrido@proton.me>"
+
+#, fuzzy
+#~ msgid "Danmaku disabled"
+#~ msgstr "Danmaku-Geschwindigkeit"
 
 #~ msgid "Follow system style"
 #~ msgstr "Systemstil folgen"
