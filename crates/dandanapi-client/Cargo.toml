@@ -8,7 +8,6 @@ description = "A Rust client for the dandanapi API."
 
 [dependencies]
 dandanapi.workspace = true
-age.workspace = true
 base64.workspace = true
 chrono.workspace = true
 futures.workspace = true
