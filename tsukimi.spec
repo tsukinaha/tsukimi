@@ -1,4 +1,4 @@
-%global fallback_version 26.9.1
+%global fallback_version 26.9.2
 %global pkg_version %{?version_from_tag:%{version_from_tag}}%{!?version_from_tag:%{fallback_version}}
 
 Name:           tsukimi
