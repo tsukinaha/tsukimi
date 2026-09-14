@@ -5,7 +5,7 @@ default-members = ["crates/tsukimi"]
 
 [workspace.package]
 edition = "2024"
-rust-version = "1.91"
+rust-version = "1.92"
 
 [workspace.dependencies]
 mutsumi-prelude = { version = "0.1.0", path = "crates/mutsumi-prelude" }
