@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
-"POT-Creation-Date: 2026-09-11 10:24+0000\n"
+"POT-Creation-Date: 2026-09-29 10:01+0200\n"
 "PO-Revision-Date: 2026-07-01 10:01+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/tsukimi/main/"
@@ -210,6 +210,11 @@ msgstr "Versão de vídeo preferida"
 msgid "Account"
 msgstr "Conta"
 
+#: crates/tsukimi/resources/ui/account_settings.ui:316
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "Alterar Palavra-passe"
+
 #: crates/tsukimi/resources/ui/account_settings.ui:319
 msgid "New Password"
 msgstr "Nova Palavra-passe"
@@ -217,10 +222,6 @@ msgstr "Nova Palavra-passe"
 #: crates/tsukimi/resources/ui/account_settings.ui:324
 msgid "Confirm Password"
 msgstr "Confirmar Palavra-passe"
-
-#: crates/tsukimi/resources/ui/account_settings.ui:333
-msgid "Change Password"
-msgstr "Alterar Palavra-passe"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:347
 msgid "Media"
@@ -1687,6 +1688,21 @@ msgstr "Fundo"
 msgid "Banner"
 msgstr "Banner"
 
+#: crates/tsukimi/resources/ui/theme_switcher.ui:25
+#: crates/tsukimi/resources/ui/theme_switcher.ui:27
+msgid "Follow system style"
+msgstr "Siga o estilo do sistema"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:43
+#: crates/tsukimi/resources/ui/theme_switcher.ui:45
+msgid "Light style"
+msgstr "Estilo leve"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:61
+#: crates/tsukimi/resources/ui/theme_switcher.ui:63
+msgid "Dark style"
+msgstr "Estilo escuro"
+
 #: crates/tsukimi/resources/ui/window.ui:11
 msgid "Sign out"
 msgstr "Sair"
@@ -2232,15 +2248,6 @@ msgstr "Erro de cópia e fechar"
 #: crates/tsukimi/src/ui/widgets/window.rs:1056
 msgid "translator-credits"
 msgstr "créditos do tradutor"
-
-#~ msgid "Follow system style"
-#~ msgstr "Siga o estilo do sistema"
-
-#~ msgid "Light style"
-#~ msgstr "Estilo leve"
-
-#~ msgid "Dark style"
-#~ msgstr "Estilo escuro"
 
 #~ msgid "Failed to get GLContext"
 #~ msgstr "Falha ao obter GLContext"
