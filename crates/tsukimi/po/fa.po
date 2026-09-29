@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
-"POT-Creation-Date: 2026-09-11 10:24+0000\n"
+"POT-Creation-Date: 2026-09-29 10:01+0200\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Persian <https://hosted.weblate.org/projects/tsukimi/main/fa/"
@@ -216,16 +216,17 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
+#: crates/tsukimi/resources/ui/account_settings.ui:316
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr ""
+
 #: crates/tsukimi/resources/ui/account_settings.ui:319
 msgid "New Password"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/account_settings.ui:324
 msgid "Confirm Password"
-msgstr ""
-
-#: crates/tsukimi/resources/ui/account_settings.ui:333
-msgid "Change Password"
 msgstr ""
 
 #: crates/tsukimi/resources/ui/account_settings.ui:347
@@ -1701,6 +1702,23 @@ msgstr "پرده"
 #: crates/tsukimi/resources/ui/single_grid.ui:187
 msgid "Banner"
 msgstr "بنر"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:25
+#: crates/tsukimi/resources/ui/theme_switcher.ui:27
+msgid "Follow system style"
+msgstr ""
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:43
+#: crates/tsukimi/resources/ui/theme_switcher.ui:45
+#, fuzzy
+msgid "Light style"
+msgstr "ارتفاع"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:61
+#: crates/tsukimi/resources/ui/theme_switcher.ui:63
+#, fuzzy
+msgid "Dark style"
+msgstr "سبک حاشیه"
 
 #: crates/tsukimi/resources/ui/window.ui:11
 msgid "Sign out"

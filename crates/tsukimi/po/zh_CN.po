@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
-"POT-Creation-Date: 2026-09-11 10:24+0000\n"
+"POT-Creation-Date: 2026-09-29 10:01+0200\n"
 "PO-Revision-Date: 2026-08-31 13:52+0000\n"
 "Last-Translator: ᴀᴍᴛᴏᴀᴇʀ <amtoaer@outlook.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -220,6 +220,11 @@ msgstr "首选视频版本"
 msgid "Account"
 msgstr "帐户"
 
+#: crates/tsukimi/resources/ui/account_settings.ui:316
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "更改密码"
+
 #: crates/tsukimi/resources/ui/account_settings.ui:319
 msgid "New Password"
 msgstr "新密码"
@@ -227,10 +232,6 @@ msgstr "新密码"
 #: crates/tsukimi/resources/ui/account_settings.ui:324
 msgid "Confirm Password"
 msgstr "确认密码"
-
-#: crates/tsukimi/resources/ui/account_settings.ui:333
-msgid "Change Password"
-msgstr "更改密码"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:347
 msgid "Media"
@@ -1674,6 +1675,21 @@ msgstr "背景图"
 msgid "Banner"
 msgstr "横幅"
 
+#: crates/tsukimi/resources/ui/theme_switcher.ui:25
+#: crates/tsukimi/resources/ui/theme_switcher.ui:27
+msgid "Follow system style"
+msgstr "跟随系统风格"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:43
+#: crates/tsukimi/resources/ui/theme_switcher.ui:45
+msgid "Light style"
+msgstr "浅色风格"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:61
+#: crates/tsukimi/resources/ui/theme_switcher.ui:63
+msgid "Dark style"
+msgstr "深色风格"
+
 #: crates/tsukimi/resources/ui/window.ui:11
 msgid "Sign out"
 msgstr "登出"
@@ -2205,15 +2221,6 @@ msgstr ""
 
 #~ msgid "Danmaku disabled"
 #~ msgstr "弹幕停用"
-
-#~ msgid "Follow system style"
-#~ msgstr "跟随系统风格"
-
-#~ msgid "Light style"
-#~ msgstr "浅色风格"
-
-#~ msgid "Dark style"
-#~ msgstr "深色风格"
 
 #~ msgid "Failed to realize GLArea"
 #~ msgstr "无法初始化 GLArea"

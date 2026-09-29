@@ -9,11 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
-"POT-Creation-Date: 2026-09-11 10:24+0000\n"
+"POT-Creation-Date: 2026-09-29 10:01+0200\n"
 "PO-Revision-Date: 2026-09-11 11:51+0000\n"
 "Last-Translator: bittin1ddc447d824349b2 <bittin@reimu.nl>\n"
-"Language-Team: Swedish <https://hosted.weblate.org/projects/tsukimi/main/sv/>"
-"\n"
+"Language-Team: Swedish <https://hosted.weblate.org/projects/tsukimi/main/sv/"
+">\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -215,6 +215,11 @@ msgstr "Föredragen videoversion"
 msgid "Account"
 msgstr "Konto"
 
+#: crates/tsukimi/resources/ui/account_settings.ui:316
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "Ändra lösenord"
+
 #: crates/tsukimi/resources/ui/account_settings.ui:319
 msgid "New Password"
 msgstr "Nytt lösenord"
@@ -222,10 +227,6 @@ msgstr "Nytt lösenord"
 #: crates/tsukimi/resources/ui/account_settings.ui:324
 msgid "Confirm Password"
 msgstr "Bekräfta lösenord"
-
-#: crates/tsukimi/resources/ui/account_settings.ui:333
-msgid "Change Password"
-msgstr "Ändra lösenord"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:347
 msgid "Media"
@@ -1675,6 +1676,21 @@ msgstr "Bakgrundsbild"
 msgid "Banner"
 msgstr "Banderoll"
 
+#: crates/tsukimi/resources/ui/theme_switcher.ui:25
+#: crates/tsukimi/resources/ui/theme_switcher.ui:27
+msgid "Follow system style"
+msgstr "Följ systemets stil"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:43
+#: crates/tsukimi/resources/ui/theme_switcher.ui:45
+msgid "Light style"
+msgstr "Ljus stil"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:61
+#: crates/tsukimi/resources/ui/theme_switcher.ui:63
+msgid "Dark style"
+msgstr "Mörk stil"
+
 #: crates/tsukimi/resources/ui/window.ui:11
 msgid "Sign out"
 msgstr "Logga ut"
@@ -2203,15 +2219,6 @@ msgstr "Jonatan Nyberg"
 
 #~ msgid "Danmaku disabled"
 #~ msgstr "Danmaku är inaktiverat"
-
-#~ msgid "Follow system style"
-#~ msgstr "Följ systemets stil"
-
-#~ msgid "Light style"
-#~ msgstr "Ljus stil"
-
-#~ msgid "Dark style"
-#~ msgstr "Mörk stil"
 
 #~ msgid "Failed to realize GLArea"
 #~ msgstr "Det gick inte att initiera GLArea"
