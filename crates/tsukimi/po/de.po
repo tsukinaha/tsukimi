@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
-"POT-Creation-Date: 2026-09-11 10:24+0000\n"
+"POT-Creation-Date: 2026-09-29 10:01+0200\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tsukimi/main/de/"
@@ -222,6 +222,11 @@ msgstr "Bevorzugte Videoversion"
 msgid "Account"
 msgstr "Konto"
 
+#: crates/tsukimi/resources/ui/account_settings.ui:316
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "Passwort ändern"
+
 #: crates/tsukimi/resources/ui/account_settings.ui:319
 msgid "New Password"
 msgstr "Neues Passwort"
@@ -229,10 +234,6 @@ msgstr "Neues Passwort"
 #: crates/tsukimi/resources/ui/account_settings.ui:324
 msgid "Confirm Password"
 msgstr "Passwort bestätigen"
-
-#: crates/tsukimi/resources/ui/account_settings.ui:333
-msgid "Change Password"
-msgstr "Passwort ändern"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:347
 msgid "Media"
@@ -1725,6 +1726,21 @@ msgstr "Hintergrund"
 msgid "Banner"
 msgstr "Banner"
 
+#: crates/tsukimi/resources/ui/theme_switcher.ui:25
+#: crates/tsukimi/resources/ui/theme_switcher.ui:27
+msgid "Follow system style"
+msgstr "Systemstil folgen"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:43
+#: crates/tsukimi/resources/ui/theme_switcher.ui:45
+msgid "Light style"
+msgstr "Heller Stil"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:61
+#: crates/tsukimi/resources/ui/theme_switcher.ui:63
+msgid "Dark style"
+msgstr "Dunkler Stil"
+
 #: crates/tsukimi/resources/ui/window.ui:11
 msgid "Sign out"
 msgstr "Abmelden"
@@ -2272,15 +2288,6 @@ msgstr "Skrido <zkrido@proton.me>"
 #, fuzzy
 #~ msgid "Danmaku disabled"
 #~ msgstr "Danmaku-Geschwindigkeit"
-
-#~ msgid "Follow system style"
-#~ msgstr "Systemstil folgen"
-
-#~ msgid "Light style"
-#~ msgstr "Heller Stil"
-
-#~ msgid "Dark style"
-#~ msgstr "Dunkler Stil"
 
 #, fuzzy
 #~| msgid "Failed to get GLContext"
