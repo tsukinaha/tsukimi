@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
-"POT-Creation-Date: 2026-09-11 10:24+0000\n"
+"POT-Creation-Date: 2026-09-29 10:01+0200\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
 "Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/tsukimi/main/ta/>\n"
@@ -218,6 +218,11 @@ msgstr "விருப்பமான வீடியோ பதிப்பு"
 msgid "Account"
 msgstr "கணக்கு"
 
+#: crates/tsukimi/resources/ui/account_settings.ui:316
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "கடவுச்சொல்லை மாற்றவும்"
+
 #: crates/tsukimi/resources/ui/account_settings.ui:319
 msgid "New Password"
 msgstr "புதிய கடவுச்சொல்"
@@ -225,10 +230,6 @@ msgstr "புதிய கடவுச்சொல்"
 #: crates/tsukimi/resources/ui/account_settings.ui:324
 msgid "Confirm Password"
 msgstr "கடவுச்சொல்லை உறுதிப்படுத்தவும்"
-
-#: crates/tsukimi/resources/ui/account_settings.ui:333
-msgid "Change Password"
-msgstr "கடவுச்சொல்லை மாற்றவும்"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:347
 msgid "Media"
@@ -1720,6 +1721,21 @@ msgstr "பின்விடு"
 msgid "Banner"
 msgstr "பேனர்"
 
+#: crates/tsukimi/resources/ui/theme_switcher.ui:25
+#: crates/tsukimi/resources/ui/theme_switcher.ui:27
+msgid "Follow system style"
+msgstr "கணினி பாணியைப் பின்பற்றுங்கள்"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:43
+#: crates/tsukimi/resources/ui/theme_switcher.ui:45
+msgid "Light style"
+msgstr "ஒளி நடை"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:61
+#: crates/tsukimi/resources/ui/theme_switcher.ui:63
+msgid "Dark style"
+msgstr "இருண்ட நடை"
+
 #: crates/tsukimi/resources/ui/window.ui:11
 msgid "Sign out"
 msgstr "விடுபதிகை"
@@ -2274,15 +2290,6 @@ msgstr "மொழிபெயர்ப்பாளர்-வரவு"
 #, fuzzy
 #~ msgid "Danmaku disabled"
 #~ msgstr "டான்மகு விரைவு"
-
-#~ msgid "Follow system style"
-#~ msgstr "கணினி பாணியைப் பின்பற்றுங்கள்"
-
-#~ msgid "Light style"
-#~ msgstr "ஒளி நடை"
-
-#~ msgid "Dark style"
-#~ msgstr "இருண்ட நடை"
 
 #, fuzzy
 #~| msgid "Failed to get GLContext"

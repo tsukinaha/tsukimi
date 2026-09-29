@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://hosted.weblate.org/projects/tsukimi/main/\n"
-"POT-Creation-Date: 2026-09-11 10:24+0000\n"
+"POT-Creation-Date: 2026-09-29 10:01+0200\n"
 "PO-Revision-Date: 2026-06-02 12:24+0000\n"
 "Last-Translator: Inaha <sakuovds@gmail.com>\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/tsukimi/main/ar/"
@@ -222,6 +222,11 @@ msgstr "نسخة الفيديو المفضلة"
 msgid "Account"
 msgstr "الحساب"
 
+#: crates/tsukimi/resources/ui/account_settings.ui:316
+#: crates/tsukimi/resources/ui/account_settings.ui:333
+msgid "Change Password"
+msgstr "تغيير كلمة المرور"
+
 #: crates/tsukimi/resources/ui/account_settings.ui:319
 msgid "New Password"
 msgstr "كلمة المرور الجديدة"
@@ -229,10 +234,6 @@ msgstr "كلمة المرور الجديدة"
 #: crates/tsukimi/resources/ui/account_settings.ui:324
 msgid "Confirm Password"
 msgstr "تأكيد كلمة المرور"
-
-#: crates/tsukimi/resources/ui/account_settings.ui:333
-msgid "Change Password"
-msgstr "تغيير كلمة المرور"
 
 #: crates/tsukimi/resources/ui/account_settings.ui:347
 msgid "Media"
@@ -1722,6 +1723,21 @@ msgstr "الخلفية"
 msgid "Banner"
 msgstr "الشعار"
 
+#: crates/tsukimi/resources/ui/theme_switcher.ui:25
+#: crates/tsukimi/resources/ui/theme_switcher.ui:27
+msgid "Follow system style"
+msgstr "إتبع نمط النظام"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:43
+#: crates/tsukimi/resources/ui/theme_switcher.ui:45
+msgid "Light style"
+msgstr "النمط الفاتح"
+
+#: crates/tsukimi/resources/ui/theme_switcher.ui:61
+#: crates/tsukimi/resources/ui/theme_switcher.ui:63
+msgid "Dark style"
+msgstr "النمط الداكن"
+
 #: crates/tsukimi/resources/ui/window.ui:11
 msgid "Sign out"
 msgstr "تسجيل الخروج"
@@ -2273,15 +2289,6 @@ msgstr "Abdulrahman <2140398@uj.edu.sa>"
 #, fuzzy
 #~ msgid "Danmaku disabled"
 #~ msgstr "سرعة التعليقات العائمة"
-
-#~ msgid "Follow system style"
-#~ msgstr "إتبع نمط النظام"
-
-#~ msgid "Light style"
-#~ msgstr "النمط الفاتح"
-
-#~ msgid "Dark style"
-#~ msgstr "النمط الداكن"
 
 #, fuzzy
 #~| msgid "Failed to get GLContext"
