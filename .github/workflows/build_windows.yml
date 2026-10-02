@@ -34,7 +34,7 @@ jobs:
       - name: Setup MSYS2
         uses: msys2/setup-msys2@v2
         with:
-          update: true
+          update: false
           release: false
           msystem: UCRT64
           path-type: inherit
@@ -82,6 +82,8 @@ jobs:
         env:
           CARGO_TARGET_DIR: ${{ github.workspace }}/target
           PKG_CONFIG_PATH: /ucrt64/lib/pkgconfig:/ucrt64/share/pkgconfig
+          BLUEPRINT_PYTHON: C:/msys64/ucrt64/bin/python.exe
+          BLUEPRINT_COMPILER: C:/msys64/ucrt64/bin/blueprint-compiler
         run: |
           export PATH="/c/Users/runneradmin/.cargo/bin:/ucrt64/bin:$PATH"
           rustc --version
