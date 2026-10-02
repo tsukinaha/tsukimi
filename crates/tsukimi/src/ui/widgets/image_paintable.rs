@@ -1,3 +1,4 @@
+#[cfg(not(windows))]
 use std::{
     rc::Rc,
     time::Duration,
@@ -15,10 +16,13 @@ use gtk::{
     prelude::*,
     subclass::prelude::*,
 };
+#[cfg(not(windows))]
 use tracing::warn;
 
+#[cfg(not(windows))]
 use crate::utils::spawn;
 
+#[cfg(not(windows))]
 const DEFAULT_ANIMATION_FRAME_DELAY: Duration = Duration::from_millis(100);
 
 mod imp {
@@ -29,10 +33,12 @@ mod imp {
     #[derive(Default)]
     pub struct ImagePaintable {
         /// Glycin image handle used to asynchronously request subsequent animation frames.
+        #[cfg(not(windows))]
         pub image: RefCell<Option<Rc<glycin::Image>>>,
         /// The currently displayed frame.
         pub frame: RefCell<Option<gdk::Texture>>,
         /// The source ID of the timeout to load the next frame, if any.
+        #[cfg(not(windows))]
         pub timeout_source_id: RefCell<Option<glib::SourceId>>,
     }
 
@@ -45,10 +51,13 @@ mod imp {
 
     impl ObjectImpl for ImagePaintable {
         fn dispose(&self) {
-            if let Some(source_id) = self.timeout_source_id.borrow_mut().take() {
-                source_id.remove();
+            #[cfg(not(windows))]
+            {
+                if let Some(source_id) = self.timeout_source_id.borrow_mut().take() {
+                    source_id.remove();
+                }
+                self.image.borrow_mut().take();
             }
-            self.image.borrow_mut().take();
             self.frame.borrow_mut().take();
         }
     }
@@ -112,6 +121,7 @@ glib::wrapper! {
         @implements gdk::Paintable;
 }
 
+#[cfg(not(windows))]
 pub async fn paintable_from_file(
     file: gio::File, cancellable: Option<gio::Cancellable>,
 ) -> Result<gdk::Paintable> {
@@ -134,6 +144,19 @@ pub async fn paintable_from_file(
     }
 }
 
+#[cfg(windows)]
+pub async fn paintable_from_file(
+    file: gio::File, cancellable: Option<gio::Cancellable>,
+) -> Result<gdk::Paintable> {
+    if cancellable.as_ref().is_some_and(|c| c.is_cancelled()) {
+        bail!("image load cancelled");
+    }
+
+    let texture = gdk::Texture::from_file(&file)?;
+    Ok(texture.upcast())
+}
+
+#[cfg(not(windows))]
 impl ImagePaintable {
     fn new(image: glycin::Image, frame: glycin::Frame) -> Self {
         let obj = glib::Object::new::<Self>();
