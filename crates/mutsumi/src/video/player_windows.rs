@@ -1,6 +1,5 @@
 use adw::{
     prelude::*,
-    subclass::prelude::*,
 };
 use glib::Object;
 use gtk::{
@@ -99,7 +98,7 @@ impl MutsumiVideoPlayer {
 
     pub fn update_viewport(&self, _width: i32, _height: i32) {}
 
-    fn backend_ref(&self) -> &MPVGLArea {
+    pub(crate) fn backend_ref(&self) -> &MPVGLArea {
         &self.imp().backend
     }
 
