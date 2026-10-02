@@ -1,0 +1,121 @@
+name: Windows x64
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - windows-support
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+
+jobs:
+  build:
+    name: Windows UCRT64
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          release: false
+          msystem: UCRT64
+          path-type: inherit
+          cache: true
+          install: >-
+            mingw-w64-ucrt-x86_64-toolchain
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-libadwaita
+            mingw-w64-ucrt-x86_64-gstreamer
+            mingw-w64-ucrt-x86_64-gst-plugins-base
+            mingw-w64-ucrt-x86_64-gst-plugins-good
+            mingw-w64-ucrt-x86_64-gst-plugins-bad
+            mingw-w64-ucrt-x86_64-gst-plugins-ugly
+            mingw-w64-ucrt-x86_64-gst-libav
+            mingw-w64-ucrt-x86_64-blueprint-compiler
+            mingw-w64-ucrt-x86_64-gettext
+            mingw-w64-ucrt-x86_64-libepoxy
+            curl
+            p7zip
+
+      - name: Setup Rust GNU toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable-x86_64-pc-windows-gnu
+          target: x86_64-pc-windows-gnu
+          rustflags: ""
+
+      - name: Install libmpv
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $headers = @{ Authorization = "Bearer $env:GH_TOKEN"; "X-GitHub-Api-Version" = "2022-11-28" }
+          $release = Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/shinchiro/mpv-winbuild-cmake/releases/latest"
+          $asset = $release.assets | Where-Object { $_.name -match "^mpv-dev-x86_64-.*\.7z$" } | Select-Object -First 1
+          if (-not $asset) { throw "Could not find mpv-dev x86_64 archive" }
+          Invoke-WebRequest -Headers $headers -Uri $asset.browser_download_url -OutFile "mpv-dev.7z"
+          7z x -y mpv-dev.7z -olibmpv
+          Copy-Item -Force libmpv/libmpv.dll.a C:/msys64/ucrt64/lib/
+          Copy-Item -Force libmpv/libmpv-2.dll C:/msys64/ucrt64/bin/
+          Copy-Item -Force -Recurse libmpv/include/mpv C:/msys64/ucrt64/include/
+
+      - name: Build
+        shell: msys2 {0}
+        env:
+          CARGO_TARGET_DIR: ${{ github.workspace }}/target
+          PKG_CONFIG_PATH: /ucrt64/lib/pkgconfig:/ucrt64/share/pkgconfig
+        run: |
+          export PATH="/c/Users/runneradmin/.cargo/bin:/ucrt64/bin:$PATH"
+          rustc --version
+          cargo --version
+          cargo build --release --locked --target x86_64-pc-windows-gnu
+
+      - name: Compile Tsukimi resources
+        shell: msys2 {0}
+        run: |
+          mkdir -p artifact/tsukimi-windows-x64/bin
+          mkdir -p artifact/tsukimi-windows-x64/share/tsukimi
+          mkdir -p artifact/tsukimi-windows-x64/share/glib-2.0/schemas
+          glib-compile-resources crates/tsukimi/resources/resources.gresource.xml \
+            --sourcedir=crates/tsukimi/resources \
+            --target=artifact/tsukimi-windows-x64/share/tsukimi/tsukimi.gresource
+          cp crates/tsukimi/resources/moe.tsuna.tsukimi.gschema.xml artifact/tsukimi-windows-x64/share/glib-2.0/schemas/
+          glib-compile-schemas artifact/tsukimi-windows-x64/share/glib-2.0/schemas
+
+      - name: Collect runtime
+        shell: msys2 {0}
+        run: |
+          cp target/x86_64-pc-windows-gnu/release/tsukimi.exe artifact/tsukimi-windows-x64/bin/
+          cp /ucrt64/bin/libmpv-2.dll artifact/tsukimi-windows-x64/bin/
+          cp /ucrt64/bin/gdbus.exe artifact/tsukimi-windows-x64/bin/ || true
+          cp -r /ucrt64/lib/gdk-pixbuf-2.0 artifact/tsukimi-windows-x64/lib
+          mkdir -p artifact/tsukimi-windows-x64/lib/gstreamer-1.0
+          cp /ucrt64/lib/gstreamer-1.0/*.dll artifact/tsukimi-windows-x64/lib/gstreamer-1.0/
+          ldd artifact/tsukimi-windows-x64/bin/tsukimi.exe | awk '/\/ucrt64\/bin\/.*\.dll/ {print $3}' | xargs -r -I{} cp -n "{}" artifact/tsukimi-windows-x64/bin/
+
+      - name: Create portable archive
+        shell: pwsh
+        run: |
+          7z a Tsukimi-Windows-x64.7z ./artifact/tsukimi-windows-x64/*
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: Tsukimi-Windows-x64
+          path: Tsukimi-Windows-x64.7z
+          archive: false
+          if-no-files-found: error
