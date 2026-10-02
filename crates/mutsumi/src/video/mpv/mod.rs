@@ -4,14 +4,21 @@ mod actor;
 mod area;
 mod contexted;
 mod logging;
+#[cfg(not(windows))]
 mod paintable;
+#[cfg(not(windows))]
 mod proxy;
 
 pub use actor::*;
 pub use area::*;
 pub use contexted::*;
+#[cfg(not(windows))]
 pub use paintable::*;
+#[cfg(not(windows))]
 pub use proxy::*;
+
+#[cfg(windows)]
+pub fn arm_mpv_proxy() {}
 
 use flume::{
     Receiver,

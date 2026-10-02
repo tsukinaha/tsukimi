@@ -1,5 +1,6 @@
 use std::{
     env,
+    path::PathBuf,
     sync::LazyLock,
 };
 
@@ -41,7 +42,8 @@ pub fn run() -> gtk::glib::ExitCode {
     // Initialize gettext
     unsafe { setlocale(LocaleCategory::LcAll, String::new()) };
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8").expect("Failed to set textdomain codeset");
-    bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR).expect("Invalid argument passed to bindtextdomain");
+    bindtextdomain(GETTEXT_PACKAGE, runtime_locale_dir())
+        .expect("Invalid argument passed to bindtextdomain");
 
     textdomain(GETTEXT_PACKAGE).expect("Invalid string passed to textdomain");
 
@@ -58,8 +60,33 @@ pub fn run() -> gtk::glib::ExitCode {
     Application::new().run_with_args::<&str>(&[])
 }
 
+fn runtime_install_root() -> Option<PathBuf> {
+    #[cfg(windows)]
+    {
+        let exe = std::env::current_exe().ok()?;
+        return exe.parent()?.parent().map(std::path::Path::to_path_buf);
+    }
+
+    #[cfg(not(windows))]
+    {
+        None
+    }
+}
+
+fn runtime_locale_dir() -> PathBuf {
+    runtime_install_root()
+        .map(|root| root.join("share").join("locale"))
+        .unwrap_or_else(|| PathBuf::from(LOCALEDIR))
+}
+
+fn runtime_pkgdata_dir() -> PathBuf {
+    runtime_install_root()
+        .map(|root| root.join("share").join("tsukimi"))
+        .unwrap_or_else(|| PathBuf::from(PKGDATADIR))
+}
+
 fn register_gio_resources() {
-    let path = std::path::Path::new(PKGDATADIR).join(GRESOURCE_FILE);
+    let path = runtime_pkgdata_dir().join(GRESOURCE_FILE);
     let resources = gtk::gio::Resource::load(path).expect("Failed to load resources.");
     gtk::gio::resources_register(&resources);
 }

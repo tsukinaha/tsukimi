@@ -87,7 +87,21 @@ fn compile_blp(input_dir: &Path, output_dir: &Path, inputs: &[PathBuf]) -> Vec<P
         return Vec::new();
     }
 
-    let status = Command::new("blueprint-compiler")
+    #[cfg(windows)]
+    let mut command = {
+        let python = std::env::var("BLUEPRINT_PYTHON")
+            .unwrap_or_else(|_| "python.exe".to_string());
+        let compiler = std::env::var("BLUEPRINT_COMPILER")
+            .unwrap_or_else(|_| "blueprint-compiler".to_string());
+        let mut command = Command::new(python);
+        command.arg(compiler);
+        command
+    };
+
+    #[cfg(not(windows))]
+    let mut command = Command::new("blueprint-compiler");
+
+    let status = command
         .arg("batch-compile")
         .arg(output_dir)
         .arg(input_dir)

@@ -3,6 +3,10 @@ mod error;
 mod layout;
 mod mpv;
 mod play;
+#[cfg(not(windows))]
+mod player;
+#[cfg(windows)]
+#[path = "player_windows.rs"]
 mod player;
 
 pub use backend::*;
