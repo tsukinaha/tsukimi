@@ -49,6 +49,7 @@ glycin = { workspace = true, features = ["gdk4", "tokio"] }
 
 mutsumi.workspace = true
 dandanapi-client.workspace = true
+mpris-server.workspace = true
 
 [dev-dependencies]
 cargo-husky = { workspace = true, features = ["user-hooks"] }
@@ -61,7 +62,6 @@ render = []
 build_libmpv = []
 
 [target.'cfg(target_os = "linux")'.dependencies]
-mpris-server.workspace = true
 gdk-x11 = { workspace = true, features = [
   "v4_18",
   "xlib",

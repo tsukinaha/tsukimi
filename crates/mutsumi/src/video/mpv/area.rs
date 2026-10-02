@@ -41,6 +41,7 @@ mod imp {
 
     use tokio::sync::oneshot;
 
+    #[cfg(target_os = "linux")]
     use gdk_x11::X11Display;
 
     use glib::subclass::Signal;
@@ -165,6 +166,7 @@ mod imp {
             // displays.
             //
             // https://github.com/mpv-player/mpv/blob/86e12929aa0bbc61946d3804982acf887786a7cb/include/mpv/render_gl.h#L91
+            #[cfg(target_os = "linux")]
             if let Ok(display_wrapper) = display.clone().downcast::<X11Display>() {
                 render_params.push(RenderParam::X11Display(
                     unsafe { display_wrapper.xdisplay() } as *const c_void,
