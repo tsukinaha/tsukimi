@@ -108,7 +108,12 @@ impl MutsumiVideoPlayer {
     }
 
     pub fn play(&self, source: &PlayParams) {
-        self.backend_ref().play(source.clone());
+        let url = source.url().into_owned();
+        self.mpv().load_video(&url);
+        if let Some(start_time) = source.start_time {
+            self.mpv().set_start_time(start_time);
+        }
+        self.mpv().pause(false);
     }
 
     pub fn shutdown(&self) {
