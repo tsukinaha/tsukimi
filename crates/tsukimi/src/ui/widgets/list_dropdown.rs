@@ -60,15 +60,18 @@ impl ListDropdown {
     }
 
     pub fn set_label1(&self, label: &Option<String>) {
-        if let Some(label_str) = label {
-            self.imp().label1.set_text(label_str);
-        }
+        self.imp()
+            .label1
+            .set_text(label.as_deref().unwrap_or_default());
     }
 
     pub fn set_label2(&self, label: &Option<String>) {
-        if let Some(label_str) = label {
-            self.imp().label2.set_text(label_str);
-            self.imp().label2.set_visible(true);
-        }
+        let text = label
+            .as_deref()
+            .map(str::trim)
+            .filter(|text| !text.is_empty())
+            .unwrap_or_default();
+        self.imp().label2.set_text(text);
+        self.imp().label2.set_visible(!text.is_empty());
     }
 }
