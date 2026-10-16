@@ -174,7 +174,7 @@ impl MPVPlaySink {
         self.player().command_pause();
     }
 
-    pub fn volume_scroll(&self, value: i64) {
+    pub fn volume_scroll(&self, value: f64) {
         self.player().volume_scroll(value)
     }
 

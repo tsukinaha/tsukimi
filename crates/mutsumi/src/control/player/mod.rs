@@ -858,8 +858,12 @@ impl MutsumiPlayer {
     }
 
     #[template_callback]
-    fn video_scroll_cb(&self, _dx: f64, dy: f64) -> bool {
-        self.imp().video.volume_scroll(-dy as i64 * 5);
+    fn video_scroll_cb(&self, _dx: f64, dy: f64, controller: &gtk::EventControllerScroll) -> bool {
+        let factor = match controller.unit() {
+            gtk::gdk::ScrollUnit::Wheel => 5.0,
+            _ => 0.2,
+        };
+        self.imp().video.volume_scroll(-dy * factor);
         true
     }
 

@@ -176,7 +176,7 @@ impl ContextedMPV {
         self.mpv.set_property("volume", volume);
     }
 
-    pub fn volume_scroll(&self, value: i64) {
+    pub fn volume_scroll(&self, value: f64) {
         self.mpv.command("add", &["volume", &value.to_string()]);
     }
 

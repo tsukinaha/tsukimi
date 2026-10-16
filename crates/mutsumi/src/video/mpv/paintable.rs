@@ -362,7 +362,7 @@ impl MutsumiVideoSink {
         self.mpv().release_key(key, state)
     }
 
-    pub fn volume_scroll(&self, value: i64) {
+    pub fn volume_scroll(&self, value: f64) {
         self.mpv().volume_scroll(value)
     }
 
