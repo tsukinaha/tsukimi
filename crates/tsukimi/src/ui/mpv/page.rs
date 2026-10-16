@@ -49,6 +49,7 @@ use crate::{
             item_utils::{
                 make_subtitle_version_choice,
                 make_video_version_choice_from_matcher,
+                subtitle_display_title,
             },
             song_widget::format_duration,
             window::Window,
@@ -745,7 +746,7 @@ impl MPVPage {
                 imp.network_speed_label
                     .set_text(&gettext("Initializing..."));
 
-                let sub_stream_index = selected.as_ref().map(|s| s.sub_index);
+                let sub_stream_index = selected.as_ref().and_then(|s| s.sub_index);
                 let media_source_id = selected.as_ref().map(|s| s.media_source_id.clone());
                 let id_clone = id.to_owned();
                 let playback_info = match spawn_tokio(async move {
@@ -762,23 +763,22 @@ impl MPVPage {
                     }
                 };
 
-                let media_source =
-                    if let Some(video_stream_index) = selected.as_ref().map(|s| s.video_index) {
-                        playback_info.media_sources.get(video_stream_index as usize)
-                    } else {
-                        let video_version_list: Vec<_> = playback_info
-                            .media_sources
-                            .iter()
-                            .map(|media_source| media_source.name.to_owned())
-                            .collect();
+                let media_source = if let Some(selected) = selected.as_ref() {
+                    playback_info.media_source(&selected.media_source_id)
+                } else {
+                    let video_version_list: Vec<_> = playback_info
+                        .media_sources
+                        .iter()
+                        .map(|media_source| media_source.name.to_owned())
+                        .collect();
 
-                        if let Some(matcher) = imp.video_version_matcher.borrow().as_ref() {
-                            make_video_version_choice_from_matcher(video_version_list, matcher)
-                                .and_then(|index| playback_info.media_sources.get(index))
-                        } else {
-                            playback_info.media_sources.first()
-                        }
-                    };
+                    if let Some(matcher) = imp.video_version_matcher.borrow().as_ref() {
+                        make_video_version_choice_from_matcher(video_version_list, matcher)
+                            .and_then(|index| playback_info.media_sources.get(index))
+                    } else {
+                        playback_info.media_sources.first()
+                    }
+                };
 
                 let Some(media_source) = media_source else {
                     obj.fail_playback(gettext("No media source found"));
@@ -799,23 +799,18 @@ impl MPVPage {
                 imp.back.replace(Some(back));
 
                 let media_stream =
-                    if let Some(sub_stream_index) = selected.as_ref().map(|s| s.sub_index) {
-                        media_source.media_streams.get(sub_stream_index as usize)
+                    if let Some(sub_stream_index) = selected.as_ref().and_then(|s| s.sub_index) {
+                        media_source.subtitle_stream(sub_stream_index)
                     } else {
                         let sub_version_list: Vec<_> = media_source
                             .media_streams
                             .iter()
                             .filter(|stream| stream.stream_type == "Subtitle")
-                            .map(|stream| {
-                                (
-                                    stream.index,
-                                    stream.display_title.to_owned().unwrap_or_default(),
-                                )
-                            })
+                            .map(|stream| (stream.index, subtitle_display_title(stream)))
                             .collect();
 
                         make_subtitle_version_choice(sub_version_list)
-                            .and_then(|index| media_source.media_streams.get(index.0 as usize))
+                            .and_then(|(index, _)| media_source.subtitle_stream(index))
                     };
 
                 if let Some(slang) = selected.map(|s| s.sub_lang) {
@@ -963,14 +958,9 @@ impl MPVPage {
         .await
         .ok()?;
 
-        let media_source = playback_info
-            .media_sources
-            .iter()
-            .find(|source| source.id == media_source_id_clone);
-
-        let url = media_source?
-            .media_streams
-            .get(stream_index as usize)?
+        let url = playback_info
+            .media_source(&media_source_id_clone)?
+            .subtitle_stream(stream_index)?
             .delivery_url
             .to_owned()?;
 
