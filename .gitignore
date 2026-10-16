@@ -5,3 +5,5 @@
 /secret/key
 /scripts
 /crates/lycoric
+/build
+/.direnv
