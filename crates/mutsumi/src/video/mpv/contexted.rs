@@ -172,7 +172,7 @@ impl ContextedMPV {
         self.mpv.set_property("start", format!("{second:.2}"));
     }
 
-    pub fn set_volume(&self, volume: i64) {
+    pub fn set_volume(&self, volume: f64) {
         self.mpv.set_property("volume", volume);
     }
 

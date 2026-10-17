@@ -597,7 +597,7 @@ impl MutsumiVideoSink {
         self.mpv().set_position(position);
     }
 
-    pub fn set_volume(&self, volume: i64) {
+    pub fn set_volume(&self, volume: f64) {
         self.mpv().set_volume(volume);
     }
 
