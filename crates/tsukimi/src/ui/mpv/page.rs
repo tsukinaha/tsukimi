@@ -1714,6 +1714,7 @@ impl MPVPage {
 
         if d.source() == gdk::InputSource::Touchscreen {
             self.set_reveal_overlay(!self.toolbar_revealed());
+            return;
         };
 
         self.imp().video.pause();
