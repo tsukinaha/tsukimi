@@ -4,7 +4,9 @@ use gettextrs::gettext;
 use glib::Object;
 use gtk::{
     Builder,
+    Gesture,
     PopoverMenu,
+    gdk,
     gdk::Rectangle,
     gio,
     glib::{
@@ -1704,7 +1706,16 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn left_click_cb(&self) {
+    fn left_click_cb(&self, gesture: Gesture) {
+        let Some(d) = gesture.current_event_device() else {
+            self.imp().video.pause();
+            return;
+        };
+
+        if d.source() == gdk::InputSource::Touchscreen {
+            self.set_reveal_overlay(!self.toolbar_revealed());
+        };
+
         self.imp().video.pause();
     }
 

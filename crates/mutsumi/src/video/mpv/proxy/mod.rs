@@ -424,7 +424,7 @@ async fn run_client(
     state: Rc<State>, shared: Rc<RefCell<SharedState>>, event_rx: flume::Receiver<ProxyEvent>,
     mut viewport_rx: watch::Receiver<Option<Viewport>>,
 ) {
-    let poll_fd = match tokio::io::unix::AsyncFd::new(Rc::clone(state.poll_fd())) {
+    let poll_fd = match unsafe { tokio::io::unix::AsyncFd::register(Rc::clone(state.poll_fd())) } {
         Ok(fd) => fd,
         Err(e) => {
             tracing::error!("wl-proxy-mpv: failed to register poll fd: {e}");
