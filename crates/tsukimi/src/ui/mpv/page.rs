@@ -4,10 +4,12 @@ use gettextrs::gettext;
 use glib::Object;
 use gtk::{
     Builder,
-    Gesture,
+    GestureClick,
     PopoverMenu,
-    gdk,
-    gdk::Rectangle,
+    gdk::{
+        self,
+        Rectangle,
+    },
     gio,
     glib::{
         self,
@@ -1706,7 +1708,7 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn left_click_cb(&self, gesture: Gesture) {
+    fn left_click_cb(&self, _n_press: i32, _x: f64, _y: f64, gesture: GestureClick) {
         let Some(d) = gesture.current_event_device() else {
             self.imp().video.pause();
             return;
