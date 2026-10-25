@@ -10,10 +10,6 @@ setup:
     meson setup {{ builddir }} --prefix "$PWD/{{ prefix }}"
 
 build: setup
-    if [[ -f secret/key ]]; then \
-        IFS= read -r DANDANAPI_SECRET_KEY < secret/key; \
-        export DANDANAPI_SECRET_KEY; \
-    fi; \
     meson compile -C {{ builddir }}
 
 install: build

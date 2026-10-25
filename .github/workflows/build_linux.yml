@@ -53,8 +53,6 @@ jobs:
           rustflags: ""
 
       - name: Build tsukimi for ${{ matrix.platform }}
-        env:
-          DANDANAPI_SECRET_KEY: ${{ secrets.DANDANAPI_SECRET_KEY }}
         run: |
           meson setup build --prefix=/usr
           meson compile -C build
