@@ -96,6 +96,15 @@ enum MediaSourceFallback {
     PlaybackInfo,
 }
 
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub enum ClickState {
+    #[default]
+    Idle,
+    Pressed,
+    PressedAfterStop,
+    SinglePending,
+}
+
 mod imp {
 
     use std::cell::{
@@ -103,14 +112,12 @@ mod imp {
         RefCell,
     };
 
-    use adw::prelude::*;
     use gettextrs::gettext;
     use glib::subclass::InitializingObject;
     use gtk::{
         CompositeTemplate,
         PopoverMenu,
         glib,
-        subclass::prelude::*,
     };
 
     use mpris_server::LocalServer;
@@ -137,6 +144,8 @@ mod imp {
             provider::tu_item::TuItem,
         },
     };
+
+    use super::*;
 
     #[derive(CompositeTemplate, Default, glib::Properties)]
     #[template(resource = "/moe/tsuna/tsukimi/ui/mpvpage.ui")]
@@ -239,6 +248,8 @@ mod imp {
         pub danmaku_count: Cell<usize>,
         pub danmaku_generation: Cell<u64>,
         pub file_loaded: Cell<bool>,
+
+        pub click_state: Cell<ClickState>,
     }
 
     #[glib::object_subclass]
@@ -1707,19 +1718,56 @@ impl MPVPage {
         };
     }
 
+    fn click_state(&self) -> ClickState {
+        self.imp().click_state.get()
+    }
+
+    fn set_click_state(&self, state: ClickState) {
+        self.imp().click_state.set(state);
+    }
+
     #[template_callback]
-    fn left_click_cb(&self, _n_press: i32, _x: f64, _y: f64, gesture: GestureClick) {
-        let Some(d) = gesture.current_event_device() else {
-            self.imp().video.pause();
-            return;
-        };
+    fn left_click_pressed_cb(&self) {
+        self.set_click_state(ClickState::Pressed);
+    }
 
-        if d.source() == gdk::InputSource::Touchscreen {
-            self.set_reveal_overlay(!self.toolbar_revealed());
-            return;
-        };
+    #[template_callback]
+    fn left_click_released_cb(&self, n_press: i32, _x: f64, _y: f64, gesture: GestureClick) {
+        let state = self.click_state();
 
-        self.imp().video.pause();
+        match n_press {
+            1 if gesture
+                .current_event_device()
+                .is_some_and(|d| d.source() == gdk::InputSource::Touchpad) =>
+            {
+                self.set_click_state(ClickState::Idle);
+                self.set_reveal_overlay(!self.toolbar_revealed());
+            }
+            1 if state == ClickState::PressedAfterStop => {
+                self.set_click_state(ClickState::Idle);
+                self.on_play_pause_clicked();
+            }
+            1 => self.set_click_state(ClickState::SinglePending),
+            2 => {
+                self.set_click_state(ClickState::Idle);
+                self.toggle_fullscreen();
+            }
+            _ => self.set_click_state(ClickState::Idle),
+        }
+    }
+
+    #[template_callback]
+    fn left_click_stopped_cb(&self) {
+        match self.click_state() {
+            ClickState::Pressed => {
+                self.set_click_state(ClickState::PressedAfterStop);
+            }
+            ClickState::SinglePending => {
+                self.set_click_state(ClickState::Idle);
+                self.on_play_pause_clicked();
+            }
+            _ => (),
+        }
     }
 
     #[template_callback]

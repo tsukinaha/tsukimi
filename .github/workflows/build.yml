@@ -3,7 +3,7 @@ name: Build
 on:
   workflow_dispatch:
   push:
-    branches: 
+    branches:
       - "main"
     tags:
       - "*"

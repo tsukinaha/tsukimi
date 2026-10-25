@@ -29,7 +29,9 @@
             <child>
               <object class="GtkGestureClick">
                 <property name="button">1</property>
-                <signal name="released" handler="left_click_cb" swapped="yes"/>
+                <signal name="pressed" handler="left_click_pressed_cb" swapped="yes"/>
+                <signal name="released" handler="left_click_released_cb" swapped="yes"/>
+                <signal name="stopped" handler="left_click_stopped_cb" swapped="yes"/>
               </object>
             </child>
             <child>
