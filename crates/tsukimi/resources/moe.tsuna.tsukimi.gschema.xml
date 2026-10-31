@@ -323,5 +323,10 @@
       <summary>Whether the danmaku is enabled</summary>
       <default>false</default>
     </key>
+
+    <key name="is-rec2100-pq-enabled" type="b">
+      <summary>Whether the rec2100 PQ is enabled</summary>
+      <default>false</default>
+    </key>
   </schema>
 </schemalist>

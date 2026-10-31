@@ -6,7 +6,10 @@ use std::{
     },
 };
 
-use crate::MutsumiMpvError;
+use crate::{
+    MutsumiMpvError,
+    gdk_hdr_enabled,
+};
 
 use super::{
     logging,
@@ -177,8 +180,13 @@ impl MpvActor {
             mpv.set_option("hwdec", "auto-safe")?;
             mpv.set_option("keep-open", "yes")?;
             mpv.set_option("auto-window-resize", "no")?;
-
             mpv.set_option("vo", "gpu-next")?;
+
+            if gdk_hdr_enabled() {
+                mpv.set_option("target-colorspace-hint", "no")?;
+                mpv.set_option("target-prim", "bt.2020")?;
+                mpv.set_option("target-trc", "pq")?;
+            }
 
             if let Some(initializer) = MPV_INITIALIZER.get() {
                 initializer(mpv)?;

@@ -5,7 +5,7 @@ use mutsumi::{
     PlaySource,
 };
 
-const DEFAULT_URL: &str = "https://www.bilibili.com/video/BV19X9eBpEfS";
+const DEFAULT_URL: &str = "https://youtu.be/LxnMg0I0LZM";
 
 fn main() {
     #[cfg(feature = "profiling")]
@@ -15,6 +15,8 @@ fn main() {
         .with_max_level(tracing::Level::INFO)
         .init();
 
+    mutsumi::enable_gdk_hdr();
+    mutsumi::init();
     mutsumi::force_gl_renderer();
     mutsumi::set_mpv_initializer(|init| {
         init.set_property(
