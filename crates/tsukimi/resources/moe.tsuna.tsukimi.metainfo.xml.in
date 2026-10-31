@@ -10,7 +10,7 @@
     <project_license>GPL-3.0-or-later</project_license>
 
     <releases>
-        <release version="26.10.1" date="2026-10-23" />
+        <release version="26.11.1" date="2026-10-23" />
     </releases>
 
     <name>Tsukimi</name>
