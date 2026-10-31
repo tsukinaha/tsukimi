@@ -88,6 +88,8 @@ mod imp {
         pub color: TemplateChild<gtk::ColorDialogButton>,
         #[template_child]
         pub config_switchrow: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub bt2020control: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub preferred_audio_language_comborow: TemplateChild<adw::ComboRow>,
@@ -361,6 +363,9 @@ impl AccountSettings {
             .build();
         SETTINGS
             .bind("mpv-config", &imp.config_switchrow.get(), "active")
+            .build();
+        SETTINGS
+            .bind("is-rec2100-pq-enabled", &imp.bt2020control.get(), "active")
             .build();
         SETTINGS
             .bind(

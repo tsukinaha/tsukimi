@@ -26,6 +26,7 @@ mod imp {
         SurfaceContentUpdate,
         SurfaceUpdate,
         create_mpv_proxy,
+        gdk_hdr_enabled,
         video::{
             MutsumiMpvError,
             mpv::contexted::ContextedMPV,
@@ -49,6 +50,7 @@ mod imp {
 
     use glib::subclass::Signal;
     use gtk::{
+        gdk::ColorState,
         glib,
         prelude::*,
     };
@@ -76,6 +78,12 @@ mod imp {
             let obj = self.obj();
 
             self.setup_mpv();
+
+            let color_state = if gdk_hdr_enabled() {
+                Some(ColorState::rec2100_pq())
+            } else {
+                None
+            };
 
             glib::spawn_future_local(glib::clone!(
                 #[weak]
@@ -105,6 +113,7 @@ mod imp {
                                     .set_height(frame.height)
                                     .set_fourcc(frame.format)
                                     .set_modifier(frame.modifier)
+                                    .set_color_state(color_state.as_ref())
                                     .set_n_planes(frame.planes.len() as u32);
 
                                 drop(previous);

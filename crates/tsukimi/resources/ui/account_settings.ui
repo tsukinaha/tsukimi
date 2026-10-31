@@ -370,7 +370,6 @@
           <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Video Player</property>
             <property name="description" translatable="yes">Requires restart</property>
-
             <child>
               <object class="AdwSwitchRow" id="config_switchrow">
                 <property name="title" translatable="yes">Enable external config</property>
@@ -460,6 +459,16 @@
                     <property name="action-target">3</property>
                   </object>
                 </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="description" translatable="yes">HDR (Experimental)</property>
+            <child>
+              <object class="AdwSwitchRow" id="bt2020control">
+                <property name="title" translatable="yes">Rec. 2100</property>
               </object>
             </child>
           </object>

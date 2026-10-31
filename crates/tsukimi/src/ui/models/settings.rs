@@ -87,6 +87,7 @@ impl Settings {
     const KEY_MPV_DANMAKU_SPACING_FACTOR: &'static str = "mpv-danmaku-spacing-factor";
     const KEY_MPV_DANMAKU_OUTLINE_SIZE: &'static str = "mpv-danmaku-outline-size";
     const KEY_MPV_DANMAKU_SHADOW_OFFSET: &'static str = "mpv-danmaku-shadow-offset";
+    const KEY_REC2100_PQ_ENABLED: &'static str = "is-rec2100-pq-enabled";
     const KEY_DANMAKU_CACHE_MAP: &'static str = "danmaku-cache-map";
 
     fn bind_setting(&self, key: &str, object: &impl IsA<glib::Object>, property: &str) {
@@ -129,6 +130,10 @@ impl Settings {
 
     pub fn bind_mpv_danmaku_shadow_offset(&self, object: &impl IsA<glib::Object>, property: &str) {
         self.bind_setting(Self::KEY_MPV_DANMAKU_SHADOW_OFFSET, object, property);
+    }
+
+    pub fn rec2100_pq_enabled(&self) -> bool {
+        self.boolean(Self::KEY_REC2100_PQ_ENABLED)
     }
 
     pub fn mpv_danmaku_enabled(&self) -> bool {
