@@ -93,12 +93,26 @@ pub struct MediaSource {
     pub etag: Option<String>,
 }
 
+impl MediaSource {
+    pub fn subtitle_stream(&self, index: i64) -> Option<&MediaStream> {
+        self.media_streams
+            .iter()
+            .find(|stream| stream.stream_type == "Subtitle" && stream.index == index)
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Media {
     #[serde(rename = "MediaSources")]
     pub media_sources: Vec<MediaSource>,
     #[serde(rename = "PlaySessionId")]
     pub play_session_id: Option<String>,
+}
+
+impl Media {
+    pub fn media_source(&self, id: &str) -> Option<&MediaSource> {
+        self.media_sources.iter().find(|source| source.id == id)
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -736,4 +750,48 @@ where
     let binding = widget.root();
     let window = binding.and_downcast_ref::<Window>().unwrap();
     window.push_page(&page, tag, name);
+}
+
+#[cfg(test)]
+mod playback_selection_tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn media_source_selection_uses_id_after_response_is_reordered() {
+        let mut media: Media = serde_json::from_value(json!({
+            "MediaSources": [
+                { "Id": "1080p", "MediaStreams": [] },
+                { "Id": "2160p", "MediaStreams": [] }
+            ]
+        }))
+        .unwrap();
+        assert_eq!(media.media_source("2160p").unwrap().id, "2160p");
+        media.media_sources.reverse();
+        assert_eq!(media.media_source("2160p").unwrap().id, "2160p");
+        assert!(media.media_source("missing").is_none());
+    }
+
+    #[test]
+    fn subtitle_selection_uses_stream_index_and_rejects_other_stream_types() {
+        let source: MediaSource = serde_json::from_value(json!({
+            "Id": "source",
+            "MediaStreams": [
+                { "Type": "Video", "Index": 0, "IsExternal": false },
+                { "Type": "Subtitle", "Index": 11, "IsExternal": true,
+                  "DeliveryUrl": "/subtitle/11.srt" },
+                { "Type": "Audio", "Index": 3, "IsExternal": false },
+                { "Type": "Subtitle", "Index": 7, "IsExternal": false }
+            ]
+        }))
+        .unwrap();
+        assert_eq!(source.subtitle_stream(7).unwrap().index, 7);
+        assert_eq!(
+            source.subtitle_stream(11).unwrap().delivery_url.as_deref(),
+            Some("/subtitle/11.srt")
+        );
+        assert!(source.subtitle_stream(1).is_none());
+        assert!(source.subtitle_stream(3).is_none());
+        assert!(source.subtitle_stream(0).is_none());
+    }
 }

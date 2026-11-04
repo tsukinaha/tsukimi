@@ -744,8 +744,9 @@ impl ItemPage {
                         let mut lang_list = Vec::new();
                         for stream in &media.media_streams {
                             if stream.stream_type == "Subtitle" {
+                                let display_title = subtitle_display_title(stream);
                                 let Ok(dl) = DropdownListBuilder::default()
-                                    .line1(stream.display_title.to_owned())
+                                    .line1(Some(display_title))
                                     .line2(stream.title.to_owned())
                                     .sub_lang(stream.language.to_owned())
                                     .index(Some(stream.index))
@@ -1303,17 +1304,11 @@ impl ItemPage {
 
         let video_dl: std::cell::Ref<DropdownList> = video_object.borrow();
         let (sub_index, sub_lang) = sub_dl
-            .map(|sub_dl| {
-                (
-                    sub_dl.index.unwrap_or_default(),
-                    sub_dl.sub_lang.to_owned().unwrap_or_default(),
-                )
-            })
+            .map(|sub_dl| (sub_dl.index, sub_dl.sub_lang.to_owned().unwrap_or_default()))
             .unwrap_or_default();
 
         let info = SelectedVideoSubInfo {
             sub_index,
-            video_index: video_dl.index.unwrap_or_default(),
             sub_lang,
             media_source_id: video_dl.id.to_owned().unwrap_or_default(),
         };
@@ -1419,7 +1414,6 @@ pub fn dt(date: Option<chrono::DateTime<Utc>>) -> String {
 #[derive(Debug, Clone)]
 pub struct SelectedVideoSubInfo {
     pub sub_lang: String,
-    pub sub_index: i64,
-    pub video_index: i64,
+    pub sub_index: Option<i64>,
     pub media_source_id: String,
 }

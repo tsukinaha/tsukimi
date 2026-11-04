@@ -21,10 +21,6 @@ pub fn factory<const UPBIND: bool>() -> gtk::SignalListItemFactory {
             .downcast_ref::<gtk::ListItem>()
             .expect("Needs to be ListItem");
 
-        if list_item.child().is_some() && !UPBIND {
-            return;
-        }
-
         if let Some(entry) = item
             .downcast_ref::<gtk::ListItem>()
             .expect("Needs to be ListItem")
