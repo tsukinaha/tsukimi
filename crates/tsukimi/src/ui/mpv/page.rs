@@ -244,7 +244,7 @@ mod imp {
         pub key_vaild: Cell<bool>,
 
         pub video_version_matcher: RefCell<Option<String>>,
-        pub last_nonzero_volume: Cell<i64>,
+        pub last_nonzero_volume: Cell<f64>,
         pub danmaku_count: Cell<usize>,
         pub danmaku_generation: Cell<u64>,
         pub file_loaded: Cell<bool>,
@@ -329,6 +329,7 @@ mod imp {
 
             SETTINGS
                 .bind("mpv-default-volume", &self.volume_adj.get(), "value")
+                .flags(gtk::gio::SettingsBindFlags::SET)
                 .build();
 
             self.video_scale.set_player(Some(&self.video.get()));
@@ -1233,15 +1234,15 @@ impl MPVPage {
         }
     }
 
-    fn volume_cb(&self, value: i64) {
+    fn volume_cb(&self, value: f64) {
         let imp = self.imp();
-        imp.volume_adj.set_value(value as f64);
-        imp.volume_bar.set_level(value as f64 / 100.0);
-        if value > 0 {
+        imp.volume_adj.set_value(value);
+        imp.volume_bar.set_level(value / 100.0);
+        if value > 0.0 {
             imp.last_nonzero_volume.set(value);
         }
         self.update_volume_button(value);
-        self.notify_volume_changed(value as f64 / 100.0);
+        self.notify_volume_changed(value / 100.0);
     }
 
     fn scale_cb(&self, value: i64) {
@@ -1262,26 +1263,30 @@ impl MPVPage {
     }
 
     #[template_callback]
-    fn video_scroll_cb(&self, _: f64, dy: f64) -> bool {
-        self.imp().video.volume_scroll(-dy as i64 * 5);
+    fn video_scroll_cb(&self, _dx: f64, dy: f64, controller: &gtk::EventControllerScroll) -> bool {
+        let factor = match controller.unit() {
+            gtk::gdk::ScrollUnit::Wheel => 5.0,
+            _ => 0.2,
+        };
+        self.imp().video.volume_scroll(-dy * factor);
         true
     }
 
     #[template_callback]
     fn on_volume_scale_value_changed(&self, btn: &gtk::Scale) {
         let imp = self.imp();
-        imp.video.set_volume(btn.value() as i64);
+        imp.video.set_volume(btn.value());
     }
 
     #[template_callback]
     fn on_volume_button_clicked(&self) {
         let imp = self.imp();
-        let volume = imp.volume_adj.value().round() as i64;
-        if volume > 0 {
+        let volume = imp.volume_adj.value();
+        if volume > 0.0 {
             imp.last_nonzero_volume.set(volume);
-            imp.video.set_volume(0);
+            imp.video.set_volume(0.0);
         } else {
-            imp.video.set_volume(imp.last_nonzero_volume.get().max(1));
+            imp.video.set_volume(imp.last_nonzero_volume.get().max(1.0));
         }
     }
 
@@ -1291,12 +1296,12 @@ impl MPVPage {
         imp.video.set_speed(1.0);
     }
 
-    fn update_volume_button(&self, value: i64) {
+    fn update_volume_button(&self, value: f64) {
         let imp = self.imp();
         let icon_name = match value {
-            0 => "audio-volume-muted-symbolic",
-            value if value < 33 => "audio-volume-low-symbolic",
-            value if value < 66 => "audio-volume-medium-symbolic",
+            0.0 => "audio-volume-muted-symbolic",
+            value if value < 33.0 => "audio-volume-low-symbolic",
+            value if value < 66.0 => "audio-volume-medium-symbolic",
             _ => "audio-volume-high-symbolic",
         };
         imp.volume_button.set_icon_name(icon_name);

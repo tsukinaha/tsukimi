@@ -291,7 +291,7 @@ impl LocalPlayerInterface for MPVPage {
     async fn set_volume(&self, volume: Volume) -> zbus::Result<()> {
         let volume = (volume.clamp(0.0, 1.0) * 100.0).round();
         self.imp().volume_adj.set_value(volume);
-        self.imp().video.set_volume(volume as i64);
+        self.imp().video.set_volume(volume);
         Ok(())
     }
 

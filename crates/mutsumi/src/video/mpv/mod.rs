@@ -33,7 +33,7 @@ pub enum ListenEvent {
     CacheSpeed(i64),
     Error(String),
     TrackList(MpvTracks),
-    Volume(i64),
+    Volume(f64),
     Speed(f64),
     Shutdown,
     PlaybackEnded,

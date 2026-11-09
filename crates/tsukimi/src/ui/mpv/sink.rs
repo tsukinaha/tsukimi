@@ -154,7 +154,7 @@ impl MPVPlaySink {
         self.player().set_speed(value)
     }
 
-    pub fn set_volume(&self, value: i64) {
+    pub fn set_volume(&self, value: f64) {
         self.player().set_volume(value)
     }
 
@@ -174,7 +174,7 @@ impl MPVPlaySink {
         self.player().command_pause();
     }
 
-    pub fn volume_scroll(&self, value: i64) {
+    pub fn volume_scroll(&self, value: f64) {
         self.player().volume_scroll(value)
     }
 

@@ -599,15 +599,15 @@ impl MutsumiPlayer {
         }
     }
 
-    fn on_volume_update(&self, value: i64) {
+    fn on_volume_update(&self, value: f64) {
         let imp = self.imp();
-        imp.volume_adj.set_value(value as f64);
-        imp.volume_bar.set_level(value as f64 / 100.0);
+        imp.volume_adj.set_value(value);
+        imp.volume_bar.set_level(value / 100.0);
 
         let icon_name = match value {
-            0 => "audio-volume-muted-symbolic",
-            value if value < 33 => "audio-volume-low-symbolic",
-            value if value < 66 => "audio-volume-medium-symbolic",
+            0.0 => "audio-volume-muted-symbolic",
+            value if value < 33.0 => "audio-volume-low-symbolic",
+            value if value < 66.0 => "audio-volume-medium-symbolic",
             _ => "audio-volume-high-symbolic",
         };
         imp.volume_button.set_icon_name(icon_name);
@@ -849,7 +849,7 @@ impl MutsumiPlayer {
 
     #[template_callback]
     fn on_volume_scale_value_changed(&self, scale: &gtk::Scale) {
-        self.imp().video.set_volume(scale.value() as i64);
+        self.imp().video.set_volume(scale.value());
     }
 
     #[template_callback]
@@ -858,8 +858,12 @@ impl MutsumiPlayer {
     }
 
     #[template_callback]
-    fn video_scroll_cb(&self, _dx: f64, dy: f64) -> bool {
-        self.imp().video.volume_scroll(-dy as i64 * 5);
+    fn video_scroll_cb(&self, _dx: f64, dy: f64, controller: &gtk::EventControllerScroll) -> bool {
+        let factor = match controller.unit() {
+            gtk::gdk::ScrollUnit::Wheel => 5.0,
+            _ => 0.2,
+        };
+        self.imp().video.volume_scroll(-dy * factor);
         true
     }
 

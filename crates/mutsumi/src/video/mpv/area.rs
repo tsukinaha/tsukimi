@@ -269,7 +269,7 @@ impl MPVGLArea {
         self.mpv().release_key(key, state)
     }
 
-    pub fn volume_scroll(&self, value: i64) {
+    pub fn volume_scroll(&self, value: f64) {
         self.mpv().volume_scroll(value)
     }
 
@@ -485,7 +485,7 @@ impl MPVGLArea {
         self.mpv().set_percent_position(position);
     }
 
-    pub fn set_volume(&self, volume: i64) {
+    pub fn set_volume(&self, volume: f64) {
         self.mpv().set_volume(volume);
     }
 

@@ -240,11 +240,11 @@ impl MutsumiVideoPlayer {
         self.backend_ref().set_start(second);
     }
 
-    pub fn set_volume(&self, value: i64) {
+    pub fn set_volume(&self, value: f64) {
         self.backend_ref().set_volume(value);
     }
 
-    pub fn volume_scroll(&self, value: i64) {
+    pub fn volume_scroll(&self, value: f64) {
         self.backend_ref().volume_scroll(value);
     }
 

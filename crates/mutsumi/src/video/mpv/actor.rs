@@ -214,7 +214,7 @@ impl MpvActor {
         mpv.observe_property("paused-for-cache", Format::Flag, 4)?;
         mpv.observe_property("demuxer-cache-time", Format::Int64, 5)?;
         mpv.observe_property("time-pos", Format::Int64, 6)?;
-        mpv.observe_property("volume", Format::Int64, 7)?;
+        mpv.observe_property("volume", Format::Double, 7)?;
         mpv.observe_property("chapter-list", Format::String, 8)?;
         mpv.observe_property("speed", Format::Double, 9)?;
         mpv.observe_property("playlist", Format::String, 10)?;
@@ -364,7 +364,7 @@ impl SendMpv {
                         }
                     }
                     "volume" => {
-                        if let PropertyData::Int64(volume) = change {
+                        if let PropertyData::Double(volume) = change {
                             let _ = MPV_EVENT_CHANNEL.tx.send(ListenEvent::Volume(volume));
                         }
                     }
