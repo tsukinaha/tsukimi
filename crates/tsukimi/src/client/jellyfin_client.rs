@@ -197,6 +197,32 @@ fn build_base_url(url: Url, server_type: ServerType) -> Result<Url> {
     }
 }
 
+/// Resolve a media URL issued by the server (`DirectStreamUrl`,
+/// `TranscodingUrl`, ...) into an absolute URL for the playback backend.
+///
+/// * Absolute `http(s)` URLs are returned as-is.
+/// * Absolute paths are anchored at the server root, so the request hits
+///   exactly the path the server advertised. Reverse proxies that intercept
+///   `DirectStreamUrl` (e.g. emby2Alist 302 direct links) only match that
+///   exact path.
+/// * Relative paths are resolved against the API base URL.
+///
+/// Returns `None` for empty input, non-http(s) schemes and unresolvable
+/// references, letting callers fall back to other sources.
+fn resolve_media_url(base: &Url, url: &str) -> Option<String> {
+    let url = url.trim();
+    if url.is_empty() {
+        return None;
+    }
+    match Url::parse(url) {
+        // Absolute URLs: only http(s) is playable by the backend.
+        Ok(absolute) if matches!(absolute.scheme(), "http" | "https") => Some(absolute.to_string()),
+        Ok(_) => None,
+        // Relative references are resolved against the API base URL.
+        Err(_) => base.join(url).ok().map(|resolved| resolved.to_string()),
+    }
+}
+
 fn generate_hash(s: &str) -> String {
     let mut hasher = fnv::FnvHasher::default();
     hasher.write(s.as_bytes());
@@ -908,6 +934,15 @@ impl JellyfinClient {
         let s = self.session();
         let (url, _) = s.url_headers.as_ref().expect("Client not initialized");
         url.join(path.trim_start_matches('/')).unwrap().to_string()
+    }
+
+    /// Resolve a server-issued media URL (`DirectStreamUrl`, `TranscodingUrl`,
+    /// ...) to an absolute URL. See `resolve_media_url` for the resolution
+    /// rules.
+    pub fn resolve_media_url(&self, url: &str) -> Option<String> {
+        let s = self.session();
+        let (base, _) = s.url_headers.as_ref()?;
+        resolve_media_url(base, url)
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -1688,5 +1723,54 @@ mod tests {
                 eprintln!("{}", e.to_user_facing());
             }
         }
+    }
+
+    #[test]
+    fn resolve_media_url_keeps_absolute_urls() {
+        let base = Url::parse("http://host:8096/emby/").unwrap();
+        assert_eq!(
+            resolve_media_url(&base, "https://cdn.example.com/video.mp4?token=1"),
+            Some("https://cdn.example.com/video.mp4?token=1".to_string())
+        );
+    }
+
+    #[test]
+    fn resolve_media_url_anchors_absolute_paths_at_server_root() {
+        // 302 direct-link setups advertise a root-level path that the reverse
+        // proxy intercepts; it must be requested exactly as advertised.
+        let base = Url::parse("http://host:8096/emby/").unwrap();
+        assert_eq!(
+            resolve_media_url(&base, "/videos/563821/original.mp4?MediaSourceId=1"),
+            Some("http://host:8096/videos/563821/original.mp4?MediaSourceId=1".to_string())
+        );
+    }
+
+    #[test]
+    fn resolve_media_url_does_not_duplicate_emby_prefix() {
+        let base = Url::parse("http://host:8096/emby/").unwrap();
+        assert_eq!(
+            resolve_media_url(&base, "/emby/Videos/1/stream.mp4?api_key=x"),
+            Some("http://host:8096/emby/Videos/1/stream.mp4?api_key=x".to_string())
+        );
+    }
+
+    #[test]
+    fn resolve_media_url_resolves_relative_paths_against_base() {
+        let base = Url::parse("http://host:8096/emby/").unwrap();
+        assert_eq!(
+            resolve_media_url(&base, "Videos/1/stream.mp4"),
+            Some("http://host:8096/emby/Videos/1/stream.mp4".to_string())
+        );
+    }
+
+    #[test]
+    fn resolve_media_url_rejects_unusable_urls() {
+        let base = Url::parse("http://host:8096/emby/").unwrap();
+        assert_eq!(resolve_media_url(&base, ""), None);
+        assert_eq!(resolve_media_url(&base, "   "), None);
+        assert_eq!(
+            resolve_media_url(&base, "file:///mnt/media/video.mp4"),
+            None
+        );
     }
 }
