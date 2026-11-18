@@ -141,7 +141,15 @@ impl AccountWindow {
         let username = imp.username_entry.text();
         let password = imp.password_entry.text();
         let port = imp.port_entry.text();
-        if server.is_empty() || username.is_empty() || port.is_empty() {
+
+        let port = if port.is_empty() {
+            let default_port = if scheme == 0 { "80" } else { "443" };
+            default_port.into()
+        } else {
+            port
+        };
+
+        if server.is_empty() || username.is_empty() {
             imp.stack.toast(gettext("Fields must be filled in"));
             return;
         }
