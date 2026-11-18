@@ -5,6 +5,9 @@ pub mod widgets;
 
 use gtk::glib::prelude::StaticTypeExt;
 
+/// Prefix of the icons bundled in `resources.gresource.xml`.
+const ICON_RESOURCE_PATH: &str = "/moe/tsuna/tsukimi/icons";
+
 pub use models::{
     SETTINGS,
     jellyfin_cache_path,
@@ -55,4 +58,8 @@ pub fn init() {
     mpv::page::MPVPage::ensure_type();
     mpv::control_sidebar::MPVControlSidebar::ensure_type();
     widgets::theme_switcher::ThemeSwitcher::ensure_type();
+
+    // make the icons bundled in the gresource resolvable by the icon theme
+    let display = gtk::gdk::Display::default().expect("No default display");
+    gtk::IconTheme::for_display(&display).add_resource_path(ICON_RESOURCE_PATH);
 }
