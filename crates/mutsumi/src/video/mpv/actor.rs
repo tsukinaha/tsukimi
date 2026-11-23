@@ -180,6 +180,8 @@ impl MpvActor {
             mpv.set_option("hwdec", "auto-safe")?;
             mpv.set_option("keep-open", "yes")?;
             mpv.set_option("auto-window-resize", "no")?;
+            // GTK owns the viewport size; mpv should fit the video without resizing the viewport.
+            mpv.set_option("keepaspect-window", "no")?;
             mpv.set_option("vo", "gpu-next")?;
 
             if gdk_hdr_enabled() {
