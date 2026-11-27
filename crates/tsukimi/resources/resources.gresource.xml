@@ -27,6 +27,11 @@
     <file preprocess="xml-stripblanks" alias="cross-small-symbolic.svg">icons/scalable/actions/cross-small-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="sound-symbolic.svg">icons/scalable/actions/sound-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="tag-outline-symbolic.svg">icons/scalable/actions/tag-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="emote-love-symbolic.svg">icons/scalable/actions/emote-love-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="list-drag-handle-symbolic.svg">icons/scalable/actions/list-drag-handle-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="preferences-desktop-font-symbolic.svg">icons/scalable/actions/preferences-desktop-font-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="audio-x-generic-symbolic.svg">icons/scalable/actions/audio-x-generic-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="video-x-generic-symbolic.svg">icons/scalable/actions/video-x-generic-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="month-symbolic.svg">icons/scalable/actions/month-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="minus-circle-outline-symbolic.svg">icons/scalable/actions/minus-circle-outline-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="music-note-single-outline-symbolic.svg">icons/scalable/actions/music-note-single-outline-symbolic.svg</file>
